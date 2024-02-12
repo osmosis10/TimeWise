@@ -1,57 +1,116 @@
 package com.example.shiftmanager.ui.calendar;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.shiftmanager.R;
 import com.example.shiftmanager.databinding.FragmentCalendarBinding;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class CalendarFragment extends Fragment {
 
     private FragmentCalendarBinding binding;
+    ImageButton nextButton, previousButton;
+    TextView currentDate;
+    GridView gridView;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        CalendarViewModel calendarViewModel =
-                new ViewModelProvider(this).get(CalendarViewModel.class);
+    private static final int MAX_CALENDAR_DAYS = 42;
 
+    // Initializes instance of a calendar with local date
+    Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
+    List<Date> dates = new ArrayList<>();
+    List<Events> eventsList = new ArrayList<>();
+
+    SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+    SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM", Locale.ENGLISH);
+    SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy", Locale.ENGLISH);
+
+    GridAdapter gridAdapter;
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Obtaining root view
         binding = FragmentCalendarBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        // Linking layout objects to variables
+        nextButton = root.findViewById(R.id.nextButton);
+        previousButton = root.findViewById(R.id.prevButton);
+        currentDate = root.findViewById(R.id.currentDate);
+        gridView = root.findViewById(R.id.gridView);
 
-        LinearLayout customCalendarLayout = binding.customCalendar;
-        GridView gridView = binding.grid;
-        ImageButton prevButton = binding.prevButton;
-        ImageButton nextButton = binding.nextButton;
-        TextView currentDateView = binding.currentDateText;
+        // Clicking will cycle to previous month
+        previousButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                calendar.add(Calendar.MONTH, -1);
+                setUpCalendar(requireContext());
+            }
+        });
 
-        currentDateView.setText(getCurrentDate());
+        // Clicking will cycle to next month
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                calendar.add(Calendar.MONTH, 1);
+                setUpCalendar(requireContext());
+            }
+        });
+
+        // Call the initial setup
+        setUpCalendar(requireContext());
 
         return root;
-
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
+    // Set's up calendar for each month after button click
+    private void setUpCalendar(Context context) {
+        String curDate = dateFormat.format(calendar.getTime()); // obtains current date
+        currentDate.setText(curDate);
+        dates.clear(); // clears dates array to repopulate later
 
-    private String getCurrentDate() {
-        SimpleDateFormat currDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-        return currDate.format(new Date());
+        // Creates copy of calendar for current month
+        Calendar monthCalendar = (Calendar) calendar.clone();
+
+        monthCalendar.set(Calendar.DAY_OF_MONTH, 1); // Sets first day of the month
+
+        // index for first day of month
+        int FirstDayOfMonth = monthCalendar.get(Calendar.DAY_OF_WEEK)-1;
+
+        // moves calendar back to first day of week
+        monthCalendar.add(Calendar.DAY_OF_MONTH, -FirstDayOfMonth);
+
+        // Creates dates for given month and stores in array
+        while (dates.size() < MAX_CALENDAR_DAYS) {
+            dates.add(monthCalendar.getTime());
+            monthCalendar.add(Calendar.DAY_OF_MONTH, 1);
+
+        }
+        // sets the gridview to according to GridAdapter constructor
+        gridAdapter = new GridAdapter(context, dates, calendar, eventsList);
+        gridView.setAdapter(gridAdapter);
+
     }
 }
