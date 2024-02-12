@@ -11,24 +11,26 @@
         android:orientation="horizontal"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
-        android:background="@color/black">
+        android:background="@color/white">
 
         <ImageButton
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:id="@+id/prevButton"
-            android:background="@color/grey"
+            android:background="@mipmap/back"
             android:layout_margin="10dp">
         </ImageButton>
 
         <TextView
-            android:id="@+id/currentDateText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginTop="4dp"
-            android:textColor="@color/white"
-            android:textSize="18sp"
+            android:text="Current Date"
+            android:id="@+id/currentDate"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
             android:layout_weight="3">
 
         </TextView>
@@ -37,7 +39,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:id="@+id/nextButton"
-            android:background="@color/grey"
+            android:background="@mipmap/next"
             android:layout_margin="10dp">
         </ImageButton>
 
@@ -99,8 +101,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="THU"
-            android:textColor="@color/white"
             android:layout_marginTop="4dp"
+            android:textColor="@color/white"
             android:layout_weight="1"
             android:textStyle="bold">
         </TextView>
@@ -131,7 +133,7 @@
     <GridView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/grid"
+        android:id="@+id/gridView"
         android:numColumns="7">
     </GridView>
 
