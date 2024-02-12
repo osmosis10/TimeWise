@@ -54,7 +54,7 @@ public class addEmployee extends AppCompatActivity {
 
                 // Validate the form first
                 if (!validateForm()) {
-                    // If the form is not valid, stop the method execution here
+                    // If the form is not valid, stop the method execution here, and return error
                     return;
                 }
 
@@ -101,8 +101,7 @@ public class addEmployee extends AppCompatActivity {
     private boolean validateForm() {
         EditText nameInput = findViewById(R.id.AddEmployeeNameInput);
         EditText phoneInput = findViewById(R.id.AddEmployeePhoneInput);
-        EditText emailInput = findViewById(R.id.AddEmployeeEmailInput);
-        // You can include startDate and other fields if they are required
+        EditText emailInput = findViewById(R.id.AddEmployeeStartDateInput);
 
         // Check if any required field is empty
         if (TextUtils.isEmpty(nameInput.getText().toString().trim()) ||

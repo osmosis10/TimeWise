@@ -43,7 +43,7 @@ public class EmployeesFragment extends Fragment {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                        // Extract the employee name from the intent
+                        // Get the employee name from the intent
                         String employeeName = result.getData().getStringExtra("employeeName");
                         // Update the UI with the employee name
                         addEmployeeNameToUI(employeeName);
@@ -68,27 +68,26 @@ public class EmployeesFragment extends Fragment {
     private void addEmployeeNameToUI(String employeeName) {
         TextView employeeNameView = new TextView(getContext());
         employeeNameView.setText(employeeName);
-        employeeNameView.setTextSize(30); // Set text size to 20sp
-        employeeNameView.setTextColor(Color.WHITE); // Set text color to white
+        employeeNameView.setTextSize(30);
+        employeeNameView.setTextColor(Color.WHITE);
         employeeNameView.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.rounded_background)); // Set the rounded corner background
 
-        // Set layout parameters to center the TextView horizontally
+        // Set layout parameters to center the name horizontally
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, // Width
-                LinearLayout.LayoutParams.WRAP_CONTENT); // Height
-        layoutParams.gravity = Gravity.CENTER_HORIZONTAL; // Center horizontally
-        int marginTopPx = (int) (10 * getResources().getDisplayMetrics().density); // Convert 50px to dp
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
+        int marginTopPx = (int) (10 * getResources().getDisplayMetrics().density);
         layoutParams.setMargins(0, marginTopPx, 0, 0); // Apply top margin
         employeeNameView.setLayoutParams(layoutParams);
 
-        // Optionally, apply padding inside the TextView for better aesthetics
         int paddingDp = 8; // Example padding in dp
         int paddingPx = (int) (paddingDp * getResources().getDisplayMetrics().density);
         employeeNameView.setPadding(paddingPx, paddingPx, paddingPx, paddingPx); // Apply padding
         employeeNameView.setWidth(650);
         employeeNameView.setHeight(100);
 
-        binding.EmployeeContainer.addView(employeeNameView); // Add the TextView to your container layout
+        binding.EmployeeContainer.addView(employeeNameView); // Add the name TextView to employee layout
     }
 
     @Override
