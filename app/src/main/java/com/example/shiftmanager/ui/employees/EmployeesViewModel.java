@@ -22,6 +22,6 @@ public class EmployeesViewModel extends ViewModel {
         List<Employee> currentList = employeesLiveData.getValue();
         if (currentList == null) currentList = new ArrayList<>();
         currentList.add(employee);
-        employeesLiveData.setValue(currentList); // This will notify all active observers
+        employeesLiveData.setValue(currentList);
     }
 }
