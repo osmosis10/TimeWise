@@ -54,7 +54,7 @@ public class addEmployee extends AppCompatActivity {
 
                 // Validate the form first
                 if (!validateForm()) {
-                    // If the form is not valid, stop the method execution here
+                    // If the form is not valid, stop the method execution here, and return error
                     return;
                 }
 
