@@ -89,6 +89,24 @@ public class addEmployee extends AppCompatActivity {
 
                 Intent data = new Intent();
                 data.putExtra("employeeName", name);
+                // Added the rest of the employee information to pass to another instance
+                // Used to create an employee and insert into db
+                data.putExtra("employeePhone", phone);
+                data.putExtra("employeeEmail", email);
+                data.putExtra("employeeStartDate", startDate);
+                data.putExtra("mondayMorning", mondayMorning);
+                data.putExtra("mondayAfternoon", mondayAfternoon);
+                data.putExtra("tuesdayMorning", tuesdayMorning);
+                data.putExtra("tuesdayAfternoon", tuesdayAfternoon);
+                data.putExtra("wednesdayMorning", wednesdayMorning);
+                data.putExtra("wednesdayAfternoon", wednesdayAfternoon);
+                data.putExtra("thursdayMorning", thursdayMorning);
+                data.putExtra("thursdayAfternoon", thursdayAfternoon);
+                data.putExtra("fridayMorning", fridayMorning);
+                data.putExtra("fridayAfternoon", fridayAfternoon);
+                data.putExtra("saturdayFullday", saturdayFullday);
+                data.putExtra("sundayFullday", sundayFullday);
+
                 setResult(Activity.RESULT_OK, data);
                 // Close the current activity and return to the previous screen
                 finish();
