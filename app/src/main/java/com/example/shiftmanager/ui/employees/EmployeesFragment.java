@@ -1,7 +1,9 @@
 package com.example.shiftmanager.ui.employees;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -25,6 +28,9 @@ import com.example.shiftmanager.MainActivity;
 import com.example.shiftmanager.R;
 import com.example.shiftmanager.databinding.FragmentEmployeesBinding;
 import com.example.shiftmanager.databinding.FragmentEmployeesBinding;
+import com.example.shiftmanager.ui.database.DatabaseHelper;
+import android.database.Cursor;
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -35,21 +41,82 @@ public class EmployeesFragment extends Fragment {
     // Define ActivityResultLauncher
     private ActivityResultLauncher<Intent> addEmployeeLauncher;
 
+    private DatabaseHelper dbHelper;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        dbHelper = new DatabaseHelper(requireContext());
+
+        employeesViewModel = new ViewModelProvider(this).get(EmployeesViewModel.class);
+        employeesViewModel.getCleanAndPopulateComplete().observe(this, cleanAndPopulateCompleted -> {
+            Log.d("cleanAndPopulate", "Value: " + cleanAndPopulateCompleted);
+            if (!cleanAndPopulateCompleted) {
+                dbHelper.removeAllEmployees();
+                dbHelper.insertRandomEmployees();
+                employeesViewModel.markCleanAndPopulateComplete();
+            }
+        });
+
         // Initialize the ActivityResultLauncher
         addEmployeeLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         // Get the employee name from the intent
+                        // We retrieve everything that makes up an employee from intent
                         String employeeName = result.getData().getStringExtra("employeeName");
+                        String employeePhone = result.getData().getStringExtra("employeePhone");
+                        String employeeEmail = result.getData().getStringExtra("employeeEmail");
+                        String employeeStartDate = result.getData().getStringExtra("employeeStartDate");
+                        boolean mondayMorning = result.getData().getBooleanExtra("mondayMorning", false);
+                        boolean mondayAfternoon = result.getData().getBooleanExtra("mondayAfternoon", false);
+                        boolean tuesdayMorning = result.getData().getBooleanExtra("tuesdayMorning", false);
+                        boolean tuesdayAfternoon = result.getData().getBooleanExtra("tuesdayAfternoon", false);
+                        boolean wednesdayMorning = result.getData().getBooleanExtra("wednesdayMorning", false);
+                        boolean wednesdayAfternoon = result.getData().getBooleanExtra("wednesdayAfternoon", false);
+                        boolean thursdayMorning = result.getData().getBooleanExtra("thursdayMorning", false);
+                        boolean thursdayAfternoon = result.getData().getBooleanExtra("thursdayAfternoon", false);
+                        boolean fridayMorning = result.getData().getBooleanExtra("fridayMorning", false);
+                        boolean fridayAfternoon = result.getData().getBooleanExtra("fridayAfternoon", false);
+                        boolean saturdayFullday = result.getData().getBooleanExtra("saturdayFullday", false);
+                        boolean sundayFullday = result.getData().getBooleanExtra("sundayFullday", false);
+
                         // Update the UI with the employee name
-                        addEmployeeNameToUI(employeeName);
+                        //addEmployeeNameToUI(employeeName);
+                        // Save our employee to the database
+                        saveEmployeeToDB(employeeName, employeePhone, employeeEmail, employeeStartDate,
+                                        mondayMorning, mondayAfternoon, tuesdayMorning, tuesdayAfternoon,
+                                        wednesdayMorning, wednesdayAfternoon, thursdayMorning, thursdayAfternoon,
+                                        fridayMorning, fridayAfternoon, saturdayFullday, sundayFullday, 0);
                     }
                 }
         );
+    }
+
+    /*
+    Insert the employee into our database
+     */
+    private void saveEmployeeToDB(String employeeName, String employeePhone, String employeeEmail,
+                                  String employeeStartDate, boolean mondayMorning, boolean mondayAfternoon,
+                                  boolean tuesdayMorning, boolean tuesdayAfternoon, boolean wednesdayMorning,
+                                  boolean wednesdayAfternoon, boolean thursdayMorning, boolean thursdayAfternoon,
+                                  boolean fridayMorning, boolean fridayAfternoon, boolean saturdayFullday,
+                                  boolean sundayFullday, int trained) {
+        //dbHelper = new DatabaseHelper(requireContext());
+        dbHelper.insertEmployee(employeeName,
+                                employeePhone,
+                                employeeEmail,
+                                employeeStartDate,
+                                mondayMorning, mondayAfternoon,
+                                tuesdayMorning, tuesdayAfternoon,
+                                wednesdayMorning, wednesdayAfternoon,
+                                thursdayMorning, thursdayAfternoon,
+                                fridayMorning, fridayAfternoon,
+                                saturdayFullday, sundayFullday, trained);
+
+        addEmployeeNameToUI(employeeName);
     }
 
     @Override
@@ -62,9 +129,44 @@ public class EmployeesFragment extends Fragment {
             addEmployeeLauncher.launch(intent);
         });
 
+        // Update employee fragment with all employees in database
+        updateEmployeeNamesUI();
         return binding.getRoot();
     }
+    /*
+    Looks through db and queries for employee names
+    If the employee name is already displayed it wont display them
+    calls addEmployeeToUI in order to display names that are already in the db
+     */
+    private void updateEmployeeNamesUI() {
+        List<String> employeeNames = dbHelper.getAllEmployeeNames();
 
+        for (String employeeName : employeeNames) {
+            if (!isEmployeeNameInUI(employeeName)) {
+                Log.d("EmployeeNames", "Employee Name: " + employeeName);
+                addEmployeeNameToUI(employeeName);
+            }
+        }
+    }
+
+    /*
+        Checks each employeeName against each child in the Employee Container
+        The container containing all the names in the Employee UI
+        Returns try if the employee is already in the container, else false
+     */
+    private boolean isEmployeeNameInUI(String employeeName) {
+        int childCount = binding.EmployeeContainer.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View child = binding.EmployeeContainer.getChildAt(i);
+            if (child instanceof TextView) {
+                TextView textView = (TextView) child;
+                if (textView.getText().toString().equals(employeeName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     private void addEmployeeNameToUI(String employeeName) {
         TextView employeeNameView = new TextView(getContext());
         employeeNameView.setText(employeeName);
@@ -88,11 +190,13 @@ public class EmployeesFragment extends Fragment {
         employeeNameView.setHeight(100);
 
         binding.EmployeeContainer.addView(employeeNameView); // Add the name TextView to employee layout
+
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        dbHelper.close();
         binding = null;
     }
 }
