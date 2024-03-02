@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginTop="4dp"
-            android:text="Weeky View"
+            android:text="Assign Shift"
             android:id="@+id/currentDate"
             android:textColor="@color/black"
             android:textSize="20sp"
@@ -41,94 +41,94 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="SUN"
+            android:text="Date"
             android:textColor="@color/white"
             android:layout_marginTop="4dp"
             android:layout_weight="1"
             android:textStyle="bold">
         </TextView>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="MON"
-            android:textColor="@color/white"
-            android:layout_marginTop="4dp"
-            android:layout_weight="1"
-            android:textStyle="bold">
-        </TextView>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="TUE"
-            android:textColor="@color/white"
-            android:layout_marginTop="4dp"
-            android:layout_weight="1"
-            android:textStyle="bold">
-        </TextView>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="WED"
-            android:textColor="@color/white"
-            android:layout_marginTop="4dp"
-            android:layout_weight="1"
-            android:textStyle="bold">
-        </TextView>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="THU"
-            android:layout_marginTop="4dp"
-            android:textColor="@color/white"
-            android:layout_weight="1"
-            android:textStyle="bold">
-        </TextView>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="FRI"
-            android:textColor="@color/white"
-            android:layout_marginTop="4dp"
-            android:layout_weight="1"
-            android:textStyle="bold">
-        </TextView>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="SAT"
-            android:textColor="@color/white"
-            android:layout_marginTop="4dp"
-            android:layout_weight="1"
-            android:textStyle="bold">
-        </TextView>
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/calendarRecView"
+    <ImageButton
+        android:id="@+id/exitAssign"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="@drawable/close_icon"
+        android:paddingTop="5dp"
+        android:translationX="280dp">
+    </ImageButton>
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@mipmap/sun"
+        android:translationY="-30dp"
+        android:layout_gravity="center_horizontal">
+    </ImageView>
+
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-    </androidx.recyclerview.widget.RecyclerView>
+        android:layout_height="490dp"
+        android:orientation="vertical"
+        android:translationY="-20dp">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Assign shifts"
-        android:layout_gravity="center"
-        android:backgroundTint="@color/black"
+        <AutoCompleteTextView
+            android:id="@+id/dayShift1"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:hint="Assign day shift"
+            android:inputType="none" />
 
-    </Button>
+        <AutoCompleteTextView
+            android:id="@+id/dayShift2"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:hint="Assign day shift"
+            android:inputType="none" />
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="40dp"
+            android:background="@mipmap/moon" />
+
+        <AutoCompleteTextView
+            android:id="@+id/NightShift1"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:hint="Assign night shift"
+            android:inputType="none" />
+
+        <AutoCompleteTextView
+            android:id="@+id/NightShift2"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:hint="Assign night shift"
+            android:inputType="none" />
+
+        <Button
+            android:id="@+id/confirmButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/black"
+            android:text="Confirm" />
+
+    </LinearLayout>
 
 </LinearLayout>

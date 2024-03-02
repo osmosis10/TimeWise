@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 
 import com.example.shiftmanager.R;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -66,6 +67,10 @@ public class GridAdapter extends ArrayAdapter {
         // Obtains day numbers and set's it to each cell respectively
         TextView dayNumber = view.findViewById(R.id.calendarDay);
         dayNumber.setText(String.valueOf(dayNo));
+
+        Calendar shiftCalendar = Calendar.getInstance();
+        ArrayList<String> arrayList = new ArrayList<>();
+
 
         return view;
     }
