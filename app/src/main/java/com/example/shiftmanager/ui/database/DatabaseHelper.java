@@ -199,6 +199,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return rowsDeleted;
     }
 
+    public int removeEmployee(String employeeName) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        int rowsDeleted = db.delete(TABLE_EMPLOYEE, "columnName = ?", new String[]{employeeName});
+        db.close();
+        return rowsDeleted;
+    }
     /*
     Insert 10 random employees into the database
      */
