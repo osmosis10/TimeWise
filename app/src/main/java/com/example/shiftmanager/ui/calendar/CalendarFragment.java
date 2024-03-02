@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -49,6 +51,11 @@ public class CalendarFragment extends Fragment {
 
     GridAdapter gridAdapter;
 
+    AlertDialog alertDialog;
+
+    AutoCompleteTextView autoCompleteTextViewday1;
+
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Obtaining root view
@@ -60,6 +67,7 @@ public class CalendarFragment extends Fragment {
         previousButton = root.findViewById(R.id.prevButton);
         currentDate = root.findViewById(R.id.currentDate);
         gridView = root.findViewById(R.id.gridView);
+        //autoCompleteTextViewday1
 
         // Clicking will cycle to previous month
         previousButton.setOnClickListener(new View.OnClickListener() {
@@ -76,6 +84,19 @@ public class CalendarFragment extends Fragment {
             public void onClick(View v) {
                 calendar.add(Calendar.MONTH, 1);
                 setUpCalendar(requireContext());
+            }
+        });
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                builder.setCancelable(true);
+                View addView = LayoutInflater.from(parent.getContext()).inflate(R.layout.current_day_shits, null);
+                builder.setView(addView);
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
             }
         });
 
@@ -111,6 +132,10 @@ public class CalendarFragment extends Fragment {
         // sets the gridview to according to GridAdapter constructor
         gridAdapter = new GridAdapter(context, dates, calendar, eventsList);
         gridView.setAdapter(gridAdapter);
+
+    }
+
+    private void CollectShiftsPerMonth(String Month, String Year) {
 
     }
 }
