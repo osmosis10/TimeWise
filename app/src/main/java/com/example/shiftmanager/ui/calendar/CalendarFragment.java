@@ -45,6 +45,7 @@ public class CalendarFragment extends Fragment {
     List<Date> dates = new ArrayList<>();
     List<Events> eventsList = new ArrayList<>();
 
+    SimpleDateFormat dayFormat =  new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
     SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
     SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM", Locale.ENGLISH);
     SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy", Locale.ENGLISH);
@@ -102,6 +103,10 @@ public class CalendarFragment extends Fragment {
 
                 // Set onClickListener for the back button inside the AlertDialog
                 assignBackButton = addView.findViewById(R.id.exitAssign);
+                TextView assignDate = addView.findViewById(R.id.shiftDate);
+                String curDate = dateFormat.format(calendar.getTime()); // obtains current date
+                assignDate.setText(curDate);
+
                 assignBackButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -110,9 +115,6 @@ public class CalendarFragment extends Fragment {
                 });
             }
         });
-
-
-
 
 
         // Call the initial setup
