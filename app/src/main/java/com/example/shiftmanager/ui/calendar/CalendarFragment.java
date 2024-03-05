@@ -55,6 +55,8 @@ public class CalendarFragment extends Fragment {
 
     AutoCompleteTextView autoCompleteTextViewday1;
 
+    ImageButton assignBackButton;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -95,10 +97,23 @@ public class CalendarFragment extends Fragment {
                 View addView = LayoutInflater.from(parent.getContext()).inflate(R.layout.current_day_shits, null);
                 builder.setView(addView);
 
-                AlertDialog alertDialog = builder.create();
+                alertDialog = builder.create();
                 alertDialog.show();
+
+                // Set onClickListener for the back button inside the AlertDialog
+                assignBackButton = addView.findViewById(R.id.exitAssign);
+                assignBackButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.dismiss(); // Closes assign shifts page
+                    }
+                });
             }
         });
+
+
+
+
 
         // Call the initial setup
         setUpCalendar(requireContext());
