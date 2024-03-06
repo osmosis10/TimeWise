@@ -1,5 +1,6 @@
 package com.example.shiftmanager.ui.database;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -15,11 +16,13 @@ import java.util.Random;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "schedulingdb.db";
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 16;
     private static final String TABLE_EMPLOYEE = "employees";
     // Employee Table
     private static final String COL_EMPLOYEE_ID = "id";
-    private static final String COL_EMPLOYEE_NAME = "name";
+    private static final String COL_EMPLOYEE_FIRST_NAME = "first_name";
+    private static final String COL_EMPLOYEE_LAST_NAME = "last_name";
+    private static final String COL_EMPLOYEE_PREFERRED_NAME = "preferred_name";
     private static final String COL_EMPLOYEE_PHONE = "phone";
     private static final String COL_EMPLOYEE_EMAIL = "email";
     private static final String COL_EMPLOYEE_START_DATE = "start_date";
@@ -86,7 +89,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public String createEmployeeTable() {
         return "CREATE TABLE " + TABLE_EMPLOYEE + " (" +
                 COL_EMPLOYEE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                COL_EMPLOYEE_NAME + " TEXT NOT NULL," +
+                COL_EMPLOYEE_FIRST_NAME + " TEXT NOT NULL," +
+                COL_EMPLOYEE_LAST_NAME + " TEXT NOT NULL," +
+                COL_EMPLOYEE_PREFERRED_NAME + " TEXT NOT NULL," +
                 COL_EMPLOYEE_PHONE + " TEXT NOT NULL," +
                 COL_EMPLOYEE_EMAIL + " TEXT NOT NULL," +
                 COL_EMPLOYEE_START_DATE + " DATE," +
@@ -124,7 +129,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ")";
     }
 
-    public long insertEmployee(String name, String phone, String email, String startdate,
+    public long insertEmployee(String first_name, String last_name, String preferred_name,
+                               String phone, String email, String startdate,
                                boolean mondayMorning, boolean mondayAfternoon,
                                boolean tuesdayMorning, boolean tuesdayAfternoon, boolean wednesdayMorning,
                                boolean wednesdayAfternoon, boolean thursdayMorning, boolean thursdayAfternoon,
@@ -132,7 +138,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                boolean sundayFullday, int trained) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues data = new ContentValues();
-        data.put(COL_EMPLOYEE_NAME, name);
+        data.put(COL_EMPLOYEE_FIRST_NAME, first_name);
+        data.put(COL_EMPLOYEE_LAST_NAME, last_name);
+        data.put(COL_EMPLOYEE_PREFERRED_NAME, preferred_name);
         data.put(COL_EMPLOYEE_PHONE, phone);
         data.put(COL_EMPLOYEE_EMAIL, email);
         data.put(COL_EMPLOYEE_START_DATE, startdate);
@@ -212,6 +220,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void insertRandomEmployees() {
         ArrayList<String> firstNames = new ArrayList<>();
         ArrayList<String> lastNames = new ArrayList<>();
+        ArrayList<String> preferredNames = new ArrayList<>();
         List<String> fNames = Arrays.asList("Bob", "Samantha", "Jerry",
                                             "John", "Daniel", "Lisa",
                                             "Perry", "Frank", "Brock",
@@ -220,18 +229,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Johnson", "Pickles", "Brown",
                 "Pickering", "Rutherford", "Hamilton",
                 "La");
+
+        List<String> pNames = Arrays.asList("Bob", "Sam", "Speedy",
+                "Fire", "Richard", "Steve",
+                "Plank", "Mote", "Beaver",
+                "Lem");
         Random rand = new Random();
 
         firstNames.addAll(fNames);
         lastNames.addAll(lNames);
+        preferredNames.addAll(pNames);
 
         for (int i = 0; i < 10; i++) {
             String randomFirstName = firstNames.get(rand.nextInt(10));
             String randomLastName = lastNames.get(rand.nextInt(10));
-            String name = randomFirstName + " " + randomLastName;
+            String randomPreferredName = preferredNames.get(rand.nextInt(10));
+            String first_name = randomFirstName;
+            String last_name = randomLastName;
+            String preferred_name = randomPreferredName;
             int num = rand.nextInt(2);
             boolean randBool = rand.nextBoolean();
-            insertEmployee(name ,"780-292-2020", "example@email.com", "10-02-2024",
+            insertEmployee(first_name, last_name, preferred_name,
+                    "780-292-2020", "example@email.com", "10-02-2024",
                     randBool, randBool, randBool, randBool,
                     randBool, randBool,randBool,randBool,randBool,
                     randBool,randBool, randBool, num);
@@ -247,7 +266,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = db.query(
                 TABLE_EMPLOYEE,
-                new String[]{COL_EMPLOYEE_NAME},
+                new String[]{COL_EMPLOYEE_FIRST_NAME, COL_EMPLOYEE_LAST_NAME},
                 null,
                 null,
                 null,
@@ -256,21 +275,146 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         );
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                int columnIndex = cursor.getColumnIndex(COL_EMPLOYEE_NAME);
-                if (columnIndex != -1) {
-                    String name = cursor.getString(columnIndex);
-                    employeeNames.add(name);
+                int firstNameIndex = cursor.getColumnIndex(COL_EMPLOYEE_FIRST_NAME);
+                int lastNameIndex = cursor.getColumnIndex(COL_EMPLOYEE_LAST_NAME);
+                if (firstNameIndex != -1 && lastNameIndex != -1) {
+                    String first_name = cursor.getString(firstNameIndex);
+                    String last_name = cursor.getString(lastNameIndex);
+                    String full_name = first_name + " " + last_name;
+
+                    Log.d("EmployeeNames", "Adding employee name: " + full_name);
+                    employeeNames.add(full_name);
                 }
             } while (cursor.moveToNext());
             cursor.close();
         }
+
         return employeeNames;
+    }
+    public List<String> getAllEmployeePreferredNames() {
+        List<String> employeeNames = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.query(
+                TABLE_EMPLOYEE,
+                new String[]{COL_EMPLOYEE_PREFERRED_NAME},
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                int preferredNameIndex = cursor.getColumnIndex(COL_EMPLOYEE_PREFERRED_NAME);
+                if (preferredNameIndex != -1) {
+                    String preferred_name = cursor.getString(preferredNameIndex);
+
+
+                    Log.d("EmployeeNames", "Adding employee name: " + preferred_name);
+                    employeeNames.add(preferred_name);
+                }
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        return employeeNames;
+    }
+
+    /*
+    This returns the preferredName + highestSuffix
+    So if a preffered name John3 exists, this would return John4 if the input was John
+     */
+    public String getUniquePreferredName(String preferredName) {
+        SQLiteDatabase db = getWritableDatabase();
+        String uniquePreferredName = preferredName;
+
+        if (isPreferredNameExists(preferredName)) {
+            int highestSuffix = getHighestSuffix(preferredName);
+
+            int suffix = highestSuffix + 1;
+
+            uniquePreferredName = preferredName + suffix;
+        }
+        Log.d(uniquePreferredName, "Unique Name: " + uniquePreferredName);
+        return uniquePreferredName;
+    }
+    /*
+    This gets the current highest suffix used in the preferred names of TABLE_EMPLOYEE
+    So if we have John, John2, John3 in the preferred names column, and we are checking the name
+    John, we would get the suffix 4 and return it as John, John2 and John3 exist.
+     */
+    public int getHighestSuffix(String preferredName) {
+        SQLiteDatabase db = getReadableDatabase();
+        int highestSuffix = 0;
+
+        String[] columns = {COL_EMPLOYEE_PREFERRED_NAME};
+
+        // Like is used for pattern matching
+        String selection = COL_EMPLOYEE_PREFERRED_NAME + " LIKE ?";
+        // % is a wildcard so we're looking for any names that start with preferred names
+        // and any sequence of characters after that
+        String[] selectionArgs = {preferredName + "%"};
+
+        Cursor cursor = db.query(
+                TABLE_EMPLOYEE, // Table name
+                columns,        // columns to get
+                selection,      // where caluse
+                selectionArgs,  // values for the where clause placeholders in our case ?
+                null,           // Group by
+                null,           // Having
+                COL_EMPLOYEE_PREFERRED_NAME + " ASC" // order by Ascending e.g apple, bee, car
+        );
+
+        if (cursor != null && cursor.moveToFirst()) {
+            @SuppressLint("Range") String lastPreferredName = cursor.getString(cursor.getColumnIndex(COL_EMPLOYEE_PREFERRED_NAME));
+
+            String suffixStr = lastPreferredName.substring(preferredName.length());
+            try {
+                highestSuffix = Integer.parseInt(suffixStr);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                highestSuffix = 0;
+            }
+            cursor.close();
+        }
+        return highestSuffix;
+    }
+    /*
+    Checks to see if the a name exists within the TABLE_EMPLOYEE database
+    Uses: in add_employee used to determine if we should increment or add a suffix
+    to a preferred name or first_name that is used as the preferred name
+     */
+    public boolean isPreferredNameExists(String preferredName) {
+        SQLiteDatabase db = getReadableDatabase();
+        boolean preferredNameExists = false;
+
+        String[] columns = {COL_EMPLOYEE_ID};
+
+        String selection = COL_EMPLOYEE_PREFERRED_NAME + " =?";
+        String[] selectionArgs = {preferredName};
+
+        Cursor cursor = db.query(
+                TABLE_EMPLOYEE,
+                columns,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
+        if (cursor != null && cursor.moveToFirst()) {
+            preferredNameExists = true;
+            cursor.close();
+        }
+        return preferredNameExists;
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS employees");
-        db.execSQL("DROP TABLE IF EXISTS shifts");
-        db.execSQL("DROP TABLE IF EXISTS daily_assignments");
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_EMPLOYEE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SHIFT);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_DAILY_ASSIGNMENTS);
         onCreate(db);
     }
 }
