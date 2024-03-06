@@ -43,6 +43,11 @@ public class EmployeesFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         dbHelper = new DatabaseHelper(requireContext());
+        // you can uncomment the next two lines to remove all employees and populate
+        // with 10 random employees, just remember to comment them out again and restart the
+        // emulator once you run the first time
+        //dbHelper.removeAllEmployees();
+        //dbHelper.insertRandomEmployees();
         /*
         employeesViewModel = new ViewModelProvider(this).get(EmployeesViewModel.class);
         employeesViewModel.getCleanAndPopulateComplete().observe(this, cleanAndPopulateCompleted -> {
@@ -61,7 +66,9 @@ public class EmployeesFragment extends Fragment {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         // Get the employee name from the intent
                         // We retrieve everything that makes up an employee from intent
-                        String employeeName = result.getData().getStringExtra("employeeName");
+                        String employeeFirstName = result.getData().getStringExtra("employeeFirstName");
+                        String employeeLastName = result.getData().getStringExtra("employeeLastName");
+                        String employeePreferredName = result.getData().getStringExtra("employeePreferredName");
                         String employeePhone = result.getData().getStringExtra("employeePhone");
                         String employeeEmail = result.getData().getStringExtra("employeeEmail");
                         String employeeStartDate = result.getData().getStringExtra("employeeStartDate");
@@ -81,7 +88,8 @@ public class EmployeesFragment extends Fragment {
                         // Update the UI with the employee name
                         //addEmployeeNameToUI(employeeName);
                         // Save our employee to the database
-                        saveEmployeeToDB(employeeName, employeePhone, employeeEmail, employeeStartDate,
+                        saveEmployeeToDB(employeeFirstName, employeeLastName, employeePreferredName,
+                                        employeePhone, employeeEmail, employeeStartDate,
                                         mondayMorning, mondayAfternoon, tuesdayMorning, tuesdayAfternoon,
                                         wednesdayMorning, wednesdayAfternoon, thursdayMorning, thursdayAfternoon,
                                         fridayMorning, fridayAfternoon, saturdayFullday, sundayFullday, 0);
@@ -93,14 +101,17 @@ public class EmployeesFragment extends Fragment {
     /*
     Insert the employee into our database
      */
-    private void saveEmployeeToDB(String employeeName, String employeePhone, String employeeEmail,
+    private void saveEmployeeToDB(String employeeFirstName, String employeeLastName, String employeePreferredName,
+                                  String employeePhone, String employeeEmail,
                                   String employeeStartDate, boolean mondayMorning, boolean mondayAfternoon,
                                   boolean tuesdayMorning, boolean tuesdayAfternoon, boolean wednesdayMorning,
                                   boolean wednesdayAfternoon, boolean thursdayMorning, boolean thursdayAfternoon,
                                   boolean fridayMorning, boolean fridayAfternoon, boolean saturdayFullday,
                                   boolean sundayFullday, int trained) {
         //dbHelper = new DatabaseHelper(requireContext());
-        dbHelper.insertEmployee(employeeName,
+        dbHelper.insertEmployee(employeeFirstName,
+                                employeeLastName,
+                                employeePreferredName,
                                 employeePhone,
                                 employeeEmail,
                                 employeeStartDate,
@@ -111,7 +122,7 @@ public class EmployeesFragment extends Fragment {
                                 fridayMorning, fridayAfternoon,
                                 saturdayFullday, sundayFullday, trained);
 
-        addEmployeeNameToUI(employeeName);
+        addEmployeeNameToUI(employeePreferredName);
     }
 
     @Override
@@ -134,7 +145,8 @@ public class EmployeesFragment extends Fragment {
     calls addEmployeeToUI in order to display names that are already in the db
      */
     private void updateEmployeeNamesUI() {
-        List<String> employeeNames = dbHelper.getAllEmployeeNames();
+        //List<String> employeeNames = dbHelper.getAllEmployeeNames();
+        List<String> employeeNames = dbHelper.getAllEmployeePreferredNames();
 
         for (String employeeName : employeeNames) {
             if (!isEmployeeNameInUI(employeeName)) {
@@ -168,7 +180,7 @@ public class EmployeesFragment extends Fragment {
         // Container to hold both the employee name and imagebutton
         LinearLayout nameContainer = new LinearLayout(getContext());
         nameContainer.setOrientation(LinearLayout.HORIZONTAL);
-        nameContainer.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.rounded_background));
+        nameContainer.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.squared_background));
 
         TextView employeeNameView = new TextView(getContext());
         employeeNameView.setText(employeeName);

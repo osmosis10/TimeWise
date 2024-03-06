@@ -51,22 +51,60 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/AddEmployeeName"
-                android:layout_width="86dp"
+                android:id="@+id/AddEmployeeFirstName"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Name *"
+                android:text="First Name *"
                 android:textColor="#000000"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:translationX="25px" />
 
             <EditText
-                android:id="@+id/AddEmployeeNameInput"
+                android:id="@+id/AddEmployeeFirstNameInput"
                 android:layout_width="386dp"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
                 android:ems="10"
+                android:hint="Bobby"
                 android:inputType="text"
-                android:hint="Bob Bobbert"
+                android:translationX="25px" />
+
+            <TextView
+                android:id="@+id/AddEmployeeLastName"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="Last Name *"
+                android:textColor="#000000"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:translationX="25px" />
+
+            <EditText
+                android:id="@+id/AddEmployeeLastNameInput"
+                android:layout_width="386dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Bobbert"
+                android:inputType="text"
+                android:translationX="25px" />
+
+            <TextView
+                android:id="@+id/AddEmployeePreferredName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Preferred Name"
+                android:textColor="#000000"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:translationX="25px" />
+
+            <EditText
+                android:id="@+id/AddEmployeePreferredNameInput"
+                android:layout_width="386dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Bob"
+                android:inputType="text"
                 android:translationX="25px" />
 
             <TextView
