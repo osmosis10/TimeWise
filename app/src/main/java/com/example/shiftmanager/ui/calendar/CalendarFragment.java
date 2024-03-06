@@ -38,7 +38,7 @@ public class CalendarFragment extends Fragment {
     TextView currentDate;
     GridView gridView;
 
-    private static final int MAX_CALENDAR_DAYS = 42;
+    private static final int MAX_CALENDAR_DAYS = 36;
 
     // Initializes instance of a calendar with local date
     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
