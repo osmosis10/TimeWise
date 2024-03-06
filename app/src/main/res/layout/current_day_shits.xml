@@ -19,7 +19,7 @@
             android:gravity="center"
             android:layout_marginTop="4dp"
             android:text="Assign Shift"
-            android:id="@+id/currentDate"
+            android:id="@+id/title"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -43,6 +43,7 @@
             android:gravity="center"
             android:text="Date"
             android:textColor="@color/white"
+            android:id="@+id/shiftDate"
             android:layout_marginTop="4dp"
             android:layout_weight="1"
             android:textStyle="bold">

@@ -38,13 +38,14 @@ public class CalendarFragment extends Fragment {
     TextView currentDate;
     GridView gridView;
 
-    private static final int MAX_CALENDAR_DAYS = 42;
+    private static final int MAX_CALENDAR_DAYS = 36;
 
     // Initializes instance of a calendar with local date
     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
     List<Date> dates = new ArrayList<>();
     List<Events> eventsList = new ArrayList<>();
 
+    SimpleDateFormat dayFormat =  new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
     SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
     SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM", Locale.ENGLISH);
     SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy", Locale.ENGLISH);
@@ -54,6 +55,8 @@ public class CalendarFragment extends Fragment {
     AlertDialog alertDialog;
 
     AutoCompleteTextView autoCompleteTextViewday1;
+
+    ImageButton assignBackButton;
 
 
     @Override
@@ -95,10 +98,24 @@ public class CalendarFragment extends Fragment {
                 View addView = LayoutInflater.from(parent.getContext()).inflate(R.layout.current_day_shits, null);
                 builder.setView(addView);
 
-                AlertDialog alertDialog = builder.create();
+                alertDialog = builder.create();
                 alertDialog.show();
+
+                // Set onClickListener for the back button inside the AlertDialog
+                assignBackButton = addView.findViewById(R.id.exitAssign);
+                TextView assignDate = addView.findViewById(R.id.shiftDate);
+                String curDate = dateFormat.format(calendar.getTime()); // obtains current date
+                assignDate.setText(curDate);
+
+                assignBackButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.dismiss(); // Closes assign shifts page
+                    }
+                });
             }
         });
+
 
         // Call the initial setup
         setUpCalendar(requireContext());
