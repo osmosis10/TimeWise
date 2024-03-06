@@ -2,6 +2,7 @@ package com.example.shiftmanager.ui.employees;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.Image;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -21,11 +22,16 @@ import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.shiftmanager.R;
 import com.example.shiftmanager.databinding.FragmentEmployeesBinding;
+import com.example.shiftmanager.ui.database.DatabaseHelper;
 
 public class addEmployee extends AppCompatActivity {
+    private DatabaseHelper dbHelper;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        dbHelper = new DatabaseHelper(addEmployee.this);
+
         setContentView(R.layout.add_employee);
 
         EmployeesViewModel employeesViewModel = new ViewModelProvider(this).get(EmployeesViewModel.class);
@@ -59,7 +65,19 @@ public class addEmployee extends AppCompatActivity {
                 }
 
                 // Employee information
-                String name = ((EditText) findViewById(R.id.AddEmployeeNameInput)).getText().toString();
+                String first_name = ((EditText) findViewById(R.id.AddEmployeeFirstNameInput)).getText().toString();
+                String last_name = ((EditText) findViewById(R.id.AddEmployeeLastNameInput)).getText().toString();
+                String preferred_name = ((EditText) findViewById(R.id.AddEmployeePreferredNameInput)).getText().toString();
+
+                // Check if the preferred name input is empty
+                if (preferred_name.isEmpty()) {
+                    // If its empty assign the first name as preferred + suffix if needed
+                    preferred_name = dbHelper.getUniquePreferredName(first_name);
+                } else {
+                    // If its not empty, still check if there are similar names in the db
+                    preferred_name = dbHelper.getUniquePreferredName(preferred_name);
+                }
+
                 String phone = ((EditText) findViewById(R.id.AddEmployeePhoneInput)).getText().toString();
                 String email = ((EditText) findViewById(R.id.AddEmployeeEmailInput)).getText().toString();
                 String startDate = ((EditText) findViewById(R.id.AddEmployeeStartDateInput)).getText().toString();
@@ -79,7 +97,8 @@ public class addEmployee extends AppCompatActivity {
                 boolean sundayFullday = ((CheckBox) findViewById(R.id.AddEmployeeSundayFulldayCheckbox)).isChecked();
 
                 // Create the Employee object
-                Employee newEmployee = new Employee(name, phone, email, startDate,
+                Employee newEmployee = new Employee(first_name, last_name, preferred_name,
+                        phone, email, startDate,
                         mondayMorning, mondayAfternoon,
                         tuesdayMorning, tuesdayAfternoon,
                         wednesdayMorning, wednesdayAfternoon,
@@ -88,7 +107,9 @@ public class addEmployee extends AppCompatActivity {
                         saturdayFullday, sundayFullday);
 
                 Intent data = new Intent();
-                data.putExtra("employeeName", name);
+                data.putExtra("employeeFirstName", first_name);
+                data.putExtra("employeeLastName", last_name);
+                data.putExtra("employeePreferredName", preferred_name);
                 // Added the rest of the employee information to pass to another instance
                 // Used to create an employee and insert into db
                 data.putExtra("employeePhone", phone);
@@ -116,13 +137,17 @@ public class addEmployee extends AppCompatActivity {
 
     }
 
+
+
     private boolean validateForm() {
-        EditText nameInput = findViewById(R.id.AddEmployeeNameInput);
+        EditText firstNameInput = findViewById(R.id.AddEmployeeFirstNameInput);
+        EditText lastNameInput = findViewById(R.id.AddEmployeeLastNameInput);
         EditText phoneInput = findViewById(R.id.AddEmployeePhoneInput);
         EditText emailInput = findViewById(R.id.AddEmployeeStartDateInput);
 
         // Check if any required field is empty
-        if (TextUtils.isEmpty(nameInput.getText().toString().trim()) ||
+        if (TextUtils.isEmpty(firstNameInput.getText().toString().trim()) ||
+                TextUtils.isEmpty(lastNameInput.getText().toString().trim()) ||
                 TextUtils.isEmpty(phoneInput.getText().toString().trim()) ||
                 TextUtils.isEmpty(emailInput.getText().toString().trim())) {
 
