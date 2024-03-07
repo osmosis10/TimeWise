@@ -59,10 +59,13 @@ public class GridAdapter extends ArrayAdapter {
         // sets color of current month days BLACK
         if (displayMonth == currentMonth && displayYear == currentYear) {
             view.setBackgroundColor(getContext().getResources().getColor(R.color.black));
+            view.setClickable(false); // Clickable even thought it seems like it should be
+
         }
         //sets color of previous and next month days to GREY
         else {
             view.setBackgroundColor(Color.parseColor("#808080"));
+            view.setClickable(true); // Not clickable even thought it seems like it should be
         }
         // Obtains day numbers and set's it to each cell respectively
         TextView dayNumber = view.findViewById(R.id.calendarDay);
