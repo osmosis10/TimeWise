@@ -45,7 +45,7 @@ public class CalendarFragment extends Fragment {
     List<Date> dates = new ArrayList<>();
     List<Events> eventsList = new ArrayList<>();
 
-    SimpleDateFormat dayFormat =  new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
+    SimpleDateFormat dayFormat =  new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
     SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
     SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM", Locale.ENGLISH);
     SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy", Locale.ENGLISH);
@@ -101,12 +101,23 @@ public class CalendarFragment extends Fragment {
                 alertDialog = builder.create();
                 alertDialog.show();
 
-                // Set onClickListener for the back button inside the AlertDialog
-                assignBackButton = addView.findViewById(R.id.exitAssign);
-                TextView assignDate = addView.findViewById(R.id.shiftDate);
-                String curDate = dateFormat.format(calendar.getTime()); // obtains current date
-                assignDate.setText(curDate);
 
+
+                TextView assignDate = addView.findViewById(R.id.shiftDate);
+
+                // Obtaining clicked cell day
+                TextView day = view.findViewById(R.id.calendarDay);
+                CharSequence charDay = day.getText();
+                String dayNum = charDay.toString();
+
+                String curMonth = monthFormat.format(calendar.getTime()); // obtains current year
+                String curYear = yearFormat.format(calendar.getTime()); // obtains current month
+
+                // display's shifts date
+                assignDate.setText(curMonth + " " + dayNum + ", " + curYear);
+
+                assignBackButton = addView.findViewById(R.id.exitAssign);
+                // Set onClickListener for the back button inside the AlertDialog
                 assignBackButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
