@@ -23,13 +23,15 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <SearchView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:iconifiedByDefault="false">
+                    android:iconifiedByDefault="false"
+                    android:visibility="gone">
 
                 </SearchView>
 
@@ -38,12 +40,14 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_gravity="center_vertical"
-                    android:translationX="100dp">
+                    android:translationX="100dp"
+                    android:visibility="gone">
 
 
                     <CheckBox
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:visibility="gone">
 
                     </CheckBox>
 
@@ -51,13 +55,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-black"
-                        android:text="Trained">
+                        android:text="Trained"
+                        android:visibility="gone">
 
                     </TextView>
 
                     <CheckBox
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:visibility="gone">
 
                     </CheckBox>
 
@@ -65,7 +71,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-black"
-                        android:text="Untrained">
+                        android:text="Untrained"
+                        android:visibility="gone">
+
 
                     </TextView>
 
@@ -79,7 +87,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="75dp"
                 android:orientation="horizontal"
-                android:visibility="gone">
+                android:visibility="visible">
 
 
                 <TextView
