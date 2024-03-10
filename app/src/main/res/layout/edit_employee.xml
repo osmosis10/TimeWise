@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/EditEmployeeText"
+                android:layout_width="146dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Edit Employee"
+                android:textColor="#000000"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:translationX="25px"
+                android:translationY="25px" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/EditEmployeeCloseButton"
+                android:layout_width="2dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:background="#00FFFFFF"
+                android:scaleType="fitCenter"
+                android:src="@drawable/close_icon"
+                android:translationX="-25px"
+                android:contentDescription="close"
+                android:translationY="30px" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/EditEmployeeFirstName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="First Name"
+                android:textColor="#000000"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:translationX="25px" />
+
+            <EditText
+                android:id="@+id/EditEmployeeFirstNameInput"
+                android:layout_width="386dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Bobby"
+                android:inputType="text"
+                android:translationX="25px" />
+
+            <TextView
+                android:id="@+id/EditEmployeeLastName"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="Last Name"
+                android:textColor="#000000"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:translationX="25px" />
+
+            <EditText
+                android:id="@+id/EditEmployeeLastNameInput"
+                android:layout_width="386dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Bobbert"
+                android:inputType="text"
+                android:translationX="25px" />
+
+            <TextView
+                android:id="@+id/EditEmployeePreferredName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Preferred Name"
+                android:textColor="#000000"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:translationX="25px" />
+
+            <EditText
+                android:id="@+id/EditEmployeePreferredNameInput"
+                android:layout_width="386dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Bob"
+                android:inputType="text"
+                android:translationX="25px" />
+
+            <TextView
+                android:id="@+id/EditEmployeePhone"
+                android:layout_width="86dp"
+                android:layout_height="wrap_content"
+                android:text="Phone"
+                android:textColor="#000000"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:translationX="25px" />
+
+            <EditText
+                android:id="@+id/EditEmployeePhoneInput"
+                android:layout_width="386dp"
+                android:layout_height="48dp"
+                android:ems="10"
+                android:inputType="phone"
+                android:hint="123-456-7890"
+                android:translationX="25px" />
+
+            <TextView
+                android:id="@+id/EditEmployeeEmail"
+                android:layout_width="86dp"
+                android:layout_height="wrap_content"
+                android:text="Email"
+                android:textColor="#000000"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:translationX="25px" />
+
+            <EditText
+                android:id="@+id/EditEmployeeEmailInput"
+                android:layout_width="386dp"
+                android:layout_height="48dp"
+                android:ems="10"
+                android:inputType="textEmailAddress"
+                android:hint="example@email.com"
+                android:translationX="25px" />
+
+            <TextView
+                android:id="@+id/EditEmployeeAvailability"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Availability"
+                android:textColor="#000000"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:translationX="25px" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:translationY="10px">
+
+                <TextView
+                    android:id="@+id/EditMondayAvailabilitytextView"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:text="Monday"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:translationX="25px" />
+
+                <CheckBox
+                    android:id="@+id/EditEmployeeMondayMorningCheckbox"
+                    android:layout_width="109dp"
+                    android:layout_height="wrap_content"
+                    android:text="Morning"
+                    android:translationX="25px" />
+
+                <CheckBox
+                    android:id="@+id/EditEmployeeMondayAfternoonCheckbox"
+                    android:layout_width="108dp"
+                    android:layout_height="wrap_content"
+                    android:text="Afternoon"
+                    android:translationX="25px" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/EditTuesdayAvailabilitytextView"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:text="Tuesday"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:translationX="25px" />
+
+                <CheckBox
+                    android:id="@+id/EditEmployeeTuesdayMorningCheckbox"
+                    android:layout_width="109dp"
+                    android:layout_height="wrap_content"
+                    android:text="Morning"
+                    android:translationX="25px" />
+
+                <CheckBox
+                    android:id="@+id/EditEmployeeTuesdayAfternoonCheckbox"
+                    android:layout_width="108dp"
+                    android:layout_height="wrap_content"
+                    android:text="Afternoon"
+                    android:translationX="25px" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/EditWednesdayAvailabilitytextView"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:text="Wednesday"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:translationX="25px" />
+
+                <CheckBox
+                    android:id="@+id/EditEmployeeWednesdayMorningCheckbox"
+                    android:layout_width="109dp"
+                    android:layout_height="wrap_content"
+                    android:text="Morning"
+                    android:translationX="25px" />
+
+                <CheckBox
+                    android:id="@+id/EditEmployeeWednesdayAfternoonCheckbox"
+                    android:layout_width="108dp"
+                    android:layout_height="wrap_content"
+                    android:text="Afternoon"
+                    android:translationX="25px" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/EditThursdayAvailabilitytextView"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:text="Thursday"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:translationX="25px" />
+
+                <CheckBox
+                    android:id="@+id/EditEmployeeThursdayMorningCheckbox"
+                    android:layout_width="109dp"
+                    android:layout_height="wrap_content"
+                    android:text="Morning"
+                    android:translationX="25px" />
+
+                <CheckBox
+                    android:id="@+id/EditEmployeeThursdayAfternoonCheckbox"
+                    android:layout_width="108dp"
+                    android:layout_height="wrap_content"
+                    android:text="Afternoon"
+                    android:translationX="25px" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/EditFridayAvailabilitytextView"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:text="Friday"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:translationX="25px" />
+
+                <CheckBox
+                    android:id="@+id/EditEmployeeFridayMorningCheckbox"
+                    android:layout_width="109dp"
+                    android:layout_height="wrap_content"
+                    android:text="Morning"
+                    android:translationX="25px" />
+
+                <CheckBox
+                    android:id="@+id/EditEmployeeFridayAfternoonCheckbox"
+                    android:layout_width="108dp"
+                    android:layout_height="wrap_content"
+                    android:text="Afternoon"
+                    android:translationX="25px" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/EditSaturdayAvailabilitytextView"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:text="Saturday"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:translationX="25px" />
+
+                <CheckBox
+                    android:id="@+id/EditEmployeeSatrudayFulldayCheckbox"
+                    android:layout_width="109dp"
+                    android:layout_height="wrap_content"
+                    android:text="Full-day"
+                    android:translationX="25px" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/EditSundayAvailabilitytextView"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:text="Sunday"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:translationX="25px" />
+
+                <CheckBox
+                    android:id="@+id/EditEmployeeSundayFulldayCheckbox"
+                    android:layout_width="109dp"
+                    android:layout_height="wrap_content"
+                    android:text="Full-day"
+                    android:translationX="25px" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="63dp"
+                android:gravity="center|center_vertical"
+                android:orientation="horizontal"
+                android:translationY="10px">
+
+                <Button
+                    android:id="@+id/EditEmployeeAddButton"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#000000"
+                    android:text="Confirm"
+                    android:textAlignment="center"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

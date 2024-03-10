@@ -241,7 +241,9 @@ public class EmployeesFragment extends Fragment {
         editButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-
+                Intent editintent = new Intent(getActivity(), editEmployee.class);
+                editintent.putExtra("preferredName", employeeName);
+                addEmployeeLauncher.launch(editintent);
             }
 
         });

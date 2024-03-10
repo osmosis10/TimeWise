@@ -417,4 +417,127 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_DAILY_ASSIGNMENTS);
         onCreate(db);
     }
+
+    public List<String> getEmployeeInformation(String employeePreferredName) {
+        SQLiteDatabase db = getReadableDatabase();
+        List<String> employeeInformation = new ArrayList<>();
+
+        // Define the columns to be fetched
+        String[] projection = {
+                COL_EMPLOYEE_FIRST_NAME,
+                COL_EMPLOYEE_LAST_NAME,
+                COL_EMPLOYEE_PREFERRED_NAME,
+                COL_EMPLOYEE_PHONE,
+                COL_EMPLOYEE_EMAIL,
+                COL_EMPLOYEE_START_DATE,
+                COL_EMPLOYEE_MONDAY_MORNING,
+                COL_EMPLOYEE_MONDAY_AFTERNOON,
+                COL_EMPLOYEE_TUESDAY_MORNING,
+                COL_EMPLOYEE_TUESDAY_AFTERNOON,
+                COL_EMPLOYEE_WEDNESDAY_MORNING,
+                COL_EMPLOYEE_WEDNESDAY_AFTERNOON,
+                COL_EMPLOYEE_THURSDAY_MORNING,
+                COL_EMPLOYEE_THURSDAY_AFTERNOON,
+                COL_EMPLOYEE_FRIDAY_MORNING,
+                COL_EMPLOYEE_FRIDAY_AFTERNOON,
+                COL_EMPLOYEE_SATURDAY,
+                COL_EMPLOYEE_SUNDAY,
+                COL_EMPLOYEE_TRAINED
+        };
+
+        // Specify the criteria for selection
+        String selection = COL_EMPLOYEE_PREFERRED_NAME + " = ?";
+
+        String[] selectionArgs = { employeePreferredName };
+
+        // Perform the query
+        Cursor cursor = db.query(
+                TABLE_EMPLOYEE,   // The table to query
+                projection,       // The columns to return
+                selection,        // The columns for the WHERE clause
+                selectionArgs,    // The values for the WHERE clause
+                null,             // don't group the rows
+                null,             // don't filter by row groups
+                null              // The sort order
+        );
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                // Get the employee information and add it to the employeeInformation list
+                employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_FIRST_NAME)));
+                employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_LAST_NAME)));
+                employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_PREFERRED_NAME)));
+                employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_PHONE)));
+                employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_EMAIL)));
+                employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_START_DATE)));
+                employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_MONDAY_MORNING)));
+                employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_MONDAY_AFTERNOON)));
+                employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_TUESDAY_MORNING)));
+                employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_TUESDAY_AFTERNOON)));
+                employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_WEDNESDAY_MORNING)));
+                employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_WEDNESDAY_AFTERNOON)));
+                employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_THURSDAY_MORNING)));
+                employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_THURSDAY_AFTERNOON)));
+                employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_FRIDAY_MORNING)));
+                employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_FRIDAY_AFTERNOON)));
+                employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_SATURDAY)));
+                employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_SUNDAY)));
+                employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_TRAINED)));
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        db.close(); // Close the database connection
+        return employeeInformation;
+
+    }
+
+    public int updateEmployeeInformation(String employeePreferredName,
+                                         String firstName, String lastName,
+                                         String preferredName, String phone, String email,
+                                         boolean mondayMorning, boolean mondayAfternoon,
+                                         boolean tuesdayMorning, boolean tuesdayAfternoon,
+                                         boolean wednesdayMorning, boolean wednesdayAfternoon,
+                                         boolean thursdayMorning, boolean thursdayAfternoon,
+                                         boolean fridayMorning, boolean fridayAfternoon,
+                                         boolean saturday, boolean sunday,
+                                         int trained) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COL_EMPLOYEE_FIRST_NAME, firstName);
+        values.put(COL_EMPLOYEE_LAST_NAME, lastName);
+        values.put(COL_EMPLOYEE_PREFERRED_NAME, preferredName);
+        values.put(COL_EMPLOYEE_PHONE, phone);
+        values.put(COL_EMPLOYEE_EMAIL, email);
+        values.put(COL_EMPLOYEE_MONDAY_MORNING, mondayMorning);
+        values.put(COL_EMPLOYEE_MONDAY_AFTERNOON, mondayAfternoon);
+        values.put(COL_EMPLOYEE_TUESDAY_MORNING, tuesdayMorning);
+        values.put(COL_EMPLOYEE_TUESDAY_AFTERNOON, tuesdayAfternoon);
+        values.put(COL_EMPLOYEE_WEDNESDAY_MORNING, wednesdayMorning);
+        values.put(COL_EMPLOYEE_WEDNESDAY_AFTERNOON, wednesdayAfternoon);
+        values.put(COL_EMPLOYEE_THURSDAY_MORNING, thursdayMorning);
+        values.put(COL_EMPLOYEE_THURSDAY_AFTERNOON, thursdayAfternoon);
+        values.put(COL_EMPLOYEE_FRIDAY_MORNING, fridayMorning);
+        values.put(COL_EMPLOYEE_FRIDAY_AFTERNOON, fridayAfternoon);
+        values.put(COL_EMPLOYEE_SATURDAY, saturday);
+        values.put(COL_EMPLOYEE_SUNDAY, sunday);
+        values.put(COL_EMPLOYEE_TRAINED, trained);
+
+        // Define the criteria for selecting the correct record to update
+        String selection = COL_EMPLOYEE_PREFERRED_NAME + " = ?";
+        String[] selectionArgs = { employeePreferredName };
+
+        // Perform the update on the database
+        int count = db.update(
+                TABLE_EMPLOYEE,
+                values,
+                selection,
+                selectionArgs);
+
+        db.close(); // Close the database connection
+        return count; // Return the count of updated rows
+    }
+
+
 }
