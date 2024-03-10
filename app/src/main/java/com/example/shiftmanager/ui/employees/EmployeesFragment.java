@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
@@ -30,6 +31,7 @@ import com.example.shiftmanager.R;
 import com.example.shiftmanager.databinding.FragmentEmployeesBinding;
 import com.example.shiftmanager.ui.database.DatabaseHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EmployeesFragment extends Fragment {
@@ -40,6 +42,10 @@ public class EmployeesFragment extends Fragment {
     private ActivityResultLauncher<Intent> addEmployeeLauncher;
 
     private DatabaseHelper dbHelper;
+
+    private boolean isTrainedChecked = false;
+
+    private boolean isunTrainedChecked = false;
 
 
     @Override
@@ -152,29 +158,82 @@ public class EmployeesFragment extends Fragment {
             //binding.EmployeeLinearLayout.setVisibility(View.VISIBLE);
         });
 
+
+        binding.trainedCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                isTrainedChecked = isChecked;
+
+            }
+        });
+
+        binding.unTrainedCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                isunTrainedChecked = isChecked;
+                Log.d("untrained", "Value sire: " + isChecked);
+
+            }
+        });
+
+        // Update employee fragment with all employees in database
         binding.EmployeeSearchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                Log.d("Confirm", "User has pressed the button sire");
                 callSearch(query);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-
+                if (binding.SearchBarLinearLayout.getVisibility() == View.VISIBLE) {
+                    String[] columns = {"preferred_name"};
+                    String selection = null;
+                    List<String> selectionArgsList = new ArrayList<>();
+                    if (!newText.isEmpty() || isTrainedChecked || isunTrainedChecked) {
+                        if (!newText.isEmpty()) {
+                            selection = "preferred_name LIKE ?";
+                            //selectionArgs = new String[]{"%" + newText+ "%"};
+                            selectionArgsList.add("%" + newText + "%");
+                        }
+                        if (isTrainedChecked) {
+                            if (selection != null) {
+                                selection += " AND trained = ?";
+                            } else {
+                                selection = "trained = ?";
+                            }
+                            //selectionArgs = new String[]{"1"};
+                            selectionArgsList.add("0");
+                        }
+                        if (isunTrainedChecked) {
+                            if (selection != null) {
+                                selection += " AND trained = ?";
+                            } else {
+                                selection = "trained = ?";
+                            }
+                            //selectionArgs = new String[]{"0"};
+                            selectionArgsList.add("0");
+                        }
+                        String[] selectionArgs = selectionArgsList.toArray(new String[0]);
+                        updateEmployeeNamesUI(columns ,selection,selectionArgs,null,null,null);
+                    }
+                }
                 return false;
             }
 
+
             public void callSearch(String query) {
+
 
             }
 
         });
+        if (binding.EmployeeLinearLayout.getVisibility() == View.VISIBLE) {
+            String[] columns = {"preferred_name"};
+            updateEmployeeNamesUI(columns ,null,null,null,null,null);
+        }
 
-
-        // Update employee fragment with all employees in database
-
-        updateEmployeeNamesUI();
         return binding.getRoot();
     }
 
@@ -206,9 +265,12 @@ public class EmployeesFragment extends Fragment {
     If the employee name is already displayed it wont display them
     calls addEmployeeToUI in order to display names that are already in the db
      */
-    private void updateEmployeeNamesUI() {
+    private void updateEmployeeNamesUI(String[] columns, String selection, String[] selectionArgs,
+                                       String groupBy, String having, String orderBy) {
         //List<String> employeeNames = dbHelper.getAllEmployeeNames();
-        List<String> employeeNames = dbHelper.getAllEmployeePreferredNames();
+        // Remove all existing child views so we can cleanly repopulate
+        binding.EmployeeContainer.removeAllViews();
+        List<String> employeeNames = dbHelper.getAllEmployeePreferredNames(columns,selection,selectionArgs,groupBy,having,orderBy);
 
         for (String employeeName : employeeNames) {
             if (!isEmployeeNameInUI(employeeName)) {
@@ -307,6 +369,8 @@ public class EmployeesFragment extends Fragment {
             }
 
         });
+
+
 
         // We set the employee name and the image button in a container called nameContainer
         nameContainer.addView(employeeNameView);
