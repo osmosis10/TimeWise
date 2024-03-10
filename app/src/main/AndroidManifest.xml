@@ -24,6 +24,7 @@
         </activity>
         
         <activity android:name=".ui.employees.addEmployee"></activity>
+        <activity android:name=".ui.employees.editEmployee"></activity>
     </application>
 
 </manifest>
