@@ -84,7 +84,7 @@ public class EmployeesFragment extends Fragment {
                         boolean fridayAfternoon = result.getData().getBooleanExtra("fridayAfternoon", false);
                         boolean saturdayFullday = result.getData().getBooleanExtra("saturdayFullday", false);
                         boolean sundayFullday = result.getData().getBooleanExtra("sundayFullday", false);
-
+                        boolean trained = result.getData().getBooleanExtra("trained", false);
                         // Update the UI with the employee name
                         //addEmployeeNameToUI(employeeName);
                         // Save our employee to the database
@@ -92,7 +92,7 @@ public class EmployeesFragment extends Fragment {
                                         employeePhone, employeeEmail, employeeStartDate,
                                         mondayMorning, mondayAfternoon, tuesdayMorning, tuesdayAfternoon,
                                         wednesdayMorning, wednesdayAfternoon, thursdayMorning, thursdayAfternoon,
-                                        fridayMorning, fridayAfternoon, saturdayFullday, sundayFullday, 0);
+                                        fridayMorning, fridayAfternoon, saturdayFullday, sundayFullday, trained);
                     }
                 }
         );
@@ -107,7 +107,7 @@ public class EmployeesFragment extends Fragment {
                                   boolean tuesdayMorning, boolean tuesdayAfternoon, boolean wednesdayMorning,
                                   boolean wednesdayAfternoon, boolean thursdayMorning, boolean thursdayAfternoon,
                                   boolean fridayMorning, boolean fridayAfternoon, boolean saturdayFullday,
-                                  boolean sundayFullday, int trained) {
+                                  boolean sundayFullday, boolean trained) {
         //dbHelper = new DatabaseHelper(requireContext());
         dbHelper.insertEmployee(employeeFirstName,
                                 employeeLastName,

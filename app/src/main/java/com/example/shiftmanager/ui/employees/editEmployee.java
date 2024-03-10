@@ -92,8 +92,8 @@ public class editEmployee extends AppCompatActivity {
         CheckBox checkBoxSunday = findViewById(R.id.EditEmployeeSundayFulldayCheckbox);
         checkBoxSunday.setChecked("1".equals(employeeInformation.get(17)));
 
-        // Add Trained
-
+        CheckBox checkBoxTrained = findViewById(R.id.EditEmployeeTrainedCheckBox);
+        checkBoxTrained.setChecked("1".equals(employeeInformation.get(18)));
 //        TextView textViewLastName = findViewById(R.id.EditEmployeeLastNameInput);
 
 
@@ -146,7 +146,7 @@ public class editEmployee extends AppCompatActivity {
                 boolean fridayAfternoon = ((CheckBox) findViewById(R.id.EditEmployeeFridayAfternoonCheckbox)).isChecked();
                 boolean saturdayFullday = ((CheckBox) findViewById(R.id.EditEmployeeSatrudayFulldayCheckbox)).isChecked();
                 boolean sundayFullday = ((CheckBox) findViewById(R.id.EditEmployeeSundayFulldayCheckbox)).isChecked();
-                int trained = 1;
+                boolean trained = ((CheckBox) findViewById(R.id.EditEmployeeTrainedCheckBox)).isChecked();
 
                 dbHelper.updateEmployeeInformation(preferredName, first_name, last_name, preferred_name, phone, email,
                         mondayMorning, mondayAfternoon, tuesdayMorning, tuesdayAfternoon, wednesdayMorning,

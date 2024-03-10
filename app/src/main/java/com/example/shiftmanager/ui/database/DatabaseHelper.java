@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -135,7 +134,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                boolean tuesdayMorning, boolean tuesdayAfternoon, boolean wednesdayMorning,
                                boolean wednesdayAfternoon, boolean thursdayMorning, boolean thursdayAfternoon,
                                boolean fridayMorning, boolean fridayAfternoon, boolean saturdayFullday,
-                               boolean sundayFullday, int trained) {
+                               boolean sundayFullday, boolean trained) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues data = new ContentValues();
         data.put(COL_EMPLOYEE_FIRST_NAME, first_name);
@@ -247,13 +246,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String first_name = randomFirstName;
             String last_name = randomLastName;
             String preferred_name = randomPreferredName;
-            int num = rand.nextInt(2);
             boolean randBool = rand.nextBoolean();
             insertEmployee(first_name, last_name, preferred_name,
                     "780-292-2020", "example@email.com", "10-02-2024",
                     randBool, randBool, randBool, randBool,
                     randBool, randBool,randBool,randBool,randBool,
-                    randBool,randBool, randBool, num);
+                    randBool,randBool, randBool, randBool);
         }
 
     }
@@ -501,7 +499,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                          boolean thursdayMorning, boolean thursdayAfternoon,
                                          boolean fridayMorning, boolean fridayAfternoon,
                                          boolean saturday, boolean sunday,
-                                         int trained) {
+                                         boolean trained) {
         SQLiteDatabase db = getWritableDatabase();
 
         ContentValues values = new ContentValues();
