@@ -1,5 +1,7 @@
 package com.example.shiftmanager.ui.employees;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -37,6 +40,7 @@ public class EmployeesFragment extends Fragment {
     private ActivityResultLauncher<Intent> addEmployeeLauncher;
 
     private DatabaseHelper dbHelper;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -135,9 +139,67 @@ public class EmployeesFragment extends Fragment {
             addEmployeeLauncher.launch(intent);
         });
 
+        binding.EmployeeSearchIconButton.setOnClickListener(v -> {
+            slideIn(binding.SearchBarLinearLayout);
+            slideOut(binding.EmployeeLinearLayout);
+            //binding.SearchBarLinearLayout.setVisibility(View.VISIBLE);
+            //binding.EmployeeLinearLayout.setVisibility(View.GONE);
+        });
+        binding.EmployeeSearchBackIconButton.setOnClickListener(v -> {
+            slideIn(binding.EmployeeLinearLayout);
+            slideOut(binding.SearchBarLinearLayout);
+            //binding.SearchBarLinearLayout.setVisibility(View.GONE);
+            //binding.EmployeeLinearLayout.setVisibility(View.VISIBLE);
+        });
+
+        binding.EmployeeSearchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                callSearch(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                return false;
+            }
+
+            public void callSearch(String query) {
+
+            }
+
+        });
+
+
         // Update employee fragment with all employees in database
+
         updateEmployeeNamesUI();
         return binding.getRoot();
+    }
+
+    private void slideIn(View view) {
+        view.setVisibility(View.VISIBLE);
+        ObjectAnimator slideIn = ObjectAnimator.ofFloat(view, "translationY", view.getHeight(), 0f);
+        slideIn.setDuration(500);
+
+        slideIn.start();
+    }
+    private void slideOut(View view) {
+        ObjectAnimator slideOut = ObjectAnimator.ofFloat(view, "translationY", 0f, view.getHeight());
+        slideOut.setDuration(500);
+
+        slideOut.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                view.setVisibility(View.GONE);
+                view.setTranslationY(0f);
+            }
+        });
+
+        slideOut.start();
+
+        view.setVisibility(View.VISIBLE);
     }
     /*
     Looks through db and queries for employee names
