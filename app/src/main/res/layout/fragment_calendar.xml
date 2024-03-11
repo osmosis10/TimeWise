@@ -131,13 +131,13 @@
     </LinearLayout>
 
     <GridView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/gridView"
-        android:numColumns="7">
+        android:numColumns="7"
+        android:background="@drawable/outline"
+        android:padding="8dp">
     </GridView>
-
-
 
 
 

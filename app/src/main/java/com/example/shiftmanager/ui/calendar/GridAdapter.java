@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,7 +23,7 @@ import java.util.List;
 public class GridAdapter extends ArrayAdapter {
     List<Date> dates;
     Calendar currentDate;
-
+    ImageView cellDay;
     List<Events> events;
     LayoutInflater inflater;
 
@@ -42,6 +43,8 @@ public class GridAdapter extends ArrayAdapter {
         Calendar dateCalendar = Calendar.getInstance();
         dateCalendar.setTime(monthDate);
 
+
+
         // assigns necessary data to required variables
         int dayNo = dateCalendar.get(Calendar.DAY_OF_MONTH);
         int displayMonth = dateCalendar.get(Calendar.MONTH) + 1;
@@ -55,6 +58,7 @@ public class GridAdapter extends ArrayAdapter {
         if (view == null) {
             // inflates
             view = inflater.inflate(R.layout.single_cell_layout, parent, false);
+            cellDay = view.findViewById(R.id.shiftStatus);
         }
         // sets color of current month days BLACK
         if (displayMonth == currentMonth && displayYear == currentYear) {
@@ -64,6 +68,7 @@ public class GridAdapter extends ArrayAdapter {
         }
         //sets color of previous and next month days to GREY
         else {
+            cellDay.setImageDrawable(null); // removes the icons from previous or next months
             view.setBackgroundColor(Color.parseColor("#808080"));
             view.setClickable(true); // Not clickable even thought it seems like it should be
         }
