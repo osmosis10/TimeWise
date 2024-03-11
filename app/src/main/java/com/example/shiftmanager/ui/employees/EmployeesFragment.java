@@ -45,7 +45,7 @@ public class EmployeesFragment extends Fragment {
 
     private boolean isTrainedChecked = false;
 
-    private boolean isunTrainedChecked = false;
+    private boolean isUntrainedChecked = false;
 
 
     @Override
@@ -163,6 +163,7 @@ public class EmployeesFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 isTrainedChecked = isChecked;
+                Log.d("trainedhcekbox", "onCheckedChanged: " + isChecked);
 
             }
         });
@@ -170,7 +171,7 @@ public class EmployeesFragment extends Fragment {
         binding.unTrainedCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                isunTrainedChecked = isChecked;
+                isUntrainedChecked = isChecked;
                 Log.d("untrained", "Value sire: " + isChecked);
 
             }
@@ -191,7 +192,7 @@ public class EmployeesFragment extends Fragment {
                     String[] columns = {"preferred_name"};
                     String selection = null;
                     List<String> selectionArgsList = new ArrayList<>();
-                    if (!newText.isEmpty() || isTrainedChecked || isunTrainedChecked) {
+                    if (!newText.isEmpty() || isTrainedChecked || isUntrainedChecked) {
                         if (!newText.isEmpty()) {
                             selection = "preferred_name LIKE ?";
                             //selectionArgs = new String[]{"%" + newText+ "%"};
@@ -199,6 +200,7 @@ public class EmployeesFragment extends Fragment {
                         }
                         if (isTrainedChecked) {
                             if (selection != null) {
+                                Log.d("trainedcheck", "Value sire: " + isTrainedChecked);
                                 selection += " AND trained = ?";
                             } else {
                                 selection = "trained = ?";
@@ -206,7 +208,7 @@ public class EmployeesFragment extends Fragment {
                             //selectionArgs = new String[]{"1"};
                             selectionArgsList.add("0");
                         }
-                        if (isunTrainedChecked) {
+                        if (isUntrainedChecked) {
                             if (selection != null) {
                                 selection += " AND trained = ?";
                             } else {
@@ -217,6 +219,8 @@ public class EmployeesFragment extends Fragment {
                         }
                         String[] selectionArgs = selectionArgsList.toArray(new String[0]);
                         updateEmployeeNamesUI(columns ,selection,selectionArgs,null,null,null);
+                    } else {
+                        updateEmployeeNamesUI(columns, null, null, null, null, null);
                     }
                 }
                 return false;
@@ -245,6 +249,7 @@ public class EmployeesFragment extends Fragment {
         slideIn.start();
     }
     private void slideOut(View view) {
+        binding.EmployeeSearchBar.setQuery("", false);
         ObjectAnimator slideOut = ObjectAnimator.ofFloat(view, "translationY", 0f, view.getHeight());
         slideOut.setDuration(500);
 
