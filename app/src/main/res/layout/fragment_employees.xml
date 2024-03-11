@@ -60,6 +60,7 @@
 
 
                     <CheckBox
+                        android:id="@+id/trainedCheckbox"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
@@ -74,6 +75,7 @@
                     </TextView>
 
                     <CheckBox
+                        android:id="@+id/unTrainedCheckbox"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 

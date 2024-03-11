@@ -289,18 +289,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return employeeNames;
     }
-    public List<String> getAllEmployeePreferredNames() {
+    public List<String> getAllEmployeePreferredNames(String[] columns, String selection, String[] selectionArgs,
+                                                     String groupBy, String having, String orderBy) {
         List<String> employeeNames = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
 
         Cursor cursor = db.query(
                 TABLE_EMPLOYEE,
-                new String[]{COL_EMPLOYEE_PREFERRED_NAME},
-                null,
-                null,
-                null,
-                null,
-                null
+                columns,
+                selection,
+                selectionArgs,
+                groupBy,
+                having,
+                orderBy
         );
         if (cursor != null && cursor.moveToFirst()) {
             do {
@@ -364,7 +365,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COL_EMPLOYEE_PREFERRED_NAME + " ASC" // order by Ascending e.g apple, bee, car
         );
 
-        if (cursor != null && cursor.moveToFirst()) {
+        if (cursor != null && cursor.moveToLast()) {
             @SuppressLint("Range") String lastPreferredName = cursor.getString(cursor.getColumnIndex(COL_EMPLOYEE_PREFERRED_NAME));
 
             String suffixStr = lastPreferredName.substring(preferredName.length());
