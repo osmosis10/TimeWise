@@ -35,7 +35,8 @@ public class DatabaseHelperTest {
     @Test
     public void testInsertEmployee() {
         long rowId = dbHelper.insertEmployee("John","Doe","Jim", "123456789", "john@example.com",
-                "2022-01-01", false, false, false, false, false, false, false, false, false, false, false, false,0);
+                "2022-01-01", false, false, false, false, false,
+                false, false, false, false, false, false, false,false);
 
         assertNotEquals(-1, rowId);
         /*
@@ -105,10 +106,12 @@ public class DatabaseHelperTest {
     @Test
     public void testGetAllEmployees() {
         dbHelper.insertEmployee("John","Doe","Jim", "123456789", "john@example.com",
-                "2022-01-01", false, false, false, false, false, false, false, false, false, false, false, false,0);
+                "2022-01-01", false, false, false, false, false,
+                false, false, false, false, false, false, false,false);
 
         dbHelper.insertEmployee("Jane","Mary","Janet", "987654321", "jane@example.com",
-                "2022-02-01", false, false, false, false, false, false, false, false, false, false, false, false,0);
+                "2022-02-01", false, false, false, false, false,
+                false, false, false, false, false, false, false,true);
         Cursor cursor = dbHelper.getAllEmployees();
 
         assertEquals(2, cursor.getCount());

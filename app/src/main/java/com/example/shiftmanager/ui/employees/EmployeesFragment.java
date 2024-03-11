@@ -1,5 +1,7 @@
 package com.example.shiftmanager.ui.employees;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
@@ -7,14 +9,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -27,6 +32,7 @@ import com.example.shiftmanager.R;
 import com.example.shiftmanager.databinding.FragmentEmployeesBinding;
 import com.example.shiftmanager.ui.database.DatabaseHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EmployeesFragment extends Fragment {
@@ -37,6 +43,11 @@ public class EmployeesFragment extends Fragment {
     private ActivityResultLauncher<Intent> addEmployeeLauncher;
 
     private DatabaseHelper dbHelper;
+
+    private boolean isTrainedChecked = false;
+
+    private boolean isUntrainedChecked = false;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -135,18 +146,131 @@ public class EmployeesFragment extends Fragment {
             addEmployeeLauncher.launch(intent);
         });
 
-        // Update employee fragment with all employees in database
-        updateEmployeeNamesUI();
+        binding.EmployeeSearchIconButton.setOnClickListener(v -> {
+            slideIn(binding.SearchBarLinearLayout);
+            slideOut(binding.EmployeeLinearLayout);
+            //binding.SearchBarLinearLayout.setVisibility(View.VISIBLE);
+            //binding.EmployeeLinearLayout.setVisibility(View.GONE);
+        });
+        binding.EmployeeSearchBackIconButton.setOnClickListener(v -> {
+            slideIn(binding.EmployeeLinearLayout);
+            slideOut(binding.SearchBarLinearLayout);
+            //binding.SearchBarLinearLayout.setVisibility(View.GONE);
+            //binding.EmployeeLinearLayout.setVisibility(View.VISIBLE);
+        });
+
+        binding.trainedCheckbox.setOnCheckedChangeListener(((compoundButton, isChecked) -> {
+            isTrainedChecked = isChecked;
+            updateEmployeeList();
+        }));
+
+        binding.unTrainedCheckbox.setOnCheckedChangeListener(((compoundButton, isChecked) -> {
+            isUntrainedChecked = isChecked;
+            updateEmployeeList();
+        }));
+        binding.EmployeeSearchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                if (binding.SearchBarLinearLayout.getVisibility() == View.VISIBLE) {
+                    updateEmployeeList();
+                }
+                return false;
+            }
+        });
+
+
+        if (binding.EmployeeLinearLayout.getVisibility() == View.VISIBLE) {
+            String[] columns = {"preferred_name"};
+            updateEmployeeNamesUI(columns ,null,null,null,null,null);
+        }
+
         return binding.getRoot();
+    }
+
+    private void updateEmployeeList() {
+        String[] columns = {"preferred_name"};
+        String selection = null;
+        List<String> selectionArgsList = new ArrayList<>();
+
+        CharSequence query = binding.EmployeeSearchBar.getQuery();
+        if (!TextUtils.isEmpty(query)) {
+            selection = "preferred_name LIKE ?";
+            selectionArgsList.add("%" + query.toString() + "%");
+        }
+
+        // If both trained and untrained are checked
+        if (isTrainedChecked && isUntrainedChecked) {
+            // All the if (selection != null) statement are for if the query isnt empty
+            // and selection has "preferred_name LIKE?" in it
+            if (selection != null) {
+                selection += " AND trained IN (?,?)";
+            } else {
+                selection = "trained IN (?,?)";
+            }
+            selectionArgsList.add("0");
+            selectionArgsList.add("1");
+        // If trained is checked
+        } else if (isTrainedChecked) {
+            if (selection != null) {
+                selection += " AND trained = ?";
+            } else {
+                selection = "trained = ?";
+            }
+            selectionArgsList.add("1");
+        // If untrained is checked
+        } else if (isUntrainedChecked) {
+            if (selection != null) {
+                selection += " AND trained = ?";
+            } else {
+                selection = "trained = ?";
+            }
+            selectionArgsList.add("0");
+        }
+
+        String[] selectionArgs = selectionArgsList.toArray(new String[0]);
+        updateEmployeeNamesUI(columns, selection, selectionArgs, null, null, null);
+    }
+
+    private void slideIn(View view) {
+        view.setVisibility(View.VISIBLE);
+        ObjectAnimator slideIn = ObjectAnimator.ofFloat(view, "translationY", view.getHeight(), 0f);
+        slideIn.setDuration(500);
+
+        slideIn.start();
+    }
+    private void slideOut(View view) {
+        binding.EmployeeSearchBar.setQuery("", false);
+        ObjectAnimator slideOut = ObjectAnimator.ofFloat(view, "translationY", 0f, view.getHeight());
+        slideOut.setDuration(500);
+
+        slideOut.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                view.setVisibility(View.GONE);
+                view.setTranslationY(0f);
+            }
+        });
+
+        slideOut.start();
+
+        view.setVisibility(View.VISIBLE);
     }
     /*
     Looks through db and queries for employee names
     If the employee name is already displayed it wont display them
     calls addEmployeeToUI in order to display names that are already in the db
      */
-    private void updateEmployeeNamesUI() {
+    private void updateEmployeeNamesUI(String[] columns, String selection, String[] selectionArgs,
+                                       String groupBy, String having, String orderBy) {
         //List<String> employeeNames = dbHelper.getAllEmployeeNames();
-        List<String> employeeNames = dbHelper.getAllEmployeePreferredNames();
+        // Remove all existing child views so we can cleanly repopulate
+        binding.EmployeeContainer.removeAllViews();
+        List<String> employeeNames = dbHelper.getAllEmployeePreferredNames(columns,selection,selectionArgs,groupBy,having,orderBy);
 
         for (String employeeName : employeeNames) {
             if (!isEmployeeNameInUI(employeeName)) {
@@ -247,6 +371,8 @@ public class EmployeesFragment extends Fragment {
             }
 
         });
+
+
 
         // We set the employee name and the image button in a container called nameContainer
         nameContainer.addView(employeeNameView);
