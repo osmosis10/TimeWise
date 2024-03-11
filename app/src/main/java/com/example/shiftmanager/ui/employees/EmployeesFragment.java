@@ -203,7 +203,10 @@ public class EmployeesFragment extends Fragment {
             selectionArgsList.add("%" + query.toString() + "%");
         }
 
+        // If both trained and untrained are checked
         if (isTrainedChecked && isUntrainedChecked) {
+            // All the if (selection != null) statement are for if the query isnt empty
+            // and selection has "preferred_name LIKE?" in it
             if (selection != null) {
                 selection += " AND trained IN (?,?)";
             } else {
@@ -211,6 +214,7 @@ public class EmployeesFragment extends Fragment {
             }
             selectionArgsList.add("0");
             selectionArgsList.add("1");
+        // If trained is checked
         } else if (isTrainedChecked) {
             if (selection != null) {
                 selection += " AND trained = ?";
@@ -218,6 +222,7 @@ public class EmployeesFragment extends Fragment {
                 selection = "trained = ?";
             }
             selectionArgsList.add("1");
+        // If untrained is checked
         } else if (isUntrainedChecked) {
             if (selection != null) {
                 selection += " AND trained = ?";
