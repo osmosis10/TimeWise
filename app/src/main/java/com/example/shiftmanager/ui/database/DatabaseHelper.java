@@ -16,7 +16,7 @@ import java.util.Random;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "schedulingdb.db";
-    private static final int DATABASE_VERSION = 17;
+    private static final int DATABASE_VERSION = 19;
     private static final String TABLE_EMPLOYEE = "employees";
     // Employee Table
     private static final String COL_EMPLOYEE_ID = "id";
@@ -50,6 +50,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String COL_EMPLOYEE_TRAINED = "trained";
 
+
+
     // Shift Table
     private static final String TABLE_SHIFT = "shifts";
     private static final String COL_SHIFT_ID = "id";
@@ -73,10 +75,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //private static final String COL_DAILY_ASSIGNMENT_ID = "id";
     private static final String COL_DAILY_ASSIGNMENT_DATE = "date";
     //private static final String COL_DAILY_ASSIGNMENT_STATUS = "assignment_status";
-    private static final String COL_DAILY_ASSIGNMENT_EMPLOYEE_1_PREFERRED_NAME = "employee_1_name";
-    private static final String COL_DAILY_ASSIGNMENT_EMPLOYEE_2_PREFERRED_NAME = "employee_2_name";
-    private static final String COL_DAILY_ASSIGNMENT_EMPLOYEE_3_PREFERRED_NAME = "employee_3_name";
-    private static final String COL_DAILY_ASSIGNMENT_EMPLOYEE_4_PREFERRED_NAME = "employee_4_name";
+    private static final String COL_DAILY_ASSIGNMENT_DAYSHIFT1_PREFERRED_NAME = "dayshift1_employee";
+    private static final String COL_DAILY_ASSIGNMENT_DAYSHIFT2_PREFERRED_NAME = "dayshift2_employee";
+    private static final String COL_DAILY_ASSIGNMENT_DAYSHIFT3_PREFERRED_NAME = "dayshift3_employee";
+    private static final String COL_DAILY_ASSIGNMENT_NIGHTSHIFT1_PREFERRED_NAME = "nightshift1_employee";
+    private static final String COL_DAILY_ASSIGNMENT_NIGHTSHIFT2_PREFERRED_NAME = "nightshift2_employee";
+    private static final String COL_DAILY_ASSIGNMENT_NIGHTSHIFT3_PREFERRED_NAME = "nightshift3_employee";
+    private static final String COL_DAILY_ASSIGNMENT_FULLDAY1_PREFERRED_NAME = "fullday1_employee";
+    private static final String COL_DAILY_ASSIGNMENT_FULLDAY2_PREFERRED_NAME = "fullday2_employee";
 
 
 
@@ -127,10 +133,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public String createDailyAssignment() {
         return "CREATE TABLE " + TABLE_DAILY_ASSIGNMENTS + " (" +
                 COL_DAILY_ASSIGNMENT_DATE + " DATE PRIMARY KEY," +
-                COL_DAILY_ASSIGNMENT_EMPLOYEE_1_PREFERRED_NAME + " TEXT NULL," +
-                COL_DAILY_ASSIGNMENT_EMPLOYEE_2_PREFERRED_NAME + " TEXT NULL," +
-                COL_DAILY_ASSIGNMENT_EMPLOYEE_3_PREFERRED_NAME + " TEXT NULL," +
-                COL_DAILY_ASSIGNMENT_EMPLOYEE_4_PREFERRED_NAME + " TEXT NULL" +
+                COL_DAILY_ASSIGNMENT_DAYSHIFT1_PREFERRED_NAME + " TEXT NULL," +
+                COL_DAILY_ASSIGNMENT_DAYSHIFT2_PREFERRED_NAME + " TEXT NULL," +
+                COL_DAILY_ASSIGNMENT_DAYSHIFT3_PREFERRED_NAME + " TEXT NULL," +
+                COL_DAILY_ASSIGNMENT_NIGHTSHIFT1_PREFERRED_NAME + " TEXT NULL," +
+                COL_DAILY_ASSIGNMENT_NIGHTSHIFT2_PREFERRED_NAME + " TEXT NULL," +
+                COL_DAILY_ASSIGNMENT_NIGHTSHIFT3_PREFERRED_NAME + " TEXT NULL," +
+                COL_DAILY_ASSIGNMENT_FULLDAY1_PREFERRED_NAME + " TEXT NULL," +
+                COL_DAILY_ASSIGNMENT_FULLDAY2_PREFERRED_NAME + " TEXT NULL" +
                 ")";
     }
 
@@ -181,14 +191,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public long insertDailyAssignment(String date,String name1, String name2, String name3, String name4) {
+    public long insertDailyAssignment(String date,String dayshift1_employee,
+                                      String dayshift2_employee,
+                                      String dayshift3_employee,
+                                      String nightshift1_employee,
+                                      String nightshift2_employee,
+                                      String nightshift3_employee,
+                                      String fullday1_employee,
+                                      String fullday2_employee) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues data = new ContentValues();
         data.put(COL_DAILY_ASSIGNMENT_DATE, date);
-        data.put(COL_DAILY_ASSIGNMENT_EMPLOYEE_1_PREFERRED_NAME, name1);
-        data.put(COL_DAILY_ASSIGNMENT_EMPLOYEE_2_PREFERRED_NAME, name2);
-        data.put(COL_DAILY_ASSIGNMENT_EMPLOYEE_3_PREFERRED_NAME, name3);
-        data.put(COL_DAILY_ASSIGNMENT_EMPLOYEE_4_PREFERRED_NAME, name4);
+        data.put(COL_DAILY_ASSIGNMENT_DAYSHIFT1_PREFERRED_NAME, dayshift1_employee);
+        data.put(COL_DAILY_ASSIGNMENT_DAYSHIFT1_PREFERRED_NAME, dayshift2_employee);
+        data.put(COL_DAILY_ASSIGNMENT_DAYSHIFT1_PREFERRED_NAME, dayshift3_employee);
+        data.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT1_PREFERRED_NAME, nightshift1_employee);
+        data.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT2_PREFERRED_NAME, nightshift2_employee);
+        data.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT3_PREFERRED_NAME, nightshift3_employee);
+        data.put(COL_DAILY_ASSIGNMENT_FULLDAY1_PREFERRED_NAME, fullday1_employee);
+        data.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT3_PREFERRED_NAME, fullday2_employee);
         long rowID = db.insert(TABLE_DAILY_ASSIGNMENTS, null, data);
         db.close();
         return rowID;
@@ -565,8 +586,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result;
 
     }
-    public long insertOrUpdateDailyAssignments(String date, String name1, String name2,
-                                      String name3, String name4) {
+
+    public long insertOrUpdateDailyAssignments(String date,
+                                               String dayshift1_employee,
+                                               String dayshift2_employee,
+                                               String dayshift3_employee,
+                                               String nightshift1_employee,
+                                               String nightshift2_employee,
+                                               String nightshift3_employee,
+                                               String fulldayshift1_employee,
+                                               String fulldayshift2_employee) {
         SQLiteDatabase db = getWritableDatabase();
 
 
@@ -581,10 +610,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long rowId;
 
         ContentValues values = new ContentValues();
-        values.put(COL_DAILY_ASSIGNMENT_EMPLOYEE_1_PREFERRED_NAME, name1);
-        values.put(COL_DAILY_ASSIGNMENT_EMPLOYEE_2_PREFERRED_NAME, name2);
-        values.put(COL_DAILY_ASSIGNMENT_EMPLOYEE_3_PREFERRED_NAME, name3);
-        values.put(COL_DAILY_ASSIGNMENT_EMPLOYEE_4_PREFERRED_NAME, name4);
+        values.put(COL_DAILY_ASSIGNMENT_DAYSHIFT1_PREFERRED_NAME, dayshift1_employee);
+        values.put(COL_DAILY_ASSIGNMENT_DAYSHIFT2_PREFERRED_NAME, dayshift2_employee);
+        values.put(COL_DAILY_ASSIGNMENT_DAYSHIFT3_PREFERRED_NAME, dayshift3_employee);
+        values.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT1_PREFERRED_NAME, nightshift1_employee);
+        values.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT2_PREFERRED_NAME, nightshift2_employee);
+        values.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT3_PREFERRED_NAME, nightshift3_employee);
+        values.put(COL_DAILY_ASSIGNMENT_FULLDAY1_PREFERRED_NAME, fulldayshift1_employee);
+        values.put(COL_DAILY_ASSIGNMENT_FULLDAY2_PREFERRED_NAME, fulldayshift2_employee);
        if (cursor != null && cursor.moveToFirst()) {
 
            rowId = db.update(
