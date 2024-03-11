@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,7 +71,10 @@ public class CalendarFragment extends Fragment {
 
     AutoCompleteTextView nightshift1;
     AutoCompleteTextView nightshift2;
-    ArrayAdapter<String> adapterNames;
+    ArrayAdapter<String> adapterDayShift1;
+    ArrayAdapter<String> adapterDayShift2;
+    ArrayAdapter<String> adapterNightShift1;
+    ArrayAdapter<String> adapterNightShift2;
 
     ImageButton assignBackButton;
 
@@ -147,7 +151,7 @@ public class CalendarFragment extends Fragment {
 
                 int dayOfWeek = localCalendar.get(Calendar.DAY_OF_WEEK);
 
-                String dateString = curYear + "-" + String.valueOf(currentMonth) + "-" + dbDay;
+                String dateString = curYear + "-" + String.format("%02d", currentMonth) + "-" + dbDay;
                 int weekNumber = getWeekNumber(dateString);
 
                 Log.d("WeekNumber", String.valueOf(weekNumber));
@@ -167,16 +171,78 @@ public class CalendarFragment extends Fragment {
                 });
 
                 // Drop down list variables
-                if (adapterNames == null) {
+                if (adapterDayShift1 == null) {
                     // Drop down list variables
                     String[] columns = {"preferred_name"};
-                    List<String> employeeNames = databaseHelper.getAllEmployeePreferredNames(columns, null, null,null,null,null);
+                    String selection = "monday_morning = ? OR " +
+                                    "tuesday_morning = ? OR " +
+                                    "wednesday_morning = ? OR " +
+                                    "thursday_morning = ? OR " +
+                                    "friday_morning = ?";
+                    String[] selectionArgs = new String[]{"1", "1", "1", "1", "1"};
+                    List<String> employeeNames = databaseHelper.getAllEmployeePreferredNames(columns, selection, selectionArgs,null,null,null);
                     employeeNames.add(0, "");
 
-                    String[] names = employeeNames.toArray(new String[employeeNames.size()]);
+                    String[] dayShiftNames = employeeNames.toArray(new String[employeeNames.size()]);
 
                     // Create the adapterNames only once
-                    adapterNames = new ArrayAdapter<>(requireContext(), R.layout.list_names, names);
+                    adapterDayShift1 = new ArrayAdapter<>(requireContext(), R.layout.list_names, dayShiftNames);
+ sta
+                }
+                // Drop down list variables
+                if (adapterDayShift2 == null) {
+                    // Drop down list variables
+                    String[] columns = {"preferred_name"};
+                    String selection = "monday_morning = ? OR " +
+                            "tuesday_morning = ? OR " +
+                            "wednesday_morning = ? OR " +
+                            "thursday_morning = ? OR " +
+                            "friday_morning = ?";
+                    String[] selectionArgs = new String[]{"1", "1", "1", "1", "1"};
+                    List<String> employeeNames = databaseHelper.getAllEmployeePreferredNames(columns, selection, selectionArgs,null,null,null);
+                    employeeNames.add(0, "");
+
+                    String[] dayShiftNames = employeeNames.toArray(new String[employeeNames.size()]);
+
+                    // Create the adapterNames only once
+                    adapterDayShift2 = new ArrayAdapter<>(requireContext(), R.layout.list_names, dayShiftNames);
+
+                }
+                if (adapterNightShift1 == null) {
+                    // Drop down list variables
+                    String[] columns = {"preferred_name"};
+                    String selection = "monday_afternoon = ? OR " +
+                                    "tuesday_afternoon = ? OR " +
+                                    "wednesday_afternoon = ? OR " +
+                                    "thursday_afternoon = ? OR " +
+                                    "friday_afternoon = ?";
+                    String[] selectionArgs = new String[]{"1", "1", "1", "1", "1"};
+                    List<String> employeeNames = databaseHelper.getAllEmployeePreferredNames(columns, selection, selectionArgs,null,null,null);
+                    employeeNames.add(0, "");
+
+                    String[] nightShiftNames = employeeNames.toArray(new String[employeeNames.size()]);
+
+                    // Create the adapterNames only once
+                    adapterNightShift1 = new ArrayAdapter<>(requireContext(), R.layout.list_names, nightShiftNames);
+
+                }
+                if (adapterNightShift2 == null) {
+                    // Drop down list variables
+                    String[] columns = {"preferred_name"};
+                    String selection = "monday_afternoon = ? OR " +
+                            "tuesday_afternoon = ? OR " +
+                            "wednesday_afternoon = ? OR " +
+                            "thursday_afternoon = ? OR " +
+                            "friday_afternoon = ?";
+                    String[] selectionArgs = new String[]{"1", "1", "1", "1", "1"};
+                    List<String> employeeNames = databaseHelper.getAllEmployeePreferredNames(columns, selection, selectionArgs,null,null,null);
+                    employeeNames.add(0, "");
+
+                    String[] nightShiftNames = employeeNames.toArray(new String[employeeNames.size()]);
+
+                    // Create the adapterNames only once
+                    adapterNightShift2 = new ArrayAdapter<>(requireContext(), R.layout.list_names, nightShiftNames);
+
                 }
 
                 // Set's view for the shift dropdowns
@@ -185,7 +251,7 @@ public class CalendarFragment extends Fragment {
                 nightshift1 = addView.findViewById(R.id.nightShift1);
                 nightshift2 = addView.findViewById(R.id.nightShift2);
 
-
+                //databaseHelper.removeAllDailyAssignments();
 
                 // DROP DOWN PERSISTENCE
                 // Retrieve the saved values from SharedPreferences after selection has occured
@@ -194,10 +260,10 @@ public class CalendarFragment extends Fragment {
 //                String savedDayShift2 = preferences.getString("dayShift2_" + Date, "");
 //                String savedNightShift1 = preferences.getString("nightShift1_" + Date, "");
 //                String savedNightShift2 = preferences.getString("nightShift2_" + Date, "");
-                String savedDayShift1 = databaseHelper.getShiftValues("dayshift1_employee", dbDate);
-                String savedDayShift2 = databaseHelper.getShiftValues("dayshift2_employee", dbDate);
-                String savedNightShift1 = databaseHelper.getShiftValues("nightshift1_employee", dbDate);
-                String savedNightShift2 = databaseHelper.getShiftValues("nightshift2_employee", dbDate);
+                String savedDayShift1 = databaseHelper.getShiftValues("dayshift1_employee", dateString);
+                String savedDayShift2 = databaseHelper.getShiftValues("dayshift2_employee", dateString);
+                String savedNightShift1 = databaseHelper.getShiftValues("nightshift1_employee", dateString);
+                String savedNightShift2 = databaseHelper.getShiftValues("nightshift2_employee", dateString);
                 // Set the saved values in the AutoCompleteTextViews
 
                 dayShift1.getText().clear();
@@ -205,29 +271,29 @@ public class CalendarFragment extends Fragment {
                 nightshift1.getText().clear();
                 nightshift2.getText().clear();
 
-                if (!savedDayShift1.isEmpty()) {
+                if (savedDayShift1 != null && !savedDayShift1.isEmpty()) {
                     dayShift1.setText(savedDayShift1);
 
                 }
 
-                if (!savedDayShift2.isEmpty()) {
+                if (savedDayShift2 != null && !savedDayShift2.isEmpty()) {
                     dayShift2.setText(savedDayShift2);
                 }
 
-                if (!savedNightShift1.isEmpty()) {
+                if (savedNightShift1 != null && !savedNightShift1.isEmpty()) {
                     nightshift1.setText(savedNightShift1);
                 }
 
-                if (!savedNightShift2.isEmpty()) {
+                if (savedNightShift2 != null && !savedNightShift2.isEmpty()) {
                     nightshift2.setText(savedNightShift2);
                 }
 
 
                 // Set database employee names to shift dropdown menu's (creates list)
-                dayShift1.setAdapter(adapterNames);
-                dayShift2.setAdapter(adapterNames);
-                nightshift1.setAdapter(adapterNames);
-                nightshift2.setAdapter(adapterNames);
+                dayShift1.setAdapter(adapterDayShift1);
+                dayShift2.setAdapter(adapterDayShift2);
+                nightshift1.setAdapter(adapterNightShift1);
+                nightshift2.setAdapter(adapterNightShift2);
 
                 dayShift1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
@@ -279,7 +345,7 @@ public class CalendarFragment extends Fragment {
                         String nightSelection2 = nightshift2.getText().toString();
 
                         databaseHelper.insertOrUpdateDailyAssignments(dbDate, daySelection1, daySelection2, null,
-                                nightSelection1, nightSelection2, null, null, null);
+                                nightSelection1, nightSelection2, null, null, null, weekNumber);
 
 //                        SharedPreferences preferences = requireContext().getSharedPreferences("Preferences", Context.MODE_PRIVATE);
 //                        SharedPreferences.Editor editor = preferences.edit();

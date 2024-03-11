@@ -16,7 +16,7 @@ import java.util.Random;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "schedulingdb.db";
-    private static final int DATABASE_VERSION = 19;
+    private static final int DATABASE_VERSION = 20;
     private static final String TABLE_EMPLOYEE = "employees";
     // Employee Table
     private static final String COL_EMPLOYEE_ID = "id";
@@ -61,6 +61,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COL_SHIFT_TRAINED = "trained";
 
 
+
     // Daily Assignments
     /*
     private static final String COL_EMPLOYEE_NAME_SHIFT = "employee_name"; need
@@ -83,6 +84,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COL_DAILY_ASSIGNMENT_NIGHTSHIFT3_PREFERRED_NAME = "nightshift3_employee";
     private static final String COL_DAILY_ASSIGNMENT_FULLDAY1_PREFERRED_NAME = "fullday1_employee";
     private static final String COL_DAILY_ASSIGNMENT_FULLDAY2_PREFERRED_NAME = "fullday2_employee";
+    private static final String COL_DAILY_ASSIGNMENT_WEEKNUM = "week_num";
 
 
 
@@ -140,7 +142,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COL_DAILY_ASSIGNMENT_NIGHTSHIFT2_PREFERRED_NAME + " TEXT NULL," +
                 COL_DAILY_ASSIGNMENT_NIGHTSHIFT3_PREFERRED_NAME + " TEXT NULL," +
                 COL_DAILY_ASSIGNMENT_FULLDAY1_PREFERRED_NAME + " TEXT NULL," +
-                COL_DAILY_ASSIGNMENT_FULLDAY2_PREFERRED_NAME + " TEXT NULL" +
+                COL_DAILY_ASSIGNMENT_FULLDAY2_PREFERRED_NAME + " TEXT NULL," +
+                COL_DAILY_ASSIGNMENT_WEEKNUM + " INTEGER NOT NULL" +
                 ")";
     }
 
@@ -198,7 +201,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                       String nightshift2_employee,
                                       String nightshift3_employee,
                                       String fullday1_employee,
-                                      String fullday2_employee) {
+                                      String fullday2_employee,
+                                      int week_num) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues data = new ContentValues();
         data.put(COL_DAILY_ASSIGNMENT_DATE, date);
@@ -210,6 +214,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         data.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT3_PREFERRED_NAME, nightshift3_employee);
         data.put(COL_DAILY_ASSIGNMENT_FULLDAY1_PREFERRED_NAME, fullday1_employee);
         data.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT3_PREFERRED_NAME, fullday2_employee);
+        data.put(COL_DAILY_ASSIGNMENT_WEEKNUM, week_num);
         long rowID = db.insert(TABLE_DAILY_ASSIGNMENTS, null, data);
         db.close();
         return rowID;
@@ -274,7 +279,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String randomPreferredName = preferredNames.get(rand.nextInt(10));
             String first_name = randomFirstName;
             String last_name = randomLastName;
-            String preferred_name = randomPreferredName;
+            String preferred_name = getUniquePreferredName(randomPreferredName);
             boolean randBool = rand.nextBoolean();
             insertEmployee(first_name, last_name, preferred_name,
                     "780-292-2020", "example@email.com", "10-02-2024",
@@ -576,7 +581,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 null
         );
 
-        String result = "";
+        String result = null;
 
         if (cursor != null && cursor.moveToFirst()) {
             result = cursor.getString(cursor.getColumnIndex(columnName));
@@ -587,6 +592,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public int getOccurencesDailyAssignment(String date) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = null;
+        int count = 0;
+
+        try {
+            String selection = "date = ? AND ((" +
+                    "dayshift1_employee IS NOT NULL AND dayshift1_employee != '') OR  " +
+                    "dayshift2_employee IS NOT NULL AND dayshift2_employee != '') OR  " +
+                    "dayshift3_employee IS NOT NULL AND dayshift3_employee != '') OR  " +
+                    "nightshift1_employee IS NOT NULL AND dayshift1_employee != '') OR  " +
+                    "nightshift2_employee IS NOT NULL AND dayshift2_employee != '') OR  " +
+                    "nightshift3_employee IS NOT NULL AND dayshift3_employee != ''))";
+
+            String[] selectionArgs = new String[]{date};
+
+            cursor = db.query(TABLE_DAILY_ASSIGNMENTS, null, selection, selectionArgs, null, null, null);
+
+            if (cursor != null && cursor.moveToFirst()) {
+                count = cursor.getCount();
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return count;
+    }
     public long insertOrUpdateDailyAssignments(String date,
                                                String dayshift1_employee,
                                                String dayshift2_employee,
@@ -595,7 +629,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                                String nightshift2_employee,
                                                String nightshift3_employee,
                                                String fulldayshift1_employee,
-                                               String fulldayshift2_employee) {
+                                               String fulldayshift2_employee,
+                                               int week_num) {
         SQLiteDatabase db = getWritableDatabase();
 
 
@@ -618,6 +653,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT3_PREFERRED_NAME, nightshift3_employee);
         values.put(COL_DAILY_ASSIGNMENT_FULLDAY1_PREFERRED_NAME, fulldayshift1_employee);
         values.put(COL_DAILY_ASSIGNMENT_FULLDAY2_PREFERRED_NAME, fulldayshift2_employee);
+        values.put(COL_DAILY_ASSIGNMENT_WEEKNUM, week_num);
        if (cursor != null && cursor.moveToFirst()) {
 
            rowId = db.update(
@@ -633,6 +669,68 @@ public class DatabaseHelper extends SQLiteOpenHelper {
            cursor.close();
        }
        return rowId;
+    }
+
+    public boolean isEmployeeTrained(String employee_name) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = null;
+
+        try {
+            String[] projection = {"trained"};
+            String selection = "preferred_name = ?";
+            String[] selectionArgs = {employee_name};
+
+            cursor = db.query(TABLE_EMPLOYEE,
+                            projection,
+                            selection,
+                            selectionArgs,
+                            null,
+                            null,
+                            null);
+            if (cursor != null && cursor.moveToFirst()) {
+                @SuppressLint("Range") int trainedValue = cursor.getInt(cursor.getColumnIndex("trained"));
+                return trainedValue == 1;
+            }
+        } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+                db.close();
+        }
+        return false;
+    }
+
+    public List<String> getTrainedEmployees(String selection, String[] selectionArgs) {
+        List<String> trainedEmployees = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            String[] projection = {"preferred_name"};
+
+            cursor = db.query(TABLE_EMPLOYEE,
+                    projection,
+                    selection,
+                    selectionArgs,
+                    null,
+                    null,
+                    null);
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    @SuppressLint("Range") String employee_name = cursor.getString(cursor.getColumnIndex("preferred_name"));
+                    trainedEmployees.add(employee_name);
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            {
+                if (cursor != null) {
+                    cursor.close();
+                }
+                db.close();
+            }
+            return trainedEmployees;
+        }
     }
 
 
