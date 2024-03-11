@@ -14,11 +14,11 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/NewEmployeeText"
+                android:id="@+id/EditEmployeeText"
                 android:layout_width="146dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="New Employee"
+                android:text="Edit Employee"
                 android:textColor="#000000"
                 android:textSize="30sp"
                 android:textStyle="bold"
@@ -31,7 +31,7 @@
                 android:layout_weight="1" />
 
             <ImageButton
-                android:id="@+id/AddEmployeeCloseButton"
+                android:id="@+id/EditEmployeeCloseButton"
                 android:layout_width="2dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
@@ -51,17 +51,17 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/AddEmployeeFirstName"
+                android:id="@+id/EditEmployeeFirstName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="First Name *"
+                android:text="First Name"
                 android:textColor="#000000"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:translationX="25px" />
 
             <EditText
-                android:id="@+id/AddEmployeeFirstNameInput"
+                android:id="@+id/EditEmployeeFirstNameInput"
                 android:layout_width="386dp"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -70,17 +70,17 @@
                 android:translationX="25px" />
 
             <TextView
-                android:id="@+id/AddEmployeeLastName"
+                android:id="@+id/EditEmployeeLastName"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:text="Last Name *"
+                android:text="Last Name"
                 android:textColor="#000000"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:translationX="25px" />
 
             <EditText
-                android:id="@+id/AddEmployeeLastNameInput"
+                android:id="@+id/EditEmployeeLastNameInput"
                 android:layout_width="386dp"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -89,7 +89,7 @@
                 android:translationX="25px" />
 
             <TextView
-                android:id="@+id/AddEmployeePreferredName"
+                android:id="@+id/EditEmployeePreferredName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Preferred Name"
@@ -99,7 +99,7 @@
                 android:translationX="25px" />
 
             <EditText
-                android:id="@+id/AddEmployeePreferredNameInput"
+                android:id="@+id/EditEmployeePreferredNameInput"
                 android:layout_width="386dp"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -108,17 +108,17 @@
                 android:translationX="25px" />
 
             <TextView
-                android:id="@+id/AddEmployeePhone"
+                android:id="@+id/EditEmployeePhone"
                 android:layout_width="86dp"
                 android:layout_height="wrap_content"
-                android:text="Phone *"
+                android:text="Phone"
                 android:textColor="#000000"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:translationX="25px" />
 
             <EditText
-                android:id="@+id/AddEmployeePhoneInput"
+                android:id="@+id/EditEmployeePhoneInput"
                 android:layout_width="386dp"
                 android:layout_height="48dp"
                 android:ems="10"
@@ -127,7 +127,7 @@
                 android:translationX="25px" />
 
             <TextView
-                android:id="@+id/AddEmployeeEmail"
+                android:id="@+id/EditEmployeeEmail"
                 android:layout_width="86dp"
                 android:layout_height="wrap_content"
                 android:text="Email"
@@ -137,7 +137,7 @@
                 android:translationX="25px" />
 
             <EditText
-                android:id="@+id/AddEmployeeEmailInput"
+                android:id="@+id/EditEmployeeEmailInput"
                 android:layout_width="386dp"
                 android:layout_height="48dp"
                 android:ems="10"
@@ -146,26 +146,7 @@
                 android:translationX="25px" />
 
             <TextView
-                android:id="@+id/AddEmployeeStartDate"
-                android:layout_width="143dp"
-                android:layout_height="wrap_content"
-                android:text="Start Date *"
-                android:textColor="#000000"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:translationX="25px" />
-
-            <EditText
-                android:id="@+id/AddEmployeeStartDateInput"
-                android:layout_width="386dp"
-                android:layout_height="48dp"
-                android:ems="10"
-                android:inputType="date"
-                android:hint="DD-MM-YYYY"
-                android:translationX="25px" />
-
-            <TextView
-                android:id="@+id/AddEmployeeAvailability"
+                android:id="@+id/EditEmployeeAvailability"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Availability"
@@ -181,7 +162,7 @@
                 android:translationY="10px">
 
                 <TextView
-                    android:id="@+id/MondayAvailabilitytextView"
+                    android:id="@+id/EditMondayAvailabilitytextView"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:text="Monday"
@@ -191,14 +172,14 @@
                     android:translationX="25px" />
 
                 <CheckBox
-                    android:id="@+id/AddEmployeeMondayMorningCheckbox"
+                    android:id="@+id/EditEmployeeMondayMorningCheckbox"
                     android:layout_width="109dp"
                     android:layout_height="wrap_content"
                     android:text="Morning"
                     android:translationX="25px" />
 
                 <CheckBox
-                    android:id="@+id/AddEmployeeMondayAfternoonCheckbox"
+                    android:id="@+id/EditEmployeeMondayAfternoonCheckbox"
                     android:layout_width="108dp"
                     android:layout_height="wrap_content"
                     android:text="Afternoon"
@@ -211,7 +192,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/TuesdayAvailabilitytextView"
+                    android:id="@+id/EditTuesdayAvailabilitytextView"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:text="Tuesday"
@@ -221,14 +202,14 @@
                     android:translationX="25px" />
 
                 <CheckBox
-                    android:id="@+id/AddEmployeeTuesdayMorningCheckbox"
+                    android:id="@+id/EditEmployeeTuesdayMorningCheckbox"
                     android:layout_width="109dp"
                     android:layout_height="wrap_content"
                     android:text="Morning"
                     android:translationX="25px" />
 
                 <CheckBox
-                    android:id="@+id/AddEmployeeTuesdayAfternoonCheckbox"
+                    android:id="@+id/EditEmployeeTuesdayAfternoonCheckbox"
                     android:layout_width="108dp"
                     android:layout_height="wrap_content"
                     android:text="Afternoon"
@@ -241,7 +222,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/WednesdayAvailabilitytextView"
+                    android:id="@+id/EditWednesdayAvailabilitytextView"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:text="Wednesday"
@@ -251,14 +232,14 @@
                     android:translationX="25px" />
 
                 <CheckBox
-                    android:id="@+id/AddEmployeeWednesdayMorningCheckbox"
+                    android:id="@+id/EditEmployeeWednesdayMorningCheckbox"
                     android:layout_width="109dp"
                     android:layout_height="wrap_content"
                     android:text="Morning"
                     android:translationX="25px" />
 
                 <CheckBox
-                    android:id="@+id/AddEmployeeWednesdayAfternoonCheckbox"
+                    android:id="@+id/EditEmployeeWednesdayAfternoonCheckbox"
                     android:layout_width="108dp"
                     android:layout_height="wrap_content"
                     android:text="Afternoon"
@@ -271,7 +252,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/ThursdayAvailabilitytextView"
+                    android:id="@+id/EditThursdayAvailabilitytextView"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:text="Thursday"
@@ -281,14 +262,14 @@
                     android:translationX="25px" />
 
                 <CheckBox
-                    android:id="@+id/AddEmployeeThursdayMorningCheckbox"
+                    android:id="@+id/EditEmployeeThursdayMorningCheckbox"
                     android:layout_width="109dp"
                     android:layout_height="wrap_content"
                     android:text="Morning"
                     android:translationX="25px" />
 
                 <CheckBox
-                    android:id="@+id/AddEmployeeThursdayAfternoonCheckbox"
+                    android:id="@+id/EditEmployeeThursdayAfternoonCheckbox"
                     android:layout_width="108dp"
                     android:layout_height="wrap_content"
                     android:text="Afternoon"
@@ -301,7 +282,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/FridayAvailabilitytextView"
+                    android:id="@+id/EditFridayAvailabilitytextView"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:text="Friday"
@@ -311,14 +292,14 @@
                     android:translationX="25px" />
 
                 <CheckBox
-                    android:id="@+id/AddEmployeeFridayMorningCheckbox"
+                    android:id="@+id/EditEmployeeFridayMorningCheckbox"
                     android:layout_width="109dp"
                     android:layout_height="wrap_content"
                     android:text="Morning"
                     android:translationX="25px" />
 
                 <CheckBox
-                    android:id="@+id/AddEmployeeFridayAfternoonCheckbox"
+                    android:id="@+id/EditEmployeeFridayAfternoonCheckbox"
                     android:layout_width="108dp"
                     android:layout_height="wrap_content"
                     android:text="Afternoon"
@@ -331,7 +312,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/SaturdayAvailabilitytextView"
+                    android:id="@+id/EditSaturdayAvailabilitytextView"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:text="Saturday"
@@ -341,7 +322,7 @@
                     android:translationX="25px" />
 
                 <CheckBox
-                    android:id="@+id/AddEmployeeSatrudayFulldayCheckbox"
+                    android:id="@+id/EditEmployeeSatrudayFulldayCheckbox"
                     android:layout_width="109dp"
                     android:layout_height="wrap_content"
                     android:text="Full-day"
@@ -354,7 +335,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/SundayAvailabilitytextView"
+                    android:id="@+id/EditSundayAvailabilitytextView"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:text="Sunday"
@@ -364,7 +345,7 @@
                     android:translationX="25px" />
 
                 <CheckBox
-                    android:id="@+id/AddEmployeeSundayFulldayCheckbox"
+                    android:id="@+id/EditEmployeeSundayFulldayCheckbox"
                     android:layout_width="109dp"
                     android:layout_height="wrap_content"
                     android:text="Full-day"
@@ -377,7 +358,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/TrainedTextView"
+                    android:id="@+id/EditTrainedTextView"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:text="Trained"
@@ -387,7 +368,7 @@
                     android:translationX="25px" />
 
                 <CheckBox
-                    android:id="@+id/TrainedCheckbox"
+                    android:id="@+id/EditEmployeeTrainedCheckBox"
                     android:layout_width="109dp"
                     android:layout_height="wrap_content"
                     android:translationX="25px" />
@@ -401,11 +382,11 @@
                 android:translationY="10px">
 
                 <Button
-                    android:id="@+id/AddEmployeeAddButton"
+                    android:id="@+id/EditEmployeeAddButton"
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
                     android:backgroundTint="#000000"
-                    android:text="Add Employee"
+                    android:text="Confirm"
                     android:textAlignment="center"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold" />

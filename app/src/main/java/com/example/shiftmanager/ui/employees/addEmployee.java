@@ -45,6 +45,7 @@ public class addEmployee extends AppCompatActivity {
         getWindow().setLayout((int) (width), (int) (height));
 
         ImageButton closeButton = findViewById(R.id.AddEmployeeCloseButton);
+
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,7 +96,7 @@ public class addEmployee extends AppCompatActivity {
                 boolean fridayAfternoon = ((CheckBox) findViewById(R.id.AddEmployeeFridayAfternoonCheckbox)).isChecked();
                 boolean saturdayFullday = ((CheckBox) findViewById(R.id.AddEmployeeSatrudayFulldayCheckbox)).isChecked();
                 boolean sundayFullday = ((CheckBox) findViewById(R.id.AddEmployeeSundayFulldayCheckbox)).isChecked();
-
+                boolean trained = ((CheckBox) findViewById(R.id.TrainedCheckbox)).isChecked();
                 // Create the Employee object
                 Employee newEmployee = new Employee(first_name, last_name, preferred_name,
                         phone, email, startDate,
@@ -104,7 +105,7 @@ public class addEmployee extends AppCompatActivity {
                         wednesdayMorning, wednesdayAfternoon,
                         thursdayMorning, thursdayAfternoon,
                         fridayMorning, fridayAfternoon,
-                        saturdayFullday, sundayFullday);
+                        saturdayFullday, sundayFullday, trained);
 
                 Intent data = new Intent();
                 data.putExtra("employeeFirstName", first_name);
@@ -127,6 +128,7 @@ public class addEmployee extends AppCompatActivity {
                 data.putExtra("fridayAfternoon", fridayAfternoon);
                 data.putExtra("saturdayFullday", saturdayFullday);
                 data.putExtra("sundayFullday", sundayFullday);
+                data.putExtra("trained", trained);
 
                 setResult(Activity.RESULT_OK, data);
                 // Close the current activity and return to the previous screen
