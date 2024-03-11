@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -15,7 +16,7 @@ import java.util.Random;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "schedulingdb.db";
-    private static final int DATABASE_VERSION = 16;
+    private static final int DATABASE_VERSION = 17;
     private static final String TABLE_EMPLOYEE = "employees";
     // Employee Table
     private static final String COL_EMPLOYEE_ID = "id";
@@ -69,10 +70,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     These should be included in daily assignments, they are already assigned, maybe union
      */
     private static final String TABLE_DAILY_ASSIGNMENTS = "daily_assignment";
-    private static final String COL_DAILY_ASSIGNMENT_ID = "id";
-    private static final String COL_DAILY_ASSIGNMENT_STATUS = "assignment_status";
-    private static final String COL_DAILY_ASSIGNMENT_EMPLOYEE_NAME = "employee_name";
+    //private static final String COL_DAILY_ASSIGNMENT_ID = "id";
     private static final String COL_DAILY_ASSIGNMENT_DATE = "date";
+    //private static final String COL_DAILY_ASSIGNMENT_STATUS = "assignment_status";
+    private static final String COL_DAILY_ASSIGNMENT_EMPLOYEE_1_PREFERRED_NAME = "employee_1_name";
+    private static final String COL_DAILY_ASSIGNMENT_EMPLOYEE_2_PREFERRED_NAME = "employee_2_name";
+    private static final String COL_DAILY_ASSIGNMENT_EMPLOYEE_3_PREFERRED_NAME = "employee_3_name";
+    private static final String COL_DAILY_ASSIGNMENT_EMPLOYEE_4_PREFERRED_NAME = "employee_4_name";
+
 
 
     public DatabaseHelper(Context context) {
@@ -121,10 +126,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public String createDailyAssignment() {
         return "CREATE TABLE " + TABLE_DAILY_ASSIGNMENTS + " (" +
-                COL_DAILY_ASSIGNMENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                COL_DAILY_ASSIGNMENT_EMPLOYEE_NAME + " TEXT NOT NULL," +
-                COL_DAILY_ASSIGNMENT_DATE + " DATE," +
-                COL_DAILY_ASSIGNMENT_STATUS + " INTEGER" +
+                COL_DAILY_ASSIGNMENT_DATE + " DATE PRIMARY KEY," +
+                COL_DAILY_ASSIGNMENT_EMPLOYEE_1_PREFERRED_NAME + " TEXT NULL," +
+                COL_DAILY_ASSIGNMENT_EMPLOYEE_2_PREFERRED_NAME + " TEXT NULL," +
+                COL_DAILY_ASSIGNMENT_EMPLOYEE_3_PREFERRED_NAME + " TEXT NULL," +
+                COL_DAILY_ASSIGNMENT_EMPLOYEE_4_PREFERRED_NAME + " TEXT NULL" +
                 ")";
     }
 
@@ -175,12 +181,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public long insertDailyAssignment(String name, String date, String status) {
+    public long insertDailyAssignment(String date,String name1, String name2, String name3, String name4) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues data = new ContentValues();
-        data.put(COL_DAILY_ASSIGNMENT_EMPLOYEE_NAME, name);
         data.put(COL_DAILY_ASSIGNMENT_DATE, date);
-        data.put(COL_DAILY_ASSIGNMENT_STATUS, status);
+        data.put(COL_DAILY_ASSIGNMENT_EMPLOYEE_1_PREFERRED_NAME, name1);
+        data.put(COL_DAILY_ASSIGNMENT_EMPLOYEE_2_PREFERRED_NAME, name2);
+        data.put(COL_DAILY_ASSIGNMENT_EMPLOYEE_3_PREFERRED_NAME, name3);
+        data.put(COL_DAILY_ASSIGNMENT_EMPLOYEE_4_PREFERRED_NAME, name4);
         long rowID = db.insert(TABLE_DAILY_ASSIGNMENTS, null, data);
         db.close();
         return rowID;
@@ -490,6 +498,110 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return employeeInformation;
 
     }
+
+    public long insertDate(String date) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        if (dateExists(db, date)) {
+            return -1;
+        }
+        ContentValues values = new ContentValues();
+        values.put(COL_DAILY_ASSIGNMENT_DATE, date);
+
+        try {
+            long rowId = db.insert(TABLE_DAILY_ASSIGNMENTS, null, values);
+            Log.d("InsertDate", "Row inserted successfully, ID: " + rowId);
+            return rowId;
+        } catch (SQLException e) {
+            Log.e("InsertDate", "Error inserting date", e);
+            return -1;
+        }
+
+    }
+
+    private boolean dateExists(SQLiteDatabase db, String date) {
+        String selection = COL_DAILY_ASSIGNMENT_DATE + " = ?";
+        String[] selectionArgs = { date };
+
+        Cursor cursor = db.query(TABLE_DAILY_ASSIGNMENTS, null, selection, selectionArgs, null, null, null);
+
+        boolean exists = cursor.moveToFirst();
+        cursor.close();
+
+        return exists;
+    }
+
+    public void removeAllDailyAssignments() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_DAILY_ASSIGNMENTS, null, null);
+
+        db.close();
+    }
+
+    @SuppressLint("Range")
+    public String getShiftValues(String columnName, String date) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = COL_DAILY_ASSIGNMENT_DATE + " = ?";
+        String[] selectionArgs = {date};
+
+        Cursor cursor = db.query(
+                TABLE_DAILY_ASSIGNMENTS,
+                new String[]{columnName},
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
+        String result = "";
+
+        if (cursor != null && cursor.moveToFirst()) {
+            result = cursor.getString(cursor.getColumnIndex(columnName));
+            cursor.close();
+        }
+
+        return result;
+
+    }
+    public long insertOrUpdateDailyAssignments(String date, String name1, String name2,
+                                      String name3, String name4) {
+        SQLiteDatabase db = getWritableDatabase();
+
+
+        Cursor cursor = db.query(
+                TABLE_DAILY_ASSIGNMENTS,
+                null,
+                COL_DAILY_ASSIGNMENT_DATE + " =?",
+                new String[]{date},
+                null,
+                null,
+                null);
+        long rowId;
+
+        ContentValues values = new ContentValues();
+        values.put(COL_DAILY_ASSIGNMENT_EMPLOYEE_1_PREFERRED_NAME, name1);
+        values.put(COL_DAILY_ASSIGNMENT_EMPLOYEE_2_PREFERRED_NAME, name2);
+        values.put(COL_DAILY_ASSIGNMENT_EMPLOYEE_3_PREFERRED_NAME, name3);
+        values.put(COL_DAILY_ASSIGNMENT_EMPLOYEE_4_PREFERRED_NAME, name4);
+       if (cursor != null && cursor.moveToFirst()) {
+
+           rowId = db.update(
+                   TABLE_DAILY_ASSIGNMENTS,
+                   values,
+                   COL_DAILY_ASSIGNMENT_DATE + " =?",
+                   new String[]{date});
+       } else {
+           values.put(COL_DAILY_ASSIGNMENT_DATE, date);
+           rowId = db.insert(TABLE_DAILY_ASSIGNMENTS, null, values);
+       }
+       if (cursor != null) {
+           cursor.close();
+       }
+       return rowId;
+    }
+
 
     public int updateEmployeeInformation(String employeePreferredName,
                                          String firstName, String lastName,
