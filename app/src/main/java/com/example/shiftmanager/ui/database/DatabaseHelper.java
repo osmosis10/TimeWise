@@ -531,6 +531,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return exists;
     }
 
+    public void removeAllDailyAssignments() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_DAILY_ASSIGNMENTS, null, null);
+
+        db.close();
+    }
+
+    @SuppressLint("Range")
+    public String getShiftValues(String columnName, String date) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = COL_DAILY_ASSIGNMENT_DATE + " = ?";
+        String[] selectionArgs = {date};
+
+        Cursor cursor = db.query(
+                TABLE_DAILY_ASSIGNMENTS,
+                new String[]{columnName},
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
+        String result = "";
+
+        if (cursor != null && cursor.moveToFirst()) {
+            result = cursor.getString(cursor.getColumnIndex(columnName));
+            cursor.close();
+        }
+
+        return result;
+
+    }
     public long insertOrUpdateDailyAssignments(String date, String name1, String name2,
                                       String name3, String name4) {
         SQLiteDatabase db = getWritableDatabase();

@@ -151,6 +151,8 @@ public class CalendarFragment extends Fragment {
                     // Drop down list variables
                     String[] columns = {"preferred_name"};
                     List<String> employeeNames = databaseHelper.getAllEmployeePreferredNames(columns, null, null,null,null,null);
+                    employeeNames.add(0, "");
+
                     String[] names = employeeNames.toArray(new String[employeeNames.size()]);
 
                     // Create the adapterNames only once
@@ -167,14 +169,22 @@ public class CalendarFragment extends Fragment {
 
                 // DROP DOWN PERSISTENCE
                 // Retrieve the saved values from SharedPreferences after selection has occured
-                SharedPreferences preferences = requireContext().getSharedPreferences("Preferences", Context.MODE_PRIVATE);
-                String savedDayShift1 = preferences.getString("dayShift1_" + Date, "");
-                String savedDayShift2 = preferences.getString("dayShift2_" + Date, "");
-                String savedNightShift1 = preferences.getString("nightShift1_" + Date, "");
-                String savedNightShift2 = preferences.getString("nightShift2_" + Date, "");
-
-                databaseHelper.insertOrUpdateDailyAssignments(dbDate, savedDayShift1, savedDayShift2, savedNightShift1, savedNightShift2);
+                //SharedPreferences preferences = requireContext().getSharedPreferences("Preferences", Context.MODE_PRIVATE);
+//                String savedDayShift1 = preferences.getString("dayShift1_" + Date, "");
+//                String savedDayShift2 = preferences.getString("dayShift2_" + Date, "");
+//                String savedNightShift1 = preferences.getString("nightShift1_" + Date, "");
+//                String savedNightShift2 = preferences.getString("nightShift2_" + Date, "");
+                String savedDayShift1 = databaseHelper.getShiftValues("employee_1_name", dbDate);
+                String savedDayShift2 = databaseHelper.getShiftValues("employee_2_name", dbDate);
+                String savedNightShift1 = databaseHelper.getShiftValues("employee_3_name", dbDate);
+                String savedNightShift2 = databaseHelper.getShiftValues("employee_4_name", dbDate);
                 // Set the saved values in the AutoCompleteTextViews
+
+                dayShift1.getText().clear();
+                dayShift2.getText().clear();
+                nightshift1.getText().clear();
+                nightshift2.getText().clear();
+
                 if (!savedDayShift1.isEmpty()) {
                     dayShift1.setText(savedDayShift1);
 
@@ -246,15 +256,17 @@ public class CalendarFragment extends Fragment {
                         String nightSelection1 = nightshift1.getText().toString();
                         String nightSelection2 = nightshift2.getText().toString();
 
-                        SharedPreferences preferences = requireContext().getSharedPreferences("Preferences", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = preferences.edit();
-                        // stores the selection according to the specified day in 'Date'
-                        editor.putString("dayShift1_" + Date, appendNames(preferences.getString("dayShift1_" + Date, ""), daySelection1));
-                        editor.putString("dayShift2_" + Date, appendNames(preferences.getString("dayShift2_" + Date, ""), daySelection2));
-                        editor.putString("nightShift1_" + Date, appendNames(preferences.getString("nightShift1_" + Date, ""), nightSelection1));
-                        editor.putString("nightShift2_" + Date, appendNames(preferences.getString("nightShift2_" + Date, ""), nightSelection2));
+                        databaseHelper.insertOrUpdateDailyAssignments(dbDate, daySelection1, daySelection2, nightSelection1, nightSelection2);
 
-                        editor.apply(); // stores the preferences
+//                        SharedPreferences preferences = requireContext().getSharedPreferences("Preferences", Context.MODE_PRIVATE);
+//                        SharedPreferences.Editor editor = preferences.edit();
+//                        // stores the selection according to the specified day in 'Date'
+//                        editor.putString("dayShift1_" + Date, appendNames(preferences.getString("dayShift1_" + Date, ""), daySelection1));
+//                        editor.putString("dayShift2_" + Date, appendNames(preferences.getString("dayShift2_" + Date, ""), daySelection2));
+//                        editor.putString("nightShift1_" + Date, appendNames(preferences.getString("nightShift1_" + Date, ""), nightSelection1));
+//                        editor.putString("nightShift2_" + Date, appendNames(preferences.getString("nightShift2_" + Date, ""), nightSelection2));
+//
+//                        editor.apply(); // stores the preferences
 
                         alertDialog.dismiss(); // Closes assign shifts page
                     }
