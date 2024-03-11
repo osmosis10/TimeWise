@@ -3,6 +3,7 @@ package com.example.shiftmanager.ui.calendar;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,7 +45,7 @@ public class CalendarFragment extends Fragment {
     TextView currentDate;
     GridView gridView;
 
-    private static final int MAX_CALENDAR_DAYS = 36;
+    private static final int MAX_CALENDAR_DAYS = 42;
 
     // Initializes instance of a calendar with local date
     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
@@ -61,7 +63,7 @@ public class CalendarFragment extends Fragment {
 
     AlertDialog alertDialog;
 
-
+    ImageView cellDay;
 
     AutoCompleteTextView dayShift1;
     AutoCompleteTextView dayShift2;
@@ -268,6 +270,8 @@ public class CalendarFragment extends Fragment {
                 confirmButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        int selected = 0;
+
                         // Obtains the selections for each box of a given day
                         String daySelection1 = dayShift1.getText().toString();
                         String daySelection2 = dayShift2.getText().toString();
@@ -287,14 +291,40 @@ public class CalendarFragment extends Fragment {
 //
 //                        editor.apply(); // stores the preferences
 
+                        if (!daySelection1.isEmpty()) {
+                            selected++;
+                        }
+                        if (!daySelection2.isEmpty()) {
+                            selected++;
+                        }
+                        if (!nightSelection1.isEmpty()) {
+                            selected++;
+                        }
+
+                        if (!nightSelection2.isEmpty()) {
+                            selected++;
+                        }
+
+                        ImageView dayImage = view.findViewById(R.id.shiftStatus);
+                        dayImage.setImageDrawable(null);
+                        if (selected == 4) {
+                            // Variables for setting calendar icons
+                            dayImage.setImageResource(R.mipmap.accept);
+                        }
+
+                        else if (selected > 0) {
+                            dayImage.setImageResource(R.mipmap.warning);
+                        }
+
+                        else {
+                            dayImage.setImageResource(R.mipmap.exclamation);
+                        }
+
                         alertDialog.dismiss(); // Closes assign shifts page
                     }
                 });
-
             }
         });
-
-
 
         // Call setup for calendar fragment
         setUpCalendar(requireContext());

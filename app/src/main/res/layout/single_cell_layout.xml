@@ -16,6 +16,14 @@
         android:textColor="@color/white">
     </TextView>
 
+    <ImageView
+        android:id="@+id/shiftStatus"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:translationY="1dp"
+        android:src="@mipmap/exclamation">
+    </ImageView>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,7 +31,9 @@
         android:textSize="9sp"
         android:id="@+id/eventsID"
         android:textColor="@color/black"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:background="@drawable/cell_outline">
+
     </TextView>
 
 
