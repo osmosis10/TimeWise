@@ -26,6 +26,7 @@ import com.example.shiftmanager.ui.database.DatabaseHelper;
 
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -136,14 +137,19 @@ public class CalendarFragment extends Fragment {
                 String dbDay = String.format("%02d", Integer.parseInt(charDay.toString()));
 
                 String dbDate = curYear + "-" + curMonth + "-" + dbDay;
-                int currentMonth = getMonthoftheYear(curMonth, curYear);
+                int currentMonth = getMonthNum(curMonth);
 
-
-                Calendar localCalendar = Calendar.getInstance(Locale.ENGLISH);
+                Log.d("CurrentMonth", String.valueOf(currentMonth));
+                Calendar localCalendar = Calendar.getInstance(Locale.CANADA);
                 localCalendar.set(Integer.parseInt(curYear), currentMonth, Integer.parseInt(dayNum));
 
                 int dayOfWeek = localCalendar.get(Calendar.DAY_OF_WEEK);
 
+                String dateString = curYear + "-" + String.valueOf(currentMonth) + "-" + dbDay;
+                int weekNumber = getWeekNumber(dateString);
+
+                Log.d("WeekNumber", String.valueOf(weekNumber));
+                Log.d("dateString", dateString);
 
                 Log.d("dow", getDayOfWeekString(dayOfWeek));
                 //databaseHelper.insertDate(dbDate);
@@ -296,20 +302,37 @@ public class CalendarFragment extends Fragment {
         return root;
     }
 
-    private static int getMonthoftheYear(String month, String curYear) {
+    private static int getMonthNum(String month) {
 
-            DateFormatSymbols symbols = new DateFormatSymbols();
+            SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM", Locale.ENGLISH);
 
-            String[] shortMonths = symbols.getShortMonths();
 
-            for (int i = 0; i < shortMonths.length; i++) {
-                if (shortMonths[i].equalsIgnoreCase(month)) {
-                    return i + 1;
-                }
+            try {
+                Date date = monthFormat.parse(month);
+                return date.getMonth() + 1;
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return -1;
             }
 
-            return -1;
+    }
 
+    public static int getWeekNumber(String dateString) {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = dateFormat.parse(dateString);
+
+            Calendar locCalendar = Calendar.getInstance();
+            locCalendar.setFirstDayOfWeek(Calendar.MONDAY);
+            locCalendar.setTime(date);
+
+            int weekNumber = locCalendar.get(Calendar.WEEK_OF_YEAR);
+
+            return weekNumber;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
     private String getDayOfWeekString(int dayOfWeek) {
         switch (dayOfWeek) {

@@ -59,6 +59,7 @@ public class EmployeesFragment extends Fragment {
         // emulator once you run the first time
         //dbHelper.removeAllEmployees();
         //dbHelper.insertRandomEmployees();
+        //dbHelper.insertRandomEmployees();
         /*
         employeesViewModel = new ViewModelProvider(this).get(EmployeesViewModel.class);
         employeesViewModel.getCleanAndPopulateComplete().observe(this, cleanAndPopulateCompleted -> {
