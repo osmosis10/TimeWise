@@ -3,6 +3,7 @@ package com.example.shiftmanager.ui.calendar;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +26,8 @@ import com.example.shiftmanager.R;
 import com.example.shiftmanager.databinding.FragmentCalendarBinding;
 import com.example.shiftmanager.ui.database.DatabaseHelper;
 
+import java.text.DateFormat;
+import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,7 +44,7 @@ public class CalendarFragment extends Fragment {
     TextView currentDate;
     GridView gridView;
 
-    private static final int MAX_CALENDAR_DAYS = 36;
+    private static final int MAX_CALENDAR_DAYS = 42;
 
     // Initializes instance of a calendar with local date
     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
@@ -58,7 +62,7 @@ public class CalendarFragment extends Fragment {
 
     AlertDialog alertDialog;
 
-
+    ImageView cellDay;
 
     AutoCompleteTextView dayShift1;
     AutoCompleteTextView dayShift2;
@@ -132,8 +136,18 @@ public class CalendarFragment extends Fragment {
                 assignDate.setText(Date); // Display's shifts date
 
                 String dbDay = String.format("%02d", Integer.parseInt(charDay.toString()));
-                String dbDate = curYear + "-" + curMonth + "-" + dbDay;
 
+                String dbDate = curYear + "-" + curMonth + "-" + dbDay;
+                int currentMonth = getMonthoftheYear(curMonth, curYear);
+
+
+                Calendar localCalendar = Calendar.getInstance(Locale.ENGLISH);
+                localCalendar.set(Integer.parseInt(curYear), currentMonth, Integer.parseInt(dayNum));
+
+                int dayOfWeek = localCalendar.get(Calendar.DAY_OF_WEEK);
+
+
+                Log.d("dow", getDayOfWeekString(dayOfWeek));
                 //databaseHelper.insertDate(dbDate);
 
                 Log.d("DbDay", "The date sire " + dbDate);
@@ -174,10 +188,10 @@ public class CalendarFragment extends Fragment {
 //                String savedDayShift2 = preferences.getString("dayShift2_" + Date, "");
 //                String savedNightShift1 = preferences.getString("nightShift1_" + Date, "");
 //                String savedNightShift2 = preferences.getString("nightShift2_" + Date, "");
-                String savedDayShift1 = databaseHelper.getShiftValues("employee_1_name", dbDate);
-                String savedDayShift2 = databaseHelper.getShiftValues("employee_2_name", dbDate);
-                String savedNightShift1 = databaseHelper.getShiftValues("employee_3_name", dbDate);
-                String savedNightShift2 = databaseHelper.getShiftValues("employee_4_name", dbDate);
+                String savedDayShift1 = databaseHelper.getShiftValues("dayshift1_employee", dbDate);
+                String savedDayShift2 = databaseHelper.getShiftValues("dayshift2_employee", dbDate);
+                String savedNightShift1 = databaseHelper.getShiftValues("nightshift1_employee", dbDate);
+                String savedNightShift2 = databaseHelper.getShiftValues("nightshift2_employee", dbDate);
                 // Set the saved values in the AutoCompleteTextViews
 
                 dayShift1.getText().clear();
@@ -250,13 +264,16 @@ public class CalendarFragment extends Fragment {
                 confirmButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        int selected = 0;
+
                         // Obtains the selections for each box of a given day
                         String daySelection1 = dayShift1.getText().toString();
                         String daySelection2 = dayShift2.getText().toString();
                         String nightSelection1 = nightshift1.getText().toString();
                         String nightSelection2 = nightshift2.getText().toString();
 
-                        databaseHelper.insertOrUpdateDailyAssignments(dbDate, daySelection1, daySelection2, nightSelection1, nightSelection2);
+                        databaseHelper.insertOrUpdateDailyAssignments(dbDate, daySelection1, daySelection2, null,
+                                nightSelection1, nightSelection2, null, null, null);
 
 //                        SharedPreferences preferences = requireContext().getSharedPreferences("Preferences", Context.MODE_PRIVATE);
 //                        SharedPreferences.Editor editor = preferences.edit();
@@ -268,19 +285,81 @@ public class CalendarFragment extends Fragment {
 //
 //                        editor.apply(); // stores the preferences
 
+                        if (!daySelection1.isEmpty()) {
+                            selected++;
+                        }
+                        if (!daySelection2.isEmpty()) {
+                            selected++;
+                        }
+                        if (!nightSelection1.isEmpty()) {
+                            selected++;
+                        }
+
+                        if (!nightSelection2.isEmpty()) {
+                            selected++;
+                        }
+
+                        ImageView dayImage = view.findViewById(R.id.shiftStatus);
+                        dayImage.setImageDrawable(null);
+                        if (selected == 4) {
+                            // Variables for setting calendar icons
+                            dayImage.setImageResource(R.mipmap.accept);
+                        }
+
+                        else if (selected > 0) {
+                            dayImage.setImageResource(R.mipmap.warning);
+                        }
+
+                        else {
+                            dayImage.setImageResource(R.mipmap.exclamation);
+                        }
+
                         alertDialog.dismiss(); // Closes assign shifts page
                     }
                 });
-
             }
         });
-
-
 
         // Call setup for calendar fragment
         setUpCalendar(requireContext());
 
         return root;
+    }
+
+    private static int getMonthoftheYear(String month, String curYear) {
+
+            DateFormatSymbols symbols = new DateFormatSymbols();
+
+            String[] shortMonths = symbols.getShortMonths();
+
+            for (int i = 0; i < shortMonths.length; i++) {
+                if (shortMonths[i].equalsIgnoreCase(month)) {
+                    return i + 1;
+                }
+            }
+
+            return -1;
+
+    }
+    private String getDayOfWeekString(int dayOfWeek) {
+        switch (dayOfWeek) {
+            case Calendar.SUNDAY:
+                return "Sunday";
+            case Calendar.MONDAY:
+                return "Monday";
+            case Calendar.TUESDAY:
+                return "Tuesday";
+            case Calendar.WEDNESDAY:
+                return "Wednesday";
+            case Calendar.THURSDAY:
+                return "Thursday";
+            case Calendar.FRIDAY:
+                return "Friday";
+            case Calendar.SATURDAY:
+                return "Saturday";
+            default:
+                return "Unknown Day";
+        }
     }
 
     // Set's up calendar for each month after button click
