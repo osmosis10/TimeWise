@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -158,87 +159,76 @@ public class EmployeesFragment extends Fragment {
             //binding.EmployeeLinearLayout.setVisibility(View.VISIBLE);
         });
 
+        binding.trainedCheckbox.setOnCheckedChangeListener(((compoundButton, isChecked) -> {
+            isTrainedChecked = isChecked;
+            updateEmployeeList();
+        }));
 
-        binding.trainedCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                isTrainedChecked = isChecked;
-                Log.d("trainedhcekbox", "onCheckedChanged: " + isChecked);
-
-            }
-        });
-
-        binding.unTrainedCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                isUntrainedChecked = isChecked;
-                Log.d("untrained", "Value sire: " + isChecked);
-
-            }
-        });
-
-        // Update employee fragment with all employees in database
+        binding.unTrainedCheckbox.setOnCheckedChangeListener(((compoundButton, isChecked) -> {
+            isUntrainedChecked = isChecked;
+            updateEmployeeList();
+        }));
         binding.EmployeeSearchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                Log.d("Confirm", "User has pressed the button sire");
-                callSearch(query);
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (binding.SearchBarLinearLayout.getVisibility() == View.VISIBLE) {
-                    String[] columns = {"preferred_name"};
-                    String selection = null;
-                    List<String> selectionArgsList = new ArrayList<>();
-                    if (!newText.isEmpty() || isTrainedChecked || isUntrainedChecked) {
-                        if (!newText.isEmpty()) {
-                            selection = "preferred_name LIKE ?";
-                            //selectionArgs = new String[]{"%" + newText+ "%"};
-                            selectionArgsList.add("%" + newText + "%");
-                        }
-                        if (isTrainedChecked) {
-                            if (selection != null) {
-                                Log.d("trainedcheck", "Value sire: " + isTrainedChecked);
-                                selection += " AND trained = ?";
-                            } else {
-                                selection = "trained = ?";
-                            }
-                            //selectionArgs = new String[]{"1"};
-                            selectionArgsList.add("0");
-                        }
-                        if (isUntrainedChecked) {
-                            if (selection != null) {
-                                selection += " AND trained = ?";
-                            } else {
-                                selection = "trained = ?";
-                            }
-                            //selectionArgs = new String[]{"0"};
-                            selectionArgsList.add("0");
-                        }
-                        String[] selectionArgs = selectionArgsList.toArray(new String[0]);
-                        updateEmployeeNamesUI(columns ,selection,selectionArgs,null,null,null);
-                    } else {
-                        updateEmployeeNamesUI(columns, null, null, null, null, null);
-                    }
-                }
+            public boolean onQueryTextSubmit(String s) {
                 return false;
             }
 
-
-            public void callSearch(String query) {
-
-
+            @Override
+            public boolean onQueryTextChange(String s) {
+                if (binding.SearchBarLinearLayout.getVisibility() == View.VISIBLE) {
+                    updateEmployeeList();
+                }
+                return false;
             }
-
         });
+
+
         if (binding.EmployeeLinearLayout.getVisibility() == View.VISIBLE) {
             String[] columns = {"preferred_name"};
             updateEmployeeNamesUI(columns ,null,null,null,null,null);
         }
 
         return binding.getRoot();
+    }
+
+    private void updateEmployeeList() {
+        String[] columns = {"preferred_name"};
+        String selection = null;
+        List<String> selectionArgsList = new ArrayList<>();
+
+        CharSequence query = binding.EmployeeSearchBar.getQuery();
+        if (!TextUtils.isEmpty(query)) {
+            selection = "preferred_name LIKE ?";
+            selectionArgsList.add("%" + query.toString() + "%");
+        }
+
+        if (isTrainedChecked && isUntrainedChecked) {
+            if (selection != null) {
+                selection += " AND trained IN (?,?)";
+            } else {
+                selection = "trained IN (?,?)";
+            }
+            selectionArgsList.add("0");
+            selectionArgsList.add("1");
+        } else if (isTrainedChecked) {
+            if (selection != null) {
+                selection += " AND trained = ?";
+            } else {
+                selection = "trained = ?";
+            }
+            selectionArgsList.add("1");
+        } else if (isUntrainedChecked) {
+            if (selection != null) {
+                selection += " AND trained = ?";
+            } else {
+                selection = "trained = ?";
+            }
+            selectionArgsList.add("0");
+        }
+
+        String[] selectionArgs = selectionArgsList.toArray(new String[0]);
+        updateEmployeeNamesUI(columns, selection, selectionArgs, null, null, null);
     }
 
     private void slideIn(View view) {
