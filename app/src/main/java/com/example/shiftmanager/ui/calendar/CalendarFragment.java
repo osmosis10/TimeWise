@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.Image;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,9 +30,12 @@ import com.example.shiftmanager.ui.database.DatabaseHelper;
 
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -69,11 +74,23 @@ public class CalendarFragment extends Fragment {
 
     AutoCompleteTextView nightshift1;
     AutoCompleteTextView nightshift2;
-    ArrayAdapter<String> adapterNames;
+    ArrayAdapter<String> adapterDayShift1;
+    ArrayAdapter<String> adapterDayShift2;
+    ArrayAdapter<String> adapterNightShift1;
+    ArrayAdapter<String> adapterNightShift2;
 
     ImageButton assignBackButton;
 
     Button confirmButton;
+
+    boolean dayshift1trained = false;
+    boolean dayshift2trained = false;
+    boolean nightshift1trained = false;
+    boolean nightshift2trained = false;
+    private String dayshift1temp = null;
+    private String dayshift2temp = null;
+    private String nightshift1temp = null;
+    private String nightshift2temp = null;
 
 
     @Override
@@ -138,19 +155,24 @@ public class CalendarFragment extends Fragment {
                 String dbDay = String.format("%02d", Integer.parseInt(charDay.toString()));
 
                 String dbDate = curYear + "-" + curMonth + "-" + dbDay;
-                int currentMonth = getMonthoftheYear(curMonth, curYear);
+                int currentMonth = getMonthNum(curMonth);
 
-
-                Calendar localCalendar = Calendar.getInstance(Locale.ENGLISH);
+                Log.d("CurrentMonth", String.valueOf(currentMonth));
+                Calendar localCalendar = Calendar.getInstance(Locale.CANADA);
                 localCalendar.set(Integer.parseInt(curYear), currentMonth, Integer.parseInt(dayNum));
 
                 int dayOfWeek = localCalendar.get(Calendar.DAY_OF_WEEK);
 
+                String dateString = curYear + "-" + String.format("%02d", currentMonth) + "-" + dbDay;
+                int weekNumber = getWeekNumber(dateString);
+
+                Log.d("WeekNumber", String.valueOf(weekNumber));
+                Log.d("dateString", dateString);
 
                 Log.d("dow", getDayOfWeekString(dayOfWeek));
                 //databaseHelper.insertDate(dbDate);
 
-                Log.d("DbDay", "The date sire " + dbDate);
+                Log.d("DbDay", "The date sire " + dateString);
                 // Set onClickListener for the back button inside the AlertDialog
                 assignBackButton = addView.findViewById(R.id.exitAssign); // Initialize back button
                 assignBackButton.setOnClickListener(new View.OnClickListener() {
@@ -161,17 +183,29 @@ public class CalendarFragment extends Fragment {
                 });
 
                 // Drop down list variables
-                if (adapterNames == null) {
+                if (adapterDayShift1 == null) {
                     // Drop down list variables
-                    String[] columns = {"preferred_name"};
-                    List<String> employeeNames = databaseHelper.getAllEmployeePreferredNames(columns, null, null,null,null,null);
-                    employeeNames.add(0, "");
+                   adapterDayShift1 = setupAdapters(dateString, "morning");
 
-                    String[] names = employeeNames.toArray(new String[employeeNames.size()]);
-
-                    // Create the adapterNames only once
-                    adapterNames = new ArrayAdapter<>(requireContext(), R.layout.list_names, names);
                 }
+                // Drop down list variables
+//                if (adapterDayShift2 == null) {
+//                    // Drop down list variables
+//                    adapterDayShift2 = setupAdapters(dateString, "morning");
+//
+//                }
+                if (adapterNightShift1 == null) {
+                    // Drop down list variables
+                    adapterNightShift1 = setupAdapters(dateString, "afternoon");
+
+                }
+//                if (adapterNightShift2 == null) {
+//                    // Drop down list variables
+//                    adapterNightShift2 = setupAdapters(dateString, "afternoon");
+//
+//
+//
+//                }
 
                 // Set's view for the shift dropdowns
                 dayShift1 = addView.findViewById(R.id.dayShift1);
@@ -179,7 +213,7 @@ public class CalendarFragment extends Fragment {
                 nightshift1 = addView.findViewById(R.id.nightShift1);
                 nightshift2 = addView.findViewById(R.id.nightShift2);
 
-
+                //databaseHelper.removeAllDailyAssignments();
 
                 // DROP DOWN PERSISTENCE
                 // Retrieve the saved values from SharedPreferences after selection has occured
@@ -188,10 +222,10 @@ public class CalendarFragment extends Fragment {
 //                String savedDayShift2 = preferences.getString("dayShift2_" + Date, "");
 //                String savedNightShift1 = preferences.getString("nightShift1_" + Date, "");
 //                String savedNightShift2 = preferences.getString("nightShift2_" + Date, "");
-                String savedDayShift1 = databaseHelper.getShiftValues("dayshift1_employee", dbDate);
-                String savedDayShift2 = databaseHelper.getShiftValues("dayshift2_employee", dbDate);
-                String savedNightShift1 = databaseHelper.getShiftValues("nightshift1_employee", dbDate);
-                String savedNightShift2 = databaseHelper.getShiftValues("nightshift2_employee", dbDate);
+                String savedDayShift1 = databaseHelper.getShiftValues("dayshift1_employee", dateString);
+                String savedDayShift2 = databaseHelper.getShiftValues("dayshift2_employee", dateString);
+                String savedNightShift1 = databaseHelper.getShiftValues("nightshift1_employee", dateString);
+                String savedNightShift2 = databaseHelper.getShiftValues("nightshift2_employee", dateString);
                 // Set the saved values in the AutoCompleteTextViews
 
                 dayShift1.getText().clear();
@@ -199,44 +233,145 @@ public class CalendarFragment extends Fragment {
                 nightshift1.getText().clear();
                 nightshift2.getText().clear();
 
-                if (!savedDayShift1.isEmpty()) {
+                if (savedDayShift1 != null && !savedDayShift1.isEmpty()) {
                     dayShift1.setText(savedDayShift1);
 
                 }
 
-                if (!savedDayShift2.isEmpty()) {
+                if (savedDayShift2 != null && !savedDayShift2.isEmpty()) {
                     dayShift2.setText(savedDayShift2);
                 }
 
-                if (!savedNightShift1.isEmpty()) {
+                if (savedNightShift1 != null && !savedNightShift1.isEmpty()) {
                     nightshift1.setText(savedNightShift1);
                 }
 
-                if (!savedNightShift2.isEmpty()) {
+                if (savedNightShift2 != null && !savedNightShift2.isEmpty()) {
                     nightshift2.setText(savedNightShift2);
                 }
 
 
                 // Set database employee names to shift dropdown menu's (creates list)
-                dayShift1.setAdapter(adapterNames);
-                dayShift2.setAdapter(adapterNames);
-                nightshift1.setAdapter(adapterNames);
-                nightshift2.setAdapter(adapterNames);
+                dayShift1.setAdapter(adapterDayShift1);
+                dayShift2.setAdapter(adapterDayShift1);
+                nightshift1.setAdapter(adapterNightShift1);
+                nightshift2.setAdapter(adapterNightShift1);
 
                 dayShift1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                        String item = adapterView.getItemAtPosition(position).toString();
+                        String item = dayShift1.getText().toString();
+                        String item2 = dayShift2.getText().toString();
+                        Log.d("item1", item + " " + item2);
+                        //Log.d("item", item);
                         Toast.makeText(requireContext(), "Employee: " + item, Toast.LENGTH_SHORT).show();
+                        String[] column1 = {"dayshift1_employee"};
+                        String[] column2 = {"dayshift2_employee"};
+                        String currEmployee = databaseHelper.getSingleDailyAssignmentsEmployee(column1,"date = ?",new String[]{dateString});
+                        String nextEmployee = databaseHelper.getSingleDailyAssignmentsEmployee(column2,"date = ?",new String[]{dateString});
+                        Log.d("CurrentEmployees", currEmployee + " " + nextEmployee);
+                        List<String> dayShiftNames = null;
+                        String[] employeeColumn = {"dayshift1_employee", "dayshift2_employee",
+                                "nightshift1_employee", "nightshift2_employee"};
+                        List<String> employees = databaseHelper.getDailyAssignmentsEmployee(employeeColumn, "date = ?", new String[]{dateString});
+                        if (currEmployee != null && !item.equals(currEmployee)) {
+                            String[] columns = {"preferred_name"};
+                            String empSelection = "(monday_morning = ? OR " +
+                                    "tuesday_morning = ? OR " +
+                                    "wednesday_morning = ? OR " +
+                                    "thursday_morning = ? OR " +
+                                    "friday_morning = ?)";
+                            if (employees != null && !employees.isEmpty()) {
+                                Log.d("Im in here", "Now");
+                                List<String> selectionArgsList = new ArrayList<>(Arrays.asList("1", "1", "1", "1", "1"));
+                                for (String employee : employees) {
+                                    if (employee.equals(currEmployee)) {
+                                        empSelection += " AND preferred_name != ?";
+                                        selectionArgsList.add(item);
+                                        Log.d("EmployeeStuff", employee);
+                                    } else if (employee.equals(nextEmployee)) {
+                                        empSelection += " AND preferred_name != ?";
+                                        selectionArgsList.add(item2);
+                                        Log.d("EmployeeStuff", employee);
+                                    } else {
+                                        empSelection += " AND preferred_name != ?";
+                                        Log.d("EmployeeStuff", employee);
+                                        selectionArgsList.add(employee);
+                                    }
+                                }
+                                String[] selectionArgs = selectionArgsList.toArray(new String[0]);
+
+                                dayShiftNames = databaseHelper.getAllEmployeePreferredNames(columns, empSelection, selectionArgs, null, null, null);
+                            }
+                            if (adapterDayShift1 == null) {
+                                adapterDayShift1 = new ArrayAdapter<>(requireContext(), R.layout.list_names, dayShiftNames);
+                                dayShift1.setAdapter(adapterDayShift1);
+                            } else {
+                                adapterDayShift1.clear();
+                                adapterDayShift1.addAll(dayShiftNames);
+                                adapterDayShift1.notifyDataSetChanged();
+                                dayShift1.setAdapter(adapterDayShift1);
+                            }
+                        }
                     }
                 });
+//
+
 
                 // Listener for Dayshift 2
                 dayShift2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                        String item = adapterView.getItemAtPosition(position).toString();
+                        String item = dayShift1.getText().toString();
+                        String item2 = dayShift2.getText().toString();
+                        Log.d("item2", item + " " + item2);
                         Toast.makeText(requireContext(), "Employee: " + item, Toast.LENGTH_SHORT).show();
+                        String[] column1 = {"dayshift2_employee"};
+                        String[] column2 = {"dayshift1_employee"};
+                        String currEmployee = databaseHelper.getSingleDailyAssignmentsEmployee(column1,"date = ?",new String[]{dateString});
+                        String previousEmployee = databaseHelper.getSingleDailyAssignmentsEmployee(column2,"date = ?",new String[]{dateString});
+                        List<String> dayShiftNames = null;
+                        String[] employeeColumn = {"dayshift1_employee", "dayshift2_employee",
+                                "nightshift1_employee", "nightshift2_employee"};
+                        List<String> employees = databaseHelper.getDailyAssignmentsEmployee(employeeColumn, "date = ?", new String[]{dateString});
+                        if (currEmployee != null && !item2.equals(currEmployee)) {
+                            String[] columns = {"preferred_name"};
+                            String empSelection = "(monday_morning = ? OR " +
+                                    "tuesday_morning = ? OR " +
+                                    "wednesday_morning = ? OR " +
+                                    "thursday_morning = ? OR " +
+                                    "friday_morning = ?)";
+                            if (employees != null && !employees.isEmpty()) {
+                                List<String> selectionArgsList = new ArrayList<>(Arrays.asList("1", "1", "1", "1", "1"));
+                                for (String employee : employees) {
+                                    if (employee.equals(currEmployee)) {
+                                        empSelection += " AND preferred_name != ?";
+                                        selectionArgsList.add(item2);
+                                        Log.d("EmployeeStuff", employee);
+                                    } else if (employee.equals(previousEmployee)) {
+                                        empSelection += " AND preferred_name != ?";
+                                        selectionArgsList.add(item);
+                                        Log.d("EmployeeStuff", employee);
+                                    } else {
+                                        empSelection += " AND preferred_name != ?";
+                                        Log.d("EmployeeStuff", employee);
+                                        selectionArgsList.add(employee);
+                                    }
+                                }
+                                String[] selectionArgs = selectionArgsList.toArray(new String[0]);
+
+                                dayShiftNames = databaseHelper.getAllEmployeePreferredNames(columns, empSelection, selectionArgs, null, null, null);
+                            }
+                            if (adapterDayShift1 == null) {
+                                adapterDayShift1 = new ArrayAdapter<>(requireContext(), R.layout.list_names, dayShiftNames);
+                                dayShift2.setAdapter(adapterDayShift1);
+                            } else {
+                                adapterDayShift1.clear();
+                                adapterDayShift1.addAll(dayShiftNames);
+                                adapterDayShift1.notifyDataSetChanged();
+                                dayShift2.setAdapter(adapterDayShift1);
+                            }
+                        }
                     }
                 });
 
@@ -244,8 +379,56 @@ public class CalendarFragment extends Fragment {
                 nightshift1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                        String item = adapterView.getItemAtPosition(position).toString();
+                        String item = nightshift1.getText().toString();
+                        String item2 = nightshift2.getText().toString();
+                        Log.d("item", item);
                         Toast.makeText(requireContext(), "Employee: " + item, Toast.LENGTH_SHORT).show();
+                        String[] column1 = {"nightshift1_employee"};
+                        String[] column2 = {"nightshift2_employee"};
+                        String currEmployee = databaseHelper.getSingleDailyAssignmentsEmployee(column1,"date = ?",new String[]{dateString});
+                        String nextEmployee = databaseHelper.getSingleDailyAssignmentsEmployee(column2,"date = ?",new String[]{dateString});
+                        List<String> nightShiftNames = null;
+                        String[] employeeColumn = {"dayshift1_employee", "dayshift2_employee",
+                                "nightshift1_employee", "nightshift2_employee"};
+                        List<String> employees = databaseHelper.getDailyAssignmentsEmployee(employeeColumn, "date = ?", new String[]{dateString});
+                        if (currEmployee != null && !item.equals(currEmployee)) {
+                            String[] columns = {"preferred_name"};
+                            String empSelection = "(monday_afternoon = ? OR " +
+                                    "tuesday_afternoon = ? OR " +
+                                    "wednesday_afternoon = ? OR " +
+                                    "thursday_afternoon = ? OR " +
+                                    "friday_afternoon = ?)";
+                            if (employees != null && !employees.isEmpty()) {
+                                List<String> selectionArgsList = new ArrayList<>(Arrays.asList("1", "1", "1", "1", "1"));
+                                for (String employee : employees) {
+                                    if (employee.equals(currEmployee)) {
+                                        empSelection += " AND preferred_name != ?";
+                                        selectionArgsList.add(item);
+                                        Log.d("EmployeeStuff", employee);
+                                    } else if (employee.equals(nextEmployee)) {
+                                        empSelection += " AND preferred_name != ?";
+                                        selectionArgsList.add(item2);
+                                        Log.d("EmployeeStuff", employee);
+                                    } else {
+                                        empSelection += " AND preferred_name != ?";
+                                        Log.d("EmployeeStuff", employee);
+                                        selectionArgsList.add(employee);
+                                    }
+                                }
+                                String[] selectionArgs = selectionArgsList.toArray(new String[0]);
+
+                                nightShiftNames = databaseHelper.getAllEmployeePreferredNames(columns, empSelection, selectionArgs, null, null, null);
+                            }
+                            if (adapterNightShift1 == null) {
+                                adapterNightShift1 = new ArrayAdapter<>(requireContext(), R.layout.list_names, nightShiftNames);
+                                nightshift1.setAdapter(adapterNightShift1);
+                            } else {
+                                adapterNightShift1.clear();
+                                adapterNightShift1.addAll(nightShiftNames);
+                                adapterNightShift1.notifyDataSetChanged();
+                                nightshift1.setAdapter(adapterNightShift1);
+                            }
+                        }
                     }
                 });
 
@@ -253,8 +436,56 @@ public class CalendarFragment extends Fragment {
                 nightshift2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                        String item = adapterView.getItemAtPosition(position).toString();
+                        String item = nightshift1.getText().toString();
+                        String item2 = nightshift2.getText().toString();
+                        Log.d("item", item);
                         Toast.makeText(requireContext(), "Employee: " + item, Toast.LENGTH_SHORT).show();
+                        String[] column1 = {"nightshift2_employee"};
+                        String[] column2 = {"nightshift1_employee"};
+                        String currEmployee = databaseHelper.getSingleDailyAssignmentsEmployee(column1,"date = ?",new String[]{dateString});
+                        String prevEmployee = databaseHelper.getSingleDailyAssignmentsEmployee(column2,"date = ?",new String[]{dateString});
+                        List<String> dayShiftNames = null;
+                        String[] employeeColumn = {"dayshift1_employee", "dayshift2_employee",
+                                "nightshift1_employee", "nightshift2_employee"};
+                        List<String> employees = databaseHelper.getDailyAssignmentsEmployee(employeeColumn, "date = ?", new String[]{dateString});
+                        if (currEmployee != null && !item.equals(currEmployee)) {
+                            String[] columns = {"preferred_name"};
+                            String empSelection = "(monday_afternoon = ? OR " +
+                                    "tuesday_afternoon = ? OR " +
+                                    "wednesday_afternoon = ? OR " +
+                                    "thursday_afternoon = ? OR " +
+                                    "friday_afternoon = ?)";
+                            if (employees != null && !employees.isEmpty()) {
+                                List<String> selectionArgsList = new ArrayList<>(Arrays.asList("1", "1", "1", "1", "1"));
+                                for (String employee : employees) {
+                                    if (employee.equals(currEmployee)) {
+                                        empSelection += " AND preferred_name != ?";
+                                        selectionArgsList.add(item2);
+                                        Log.d("EmployeeStuff", employee);
+                                    } else if (employee.equals(prevEmployee)) {
+                                        empSelection += " AND preferred_name != ?";
+                                        selectionArgsList.add(item);
+                                        Log.d("EmployeeStuff", employee);
+                                    } else {
+                                        empSelection += " AND preferred_name != ?";
+                                        Log.d("EmployeeStuff", employee);
+                                        selectionArgsList.add(employee);
+                                    }
+                                }
+                                String[] selectionArgs = selectionArgsList.toArray(new String[0]);
+
+                                dayShiftNames = databaseHelper.getAllEmployeePreferredNames(columns, empSelection, selectionArgs, null, null, null);
+                            }
+                            if (adapterNightShift1 == null) {
+                                adapterNightShift1 = new ArrayAdapter<>(requireContext(), R.layout.list_names, dayShiftNames);
+                                nightshift2.setAdapter(adapterNightShift1);
+                            } else {
+                                adapterNightShift1.clear();
+                                adapterNightShift1.addAll(dayShiftNames);
+                                adapterNightShift1.notifyDataSetChanged();
+                                nightshift2.setAdapter(adapterNightShift1);
+                            }
+                        }
                     }
                 });
 
@@ -272,8 +503,8 @@ public class CalendarFragment extends Fragment {
                         String nightSelection1 = nightshift1.getText().toString();
                         String nightSelection2 = nightshift2.getText().toString();
 
-                        databaseHelper.insertOrUpdateDailyAssignments(dbDate, daySelection1, daySelection2, null,
-                                nightSelection1, nightSelection2, null, null, null);
+                        databaseHelper.insertOrUpdateDailyAssignments(dateString, daySelection1, daySelection2, null,
+                                nightSelection1, nightSelection2, null, null, null, weekNumber);
 
 //                        SharedPreferences preferences = requireContext().getSharedPreferences("Preferences", Context.MODE_PRIVATE);
 //                        SharedPreferences.Editor editor = preferences.edit();
@@ -326,20 +557,67 @@ public class CalendarFragment extends Fragment {
         return root;
     }
 
-    private static int getMonthoftheYear(String month, String curYear) {
+    private ArrayAdapter<String> setupAdapters(String date, String time) {
+        String[] employeeColumn = {"dayshift1_employee", "dayshift2_employee",
+                "nightshift1_employee", "nightshift2_employee"};
+        List<String> employees = databaseHelper.getDailyAssignmentsEmployee(employeeColumn, "date = ?", new String[]{date});
 
-            DateFormatSymbols symbols = new DateFormatSymbols();
+        String[] columns = {"preferred_name"};
+        String selection = "(monday_" + time + " = ? OR " +
+                "tuesday_" + time + " = ? OR " +
+                "wednesday_" + time + " = ? OR " +
+                "thursday_" + time + " = ? OR " +
+                "friday_" + time + " = ?)";
+        if (employees != null && !employees.isEmpty()) {
+            List<String> selectionArgsList = new ArrayList<>(Arrays.asList("1", "1", "1", "1", "1"));
+            for (String employee : employees) {
+                selection += " AND preferred_name != ?";
+                selectionArgsList.add(employee);
+            }
+            String[] selectionArgs = selectionArgsList.toArray(new String[0]);
+            List<String> dayShiftNames = databaseHelper.getAllEmployeePreferredNames(columns, selection, selectionArgs,null,null,null);
+            // Create the adapterNames only once
+            return new ArrayAdapter<>(requireContext(), R.layout.list_names, dayShiftNames);
+        } else {
+            String[] selectionArgs = new String[]{"1", "1", "1", "1", "1",};
+            List<String> dayShiftNames = databaseHelper.getAllEmployeePreferredNames(columns, selection, selectionArgs, null, null, null);
 
-            String[] shortMonths = symbols.getShortMonths();
+            // Create the adapterNames only once
+            return new ArrayAdapter<>(requireContext(), R.layout.list_names, dayShiftNames);
+        }
+    }
 
-            for (int i = 0; i < shortMonths.length; i++) {
-                if (shortMonths[i].equalsIgnoreCase(month)) {
-                    return i + 1;
-                }
+    private static int getMonthNum(String month) {
+
+            SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM", Locale.ENGLISH);
+
+
+            try {
+                Date date = monthFormat.parse(month);
+                return date.getMonth() + 1;
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return -1;
             }
 
-            return -1;
+    }
 
+    public static int getWeekNumber(String dateString) {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = dateFormat.parse(dateString);
+
+            Calendar locCalendar = Calendar.getInstance();
+            locCalendar.setFirstDayOfWeek(Calendar.MONDAY);
+            locCalendar.setTime(date);
+
+            int weekNumber = locCalendar.get(Calendar.WEEK_OF_YEAR);
+
+            return weekNumber;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
     private String getDayOfWeekString(int dayOfWeek) {
         switch (dayOfWeek) {
