@@ -52,6 +52,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
+
     // Shift Table
     private static final String TABLE_SHIFT = "shifts";
     private static final String COL_SHIFT_ID = "id";
@@ -726,24 +727,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public int getOccurencesDailyAssignment(String date) {
+    public int getOccurencesDailyAssignment(String name, int week_num) {
         SQLiteDatabase db = getReadableDatabase();
 
         Cursor cursor = null;
         int count = 0;
 
+
         try {
-            String selection = "date = ? AND ((" +
-                    "dayshift1_employee IS NOT NULL AND dayshift1_employee != '') OR  " +
-                    "dayshift2_employee IS NOT NULL AND dayshift2_employee != '') OR  " +
-                    "dayshift3_employee IS NOT NULL AND dayshift3_employee != '') OR  " +
-                    "nightshift1_employee IS NOT NULL AND dayshift1_employee != '') OR  " +
-                    "nightshift2_employee IS NOT NULL AND dayshift2_employee != '') OR  " +
-                    "nightshift3_employee IS NOT NULL AND dayshift3_employee != ''))";
+//            String[] columns = {"dayshift1_employee",
+//                    "dayshift2_employee",
+//                    "dayshift3_employee",
+//                    "nightshift1_employee",
+//                    "nightshift2_employee",
+//                    "nightshift3_employee",
+//                    "fullday1_employee",
+//                    "fullday2_employee"
+//            };
+            String selection = "week_num = ? AND (" +
+                    "dayshift1_employee = ? OR " +
+                    "dayshift2_employee = ? OR " +
+                    "dayshift3_employee = ? OR " +
+                    "nightshift1_employee = ? OR " +
+                    "nightshift2_employee = ? OR " +
+                    "nightshift3_employee = ? OR " +
+                    "fullday1_employee = ? OR " +
+                    "fullday2_employee = ?)";
 
-            String[] selectionArgs = new String[]{date};
+            String[] selectionArgs = new String[]{
+                    String.valueOf(week_num),
+                    name,name,name,name,name,name,name,name};
 
-            cursor = db.query(TABLE_DAILY_ASSIGNMENTS, null, selection, selectionArgs, null, null, null);
+            cursor = db.query(TABLE_DAILY_ASSIGNMENTS,
+                    null,
+                    selection,
+                    selectionArgs,
+                    null,
+                    null,
+                    null);
 
             if (cursor != null && cursor.moveToFirst()) {
                 count = cursor.getCount();
@@ -754,6 +775,121 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
         }
         return count;
+    }
+
+    public boolean employeeMinimumSchedule(int week_num) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = null;
+
+        try {
+            String[] employeeColumns = {"preferred_name"};
+            cursor = db.query(
+                    TABLE_EMPLOYEE,
+                    employeeColumns,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+            );
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    @SuppressLint("Range") String employeeName = cursor.getString(cursor.getColumnIndex("preferred_name"));
+
+                    if (!isEmployeeScheduledForWeek(employeeName, week_num)) {
+                        return false;
+                    }
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return true;
+    }
+
+    public List<String> getUnscheduledEmployeeForWeek(int week_num) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = null;
+        List<String> unscheduledEmployees = new ArrayList<>();
+
+        try {
+            String[] column = {"preferred_name"};
+            cursor = db.query(
+                    TABLE_EMPLOYEE,
+                    column,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+            );
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    @SuppressLint("Range") String employeeName = cursor.getString(cursor.getColumnIndex("preferred_name"));
+
+                    if (!isEmployeeScheduledForWeek(employeeName, week_num)) {
+                        unscheduledEmployees.add(employeeName);
+                    }
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return unscheduledEmployees;
+    }
+
+    private boolean isEmployeeScheduledForWeek(String preferred_name, int week_num) {
+        SQLiteDatabase db = getReadableDatabase();
+        String[] columns = {"dayshift1_employee",
+                "dayshift2_employee",
+                "dayshift3_employee",
+                "nightshift1_employee",
+                "nightshift2_employee",
+                "nightshift3_employee",
+                "fullday1_employee",
+                "fullday2_employee"
+        };
+        StringBuilder selection = new StringBuilder();
+        selection.append((TABLE_DAILY_ASSIGNMENTS)).append(".week_num = ? AND (");
+
+        List<String> selectionArgsList = new ArrayList<>();
+        selectionArgsList.add(String.valueOf(week_num));
+
+        for (String col : columns) {
+            selection.append(col).append(" = ? OR ");
+            selectionArgsList.add(preferred_name);
+        }
+
+        // Remove the trailing " OR "
+        selection.delete(selection.length() - 4, selection.length());
+        selection.append(")");
+
+        String[] selectionArgs = selectionArgsList.toArray(new String[0]);
+
+        Cursor cursor = null;
+
+        try {
+            cursor = db.query(
+                    TABLE_DAILY_ASSIGNMENTS,
+                    null,
+                    selection.toString(),
+                    selectionArgs,
+                    null,
+                    null,
+                    null
+            );
+            return cursor != null && cursor.getCount() > 0;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
     }
     public long insertOrUpdateDailyAssignments(String date,
                                                String dayshift1_employee,
