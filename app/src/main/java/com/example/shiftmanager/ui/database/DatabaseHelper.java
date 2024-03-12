@@ -451,6 +451,79 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public boolean isExistsDailyAssignment(String preferredName, String date) {
+        SQLiteDatabase db = getReadableDatabase();
+        boolean preferredNameExists = false;
+
+        Log.d("Inside database", preferredName + " " + date);
+        String selection = "(" +
+                COL_DAILY_ASSIGNMENT_DAYSHIFT1_PREFERRED_NAME + " =? OR " +
+                COL_DAILY_ASSIGNMENT_DAYSHIFT2_PREFERRED_NAME + " =? OR " +
+                COL_DAILY_ASSIGNMENT_DAYSHIFT3_PREFERRED_NAME + " =? OR " +
+                COL_DAILY_ASSIGNMENT_NIGHTSHIFT1_PREFERRED_NAME + " =? OR " +
+                COL_DAILY_ASSIGNMENT_NIGHTSHIFT2_PREFERRED_NAME + " =? OR " +
+                COL_DAILY_ASSIGNMENT_NIGHTSHIFT3_PREFERRED_NAME + " =?) AND " +
+                COL_DAILY_ASSIGNMENT_DATE + " =?";
+        String[] selectionArgs = {
+                preferredName,
+                preferredName,
+                preferredName,
+                preferredName,
+                preferredName,
+                preferredName,
+                date
+        };
+
+
+        Cursor cursor = db.query(
+                TABLE_DAILY_ASSIGNMENTS,
+                null,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
+        if (cursor != null && cursor.moveToFirst()) {
+            preferredNameExists = true;
+            cursor.close();
+        }
+        Log.d("Inside database", String.valueOf(preferredNameExists));
+        return preferredNameExists;
+    }
+
+    public List<String> getDailyAssignmentsEmployee(String[] columns, String selection, String[] selectionArgs) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = null;
+        List<String> results = new ArrayList<>();
+        try {
+        cursor = db.query(
+                TABLE_DAILY_ASSIGNMENTS,
+                columns,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                for (String column : columns) {
+                    int columnIndex = cursor.getColumnIndex(column);
+                    results.add(cursor.getString(columnIndex));
+                }
+            } while (cursor.moveToNext());
+        }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return results;
+    }
     public List<String> getEmployeeInformation(String employeePreferredName) {
         SQLiteDatabase db = getReadableDatabase();
         List<String> employeeInformation = new ArrayList<>();
