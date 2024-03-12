@@ -130,7 +130,7 @@
                 android:id="@+id/AddEmployeeEmail"
                 android:layout_width="86dp"
                 android:layout_height="wrap_content"
-                android:text="Email"
+                android:text="Email *"
                 android:textColor="#000000"
                 android:textSize="24sp"
                 android:textStyle="bold"
