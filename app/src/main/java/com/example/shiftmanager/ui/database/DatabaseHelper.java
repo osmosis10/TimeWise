@@ -493,6 +493,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return preferredNameExists;
     }
 
+    public long updateDailyAssignmentsEmployee(String[] column, String selection, String[] selectionArgs, String employee) {
+        SQLiteDatabase db = getWritableDatabase();
+
+
+        Cursor cursor = db.query(
+                TABLE_DAILY_ASSIGNMENTS,
+                column,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null);
+        long rowId;
+
+        ContentValues values = new ContentValues();
+        values.put(column[0], employee);
+
+        if (cursor != null && cursor.moveToFirst()) {
+
+            rowId = db.update(
+                    TABLE_DAILY_ASSIGNMENTS,
+                    values,
+                    selection,
+                    selectionArgs);
+        } else {
+            values.put(COL_DAILY_ASSIGNMENT_DATE, selectionArgs[0]);
+            rowId = db.insert(TABLE_DAILY_ASSIGNMENTS, null, values);
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return rowId;
+    }
+
     public List<String> getDailyAssignmentsEmployee(String[] columns, String selection, String[] selectionArgs) {
         SQLiteDatabase db = getReadableDatabase();
 
@@ -523,6 +557,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
         }
         return results;
+    }
+    public String getSingleDailyAssignmentsEmployee(String[] columns, String selection, String[] selectionArgs) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = null;
+        String result = null;
+        try {
+            cursor = db.query(
+                    TABLE_DAILY_ASSIGNMENTS,
+                    columns,
+                    selection,
+                    selectionArgs,
+                    null,
+                    null,
+                    null
+            );
+
+            if (cursor != null && cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndex(columns[0]);
+                result = cursor.getString(columnIndex);
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return result;
     }
     public List<String> getEmployeeInformation(String employeePreferredName) {
         SQLiteDatabase db = getReadableDatabase();
