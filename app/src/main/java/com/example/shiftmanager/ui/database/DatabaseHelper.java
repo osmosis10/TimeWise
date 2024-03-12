@@ -683,5 +683,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return count; // Return the count of updated rows
     }
 
+    public int getOccurencesDailyAssignment(String date) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = null;
+        int count = 0;
+
+        try {
+            String selection = "date = ? AND ((" +
+                    "dayshift1_employee IS NOT NULL AND dayshift1_employee != '') OR  " +
+                    "dayshift2_employee IS NOT NULL AND dayshift2_employee != '') OR  " +
+                    "dayshift3_employee IS NOT NULL AND dayshift3_employee != '') OR  " +
+                    "nightshift1_employee IS NOT NULL AND dayshift1_employee != '') OR  " +
+                    "nightshift2_employee IS NOT NULL AND dayshift2_employee != '') OR  " +
+                    "nightshift3_employee IS NOT NULL AND dayshift3_employee != ''))";
+
+            String[] selectionArgs = new String[]{date};
+
+            cursor = db.query(TABLE_DAILY_ASSIGNMENTS, null, selection, selectionArgs, null, null, null);
+
+            if (cursor != null && cursor.moveToFirst()) {
+                count = cursor.getCount();
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return count;
+    }
+
+
 
 }
