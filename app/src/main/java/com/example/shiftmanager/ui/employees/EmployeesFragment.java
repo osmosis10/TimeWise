@@ -110,6 +110,13 @@ public class EmployeesFragment extends Fragment {
         );
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Refresh your employee list here
+        updateEmployeeList();
+    }
+
     /*
     Insert the employee into our database
      */
