@@ -271,8 +271,7 @@ public class CalendarFragment extends Fragment {
                         String nextEmployee = databaseHelper.getSingleDailyAssignmentsEmployee(column2,"date = ?",new String[]{dateString});
                         Log.d("CurrentEmployees", currEmployee + " " + nextEmployee);
                         List<String> dayShiftNames = null;
-                        String[] employeeColumn = {"dayshift1_employee", "dayshift2_employee",
-                                "nightshift1_employee", "nightshift2_employee"};
+                        String[] employeeColumn = {"dayshift1_employee", "dayshift2_employee"};
                         List<String> employees = databaseHelper.getDailyAssignmentsEmployee(employeeColumn, "date = ?", new String[]{dateString});
                         if (currEmployee != null && !item.equals(currEmployee)) {
                             String[] columns = {"preferred_name"};
@@ -301,17 +300,52 @@ public class CalendarFragment extends Fragment {
                                 }
                                 String[] selectionArgs = selectionArgsList.toArray(new String[0]);
 
+                                Log.d("d1Selection", empSelection);
+                                Log.d("d1SelectionArgs", Arrays.toString(selectionArgs));
+
                                 dayShiftNames = databaseHelper.getAllEmployeePreferredNames(columns, empSelection, selectionArgs, null, null, null);
                             }
                             if (adapterDayShift1 == null) {
+                                Log.d("if adapter", item);
                                 adapterDayShift1 = new ArrayAdapter<>(requireContext(), R.layout.list_names, dayShiftNames);
                                 dayShift1.setAdapter(adapterDayShift1);
                             } else {
+                                Log.d("else adapter", item);
                                 adapterDayShift1.clear();
                                 adapterDayShift1.addAll(dayShiftNames);
                                 adapterDayShift1.notifyDataSetChanged();
                                 dayShift1.setAdapter(adapterDayShift1);
                             }
+                        } else {
+                            String[] columns = {"preferred_name"};
+                            String empSelection = "(monday_morning = ? OR " +
+                                    "tuesday_morning = ? OR " +
+                                    "wednesday_morning = ? OR " +
+                                    "thursday_morning = ? OR " +
+                                    "friday_morning = ?)";
+                            List<String> selectionArgsList = new ArrayList<>(Arrays.asList("1", "1", "1", "1", "1"));
+                            if (!item.isEmpty()) {
+                                empSelection += " AND preferred_name != ?";
+                                selectionArgsList.add(item);
+                            }
+                            if (!item2.isEmpty()) {
+                                empSelection += " AND preferred_name != ?";
+                                selectionArgsList.add(item2);
+                            }
+                            String[] selectionArgs = selectionArgsList.toArray(new String[0]);
+                            Log.d("d1Selection", empSelection);
+                            Log.d("d1SelectionArgs", Arrays.toString(selectionArgs));
+                            dayShiftNames = databaseHelper.getAllEmployeePreferredNames(columns, empSelection, selectionArgs, null, null, null);
+                        } if (adapterDayShift1 == null) {
+                            Log.d("if adapter", item);
+                            adapterDayShift1 = new ArrayAdapter<>(requireContext(), R.layout.list_names, dayShiftNames);
+                            dayShift1.setAdapter(adapterDayShift1);
+                        } else {
+                            Log.d("else adapter", item);
+                            adapterDayShift1.clear();
+                            adapterDayShift1.addAll(dayShiftNames);
+                            adapterDayShift1.notifyDataSetChanged();
+                            dayShift1.setAdapter(adapterDayShift1);
                         }
                     }
                 });
@@ -359,7 +393,8 @@ public class CalendarFragment extends Fragment {
                                     }
                                 }
                                 String[] selectionArgs = selectionArgsList.toArray(new String[0]);
-
+                                Log.d("d2Selection", empSelection);
+                                Log.d("d2SelectionArgs", Arrays.toString(selectionArgs));
                                 dayShiftNames = databaseHelper.getAllEmployeePreferredNames(columns, empSelection, selectionArgs, null, null, null);
                             }
                             if (adapterDayShift1 == null) {
@@ -371,6 +406,36 @@ public class CalendarFragment extends Fragment {
                                 adapterDayShift1.notifyDataSetChanged();
                                 dayShift2.setAdapter(adapterDayShift1);
                             }
+                        } else {
+                            String[] columns = {"preferred_name"};
+                            String empSelection = "(monday_morning = ? OR " +
+                                    "tuesday_morning = ? OR " +
+                                    "wednesday_morning = ? OR " +
+                                    "thursday_morning = ? OR " +
+                                    "friday_morning = ?)";
+                            List<String> selectionArgsList = new ArrayList<>(Arrays.asList("1", "1", "1", "1", "1"));
+                            if (!item2.isEmpty()) {
+                                empSelection += " AND preferred_name != ?";
+                                selectionArgsList.add(item2);
+                            }
+                            if (!item.isEmpty()) {
+                                empSelection += " AND preferred_name != ?";
+                                selectionArgsList.add(item);
+                            }
+                            String[] selectionArgs = selectionArgsList.toArray(new String[0]);
+                            Log.d("d2Selection", empSelection);
+                            Log.d("d2SelectionArgs", Arrays.toString(selectionArgs));
+                            dayShiftNames = databaseHelper.getAllEmployeePreferredNames(columns, empSelection, selectionArgs, null, null, null);
+                        } if (adapterDayShift1 == null) {
+                            Log.d("if adapter", item);
+                            adapterDayShift1 = new ArrayAdapter<>(requireContext(), R.layout.list_names, dayShiftNames);
+                            dayShift2.setAdapter(adapterDayShift1);
+                        } else {
+                            Log.d("else adapter", item);
+                            adapterDayShift1.clear();
+                            adapterDayShift1.addAll(dayShiftNames);
+                            adapterDayShift1.notifyDataSetChanged();
+                            dayShift2.setAdapter(adapterDayShift1);
                         }
                     }
                 });
@@ -428,9 +493,40 @@ public class CalendarFragment extends Fragment {
                                 adapterNightShift1.notifyDataSetChanged();
                                 nightshift1.setAdapter(adapterNightShift1);
                             }
+                        } else {
+                            String[] columns = {"preferred_name"};
+                            String empSelection = "(monday_morning = ? OR " +
+                                    "tuesday_morning = ? OR " +
+                                    "wednesday_morning = ? OR " +
+                                    "thursday_morning = ? OR " +
+                                    "friday_morning = ?)";
+                            List<String> selectionArgsList = new ArrayList<>(Arrays.asList("1", "1", "1", "1", "1"));
+                            if (!item.isEmpty()) {
+                                empSelection += " AND preferred_name != ?";
+                                selectionArgsList.add(item);
+                            }
+                            if (!item2.isEmpty()) {
+                                empSelection += " AND preferred_name != ?";
+                                selectionArgsList.add(item2);
+                            }
+                            String[] selectionArgs = selectionArgsList.toArray(new String[0]);
+                            Log.d("d1Selection", empSelection);
+                            Log.d("d1SelectionArgs", Arrays.toString(selectionArgs));
+                            nightShiftNames = databaseHelper.getAllEmployeePreferredNames(columns, empSelection, selectionArgs, null, null, null);
+                        } if (adapterNightShift1 == null) {
+                            Log.d("if adapter", item);
+                            adapterNightShift1 = new ArrayAdapter<>(requireContext(), R.layout.list_names, nightShiftNames);
+                            nightshift1.setAdapter(adapterNightShift1);
+                        } else {
+                            Log.d("else adapter", item);
+                            adapterNightShift1.clear();
+                            adapterNightShift1.addAll(nightShiftNames);
+                            adapterNightShift1.notifyDataSetChanged();
+                            nightshift1.setAdapter(adapterNightShift1);
                         }
                     }
                 });
+
 
                 // Listener for Nightshift 2
                 nightshift2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -444,7 +540,7 @@ public class CalendarFragment extends Fragment {
                         String[] column2 = {"nightshift1_employee"};
                         String currEmployee = databaseHelper.getSingleDailyAssignmentsEmployee(column1,"date = ?",new String[]{dateString});
                         String prevEmployee = databaseHelper.getSingleDailyAssignmentsEmployee(column2,"date = ?",new String[]{dateString});
-                        List<String> dayShiftNames = null;
+                        List<String> nightShiftNames = null;
                         String[] employeeColumn = {"dayshift1_employee", "dayshift2_employee",
                                 "nightshift1_employee", "nightshift2_employee"};
                         List<String> employees = databaseHelper.getDailyAssignmentsEmployee(employeeColumn, "date = ?", new String[]{dateString});
@@ -474,17 +570,47 @@ public class CalendarFragment extends Fragment {
                                 }
                                 String[] selectionArgs = selectionArgsList.toArray(new String[0]);
 
-                                dayShiftNames = databaseHelper.getAllEmployeePreferredNames(columns, empSelection, selectionArgs, null, null, null);
+                                nightShiftNames = databaseHelper.getAllEmployeePreferredNames(columns, empSelection, selectionArgs, null, null, null);
                             }
                             if (adapterNightShift1 == null) {
-                                adapterNightShift1 = new ArrayAdapter<>(requireContext(), R.layout.list_names, dayShiftNames);
+                                adapterNightShift1 = new ArrayAdapter<>(requireContext(), R.layout.list_names, nightShiftNames);
                                 nightshift2.setAdapter(adapterNightShift1);
                             } else {
                                 adapterNightShift1.clear();
-                                adapterNightShift1.addAll(dayShiftNames);
+                                adapterNightShift1.addAll(nightShiftNames);
                                 adapterNightShift1.notifyDataSetChanged();
                                 nightshift2.setAdapter(adapterNightShift1);
                             }
+                        } else {
+                            String[] columns = {"preferred_name"};
+                            String empSelection = "(monday_morning = ? OR " +
+                                    "tuesday_morning = ? OR " +
+                                    "wednesday_morning = ? OR " +
+                                    "thursday_morning = ? OR " +
+                                    "friday_morning = ?)";
+                            List<String> selectionArgsList = new ArrayList<>(Arrays.asList("1", "1", "1", "1", "1"));
+                            if (!item.isEmpty()) {
+                                empSelection += " AND preferred_name != ?";
+                                selectionArgsList.add(item);
+                            }
+                            if (!item2.isEmpty()) {
+                                empSelection += " AND preferred_name != ?";
+                                selectionArgsList.add(item2);
+                            }
+                            String[] selectionArgs = selectionArgsList.toArray(new String[0]);
+                            Log.d("d1Selection", empSelection);
+                            Log.d("d1SelectionArgs", Arrays.toString(selectionArgs));
+                            nightShiftNames = databaseHelper.getAllEmployeePreferredNames(columns, empSelection, selectionArgs, null, null, null);
+                        } if (adapterNightShift1 == null) {
+                            Log.d("if adapter", item);
+                            adapterNightShift1 = new ArrayAdapter<>(requireContext(), R.layout.list_names, nightShiftNames);
+                            nightshift2.setAdapter(adapterNightShift1);
+                        } else {
+                            Log.d("else adapter", item);
+                            adapterNightShift1.clear();
+                            adapterNightShift1.addAll(nightShiftNames);
+                            adapterNightShift1.notifyDataSetChanged();
+                            nightshift2.setAdapter(adapterNightShift1);
                         }
                     }
                 });
