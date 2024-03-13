@@ -915,14 +915,47 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long rowId;
 
         ContentValues values = new ContentValues();
-        values.put(COL_DAILY_ASSIGNMENT_DAYSHIFT1_PREFERRED_NAME, dayshift1_employee);
-        values.put(COL_DAILY_ASSIGNMENT_DAYSHIFT2_PREFERRED_NAME, dayshift2_employee);
-        values.put(COL_DAILY_ASSIGNMENT_DAYSHIFT3_PREFERRED_NAME, dayshift3_employee);
-        values.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT1_PREFERRED_NAME, nightshift1_employee);
-        values.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT2_PREFERRED_NAME, nightshift2_employee);
-        values.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT3_PREFERRED_NAME, nightshift3_employee);
-        values.put(COL_DAILY_ASSIGNMENT_FULLDAY1_PREFERRED_NAME, fulldayshift1_employee);
-        values.put(COL_DAILY_ASSIGNMENT_FULLDAY2_PREFERRED_NAME, fulldayshift2_employee);
+        if (dayshift1_employee != null && dayshift1_employee.isEmpty()) {
+            values.put(COL_DAILY_ASSIGNMENT_DAYSHIFT1_PREFERRED_NAME, (String) null);
+        } else {
+            values.put(COL_DAILY_ASSIGNMENT_DAYSHIFT1_PREFERRED_NAME, dayshift1_employee);
+        }
+        if (dayshift2_employee != null && dayshift2_employee.isEmpty()) {
+            values.put(COL_DAILY_ASSIGNMENT_DAYSHIFT2_PREFERRED_NAME, (String) null);
+        } else {
+            values.put(COL_DAILY_ASSIGNMENT_DAYSHIFT2_PREFERRED_NAME, dayshift2_employee);
+        }
+        if (dayshift3_employee != null && dayshift3_employee.isEmpty()) {
+            values.put(COL_DAILY_ASSIGNMENT_DAYSHIFT3_PREFERRED_NAME, (String) null);
+        } else {
+            values.put(COL_DAILY_ASSIGNMENT_DAYSHIFT3_PREFERRED_NAME, dayshift3_employee);
+        }
+        if (nightshift1_employee != null && nightshift1_employee.isEmpty()) {
+            values.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT1_PREFERRED_NAME, (String) null);
+        } else {
+            values.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT1_PREFERRED_NAME, nightshift1_employee);
+        }
+        if (nightshift2_employee != null && nightshift2_employee.isEmpty()) {
+            values.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT2_PREFERRED_NAME, (String) null);
+        } else {
+            values.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT2_PREFERRED_NAME, nightshift2_employee);
+        }
+        if (nightshift3_employee != null && nightshift3_employee.isEmpty()) {
+            values.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT3_PREFERRED_NAME, (String) null);
+        } else {
+            values.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT3_PREFERRED_NAME, nightshift3_employee);
+        }
+        if (fulldayshift1_employee != null && fulldayshift1_employee.isEmpty()) {
+            values.put(COL_DAILY_ASSIGNMENT_FULLDAY1_PREFERRED_NAME, (String) null);
+        } else {
+            values.put(COL_DAILY_ASSIGNMENT_FULLDAY1_PREFERRED_NAME, fulldayshift1_employee);
+        }
+        if (fulldayshift2_employee != null && fulldayshift2_employee.isEmpty()) {
+            values.put(COL_DAILY_ASSIGNMENT_FULLDAY2_PREFERRED_NAME, (String) null);
+        } else {
+            values.put(COL_DAILY_ASSIGNMENT_FULLDAY2_PREFERRED_NAME, fulldayshift2_employee);
+        }
+
         values.put(COL_DAILY_ASSIGNMENT_WEEKNUM, week_num);
        if (cursor != null && cursor.moveToFirst()) {
 
