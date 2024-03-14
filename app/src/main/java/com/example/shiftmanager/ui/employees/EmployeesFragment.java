@@ -60,6 +60,7 @@ public class EmployeesFragment extends Fragment {
         //dbHelper.removeAllEmployees();
         //dbHelper.insertRandomEmployees();
         //dbHelper.insertRandomEmployees();
+        //dbHelper.makeEmployees();
         /*
         employeesViewModel = new ViewModelProvider(this).get(EmployeesViewModel.class);
         employeesViewModel.getCleanAndPopulateComplete().observe(this, cleanAndPopulateCompleted -> {

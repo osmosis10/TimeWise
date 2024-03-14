@@ -16,7 +16,7 @@ import java.util.Random;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "schedulingdb.db";
-    private static final int DATABASE_VERSION = 20;
+    private static final int DATABASE_VERSION = 21;
     private static final String TABLE_EMPLOYEE = "employees";
     // Employee Table
     private static final String COL_EMPLOYEE_ID = "id";
@@ -45,8 +45,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COL_EMPLOYEE_FRIDAY_MORNING = "friday_morning";
     private static final String COL_EMPLOYEE_FRIDAY_AFTERNOON = "friday_afternoon";
 
-    private static final String COL_EMPLOYEE_SATURDAY = "saturday";
-    private static final String COL_EMPLOYEE_SUNDAY = "sunday";
+    private static final String COL_EMPLOYEE_SATURDAY = "saturday_fullday";
+    private static final String COL_EMPLOYEE_SUNDAY = "sunday_fullday";
 
     private static final String COL_EMPLOYEE_TRAINED = "trained";
 
@@ -288,6 +288,52 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     randBool, randBool,randBool,randBool,randBool,
                     randBool,randBool, randBool, randBool);
         }
+
+    }
+
+    public void makeEmployees() {
+        // Mornings
+        insertEmployee("John", "Doe", "Johnny", "780-292-2020", "john@example.com", "10-02-2024",
+                true, false, true, false, true, false, true, false, true, false, true, false, true);
+
+        insertEmployee("Jane", "Smith", "Janie", "780-292-2020", "jane@example.com", "10-02-2024",
+                false, true, false, true, false, true, false, true, false, true, false, true, false);
+
+        insertEmployee("Alice", "Johnson", "Ally", "780-292-2020", "alice@example.com", "10-02-2024",
+                true, true, false, false, true, true, false, false, true, true, false, false, true);
+
+        insertEmployee("Bob", "Williams", "Bobby", "780-292-2020", "bob@example.com", "10-02-2024",
+                false, true, true, false, false, true, true, false, false, true, true, false, false);
+
+        insertEmployee("Emily", "Brown", "Em", "780-292-2020", "emily@example.com", "10-02-2024",
+                true, false, true, true, false, false, true, true, false, false, true, true, false);
+
+       // Afternoons
+        insertEmployee("David", "Taylor", "Dave", "780-292-2020", "david@example.com", "10-02-2024",
+                false, true, false, true, false, true, false, true, false, true, false, true, false);
+
+        insertEmployee("Sarah", "Anderson", "Sar", "780-292-2020", "sarah@example.com", "10-02-2024",
+                true, false, true, false, true, false, true, false, true, false, true, false, true);
+
+        insertEmployee("Matthew", "Thomas", "Matt", "780-292-2020", "matthew@example.com", "10-02-2024",
+                false, true, false, true, false, true, false, true, false, true, false, true, false);
+
+        insertEmployee("Olivia", "Wilson", "Liv", "780-292-2020", "olivia@example.com", "10-02-2024",
+                true, false, true, false, true, false, true, false, true, false, true, false, true);
+
+        insertEmployee("Sophia", "Martinez", "Soph", "780-292-2020", "sophia@example.com", "10-02-2024",
+                false, true, false, true, false, true, false, true, false, true, false, true, false);
+
+        // Fulldays
+
+        insertEmployee("Michael", "Garcia", "Mike", "780-292-2020", "michael@example.com", "10-02-2024",
+                false, true, false, true, true, false, true, true, false, true, true, true, true);
+
+        insertEmployee("Emily", "Rodriguez", "Em", "780-292-2020", "emily@example.com", "10-02-2024",
+                false, false, true, true, true, false, true, true, false, true, true, true, true);
+
+        insertEmployee("David", "Hernandez", "Dave", "780-292-2020", "david@example.com", "10-02-2024",
+                false, true, false, true, false, true, true, true, true, true, true, true, true);
 
     }
     /*

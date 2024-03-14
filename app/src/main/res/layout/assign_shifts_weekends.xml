@@ -62,44 +62,36 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:translationY="10dp"
-            android:layout_marginBottom="50dp"
-            android:orientation="horizontal">
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="10dp"
-                android:background="@mipmap/sun"
-                android:layout_marginEnd="10dp"
-                android:layout_weight="1"/>
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center_horizontal"
-                android:translationY="0dp"
-                android:layout_marginBottom="15dp"
-                android:background="@mipmap/moon"
-                android:layout_weight="1"/>
-        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginBottom="50dp"
             android:translationY="-5dp">
 
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:translationX="-20dp"
+                android:translationY="35dp"
+                android:background="@mipmap/sun"
+                android:layout_weight="1"/>
 
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_horizontal"
+                android:translationX="20dp"
+                android:layout_marginBottom="15dp"
+                android:background="@mipmap/moon"
+                android:layout_weight="1"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="150dp"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
                 <AutoCompleteTextView
@@ -136,42 +128,36 @@
             android:translationY="10dp">
 
 
-
-
             <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+            <AutoCompleteTextView
+                android:id="@+id/fulldayShift2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-10dp"
+                android:layout_marginBottom="20dp"
+                android:autoSizeTextType="uniform"
                 android:hint="Fullday Shift"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+                android:inputType="none"
+                android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                android:textSize="12sp" />
 
-                <AutoCompleteTextView
-                    android:id="@+id/fulldayShift2"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:textSize="12sp"
-                    android:inputType="none"
-                    android:layout_weight="1"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
+        </com.google.android.material.textfield.TextInputLayout>
 
 
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/confirmButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="-20dp"
-            android:backgroundTint="@color/black"
-            android:text="Confirm" />
-
     </LinearLayout>
 
-
+    <Button
+        android:id="@+id/confirmButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="-20dp"
+        android:backgroundTint="@color/black"
+        android:text="Confirm" />
 </LinearLayout>
