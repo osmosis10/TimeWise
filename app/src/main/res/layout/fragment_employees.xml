@@ -106,7 +106,7 @@
                         android:fontFamily="sans-serif-black"
                         android:textSize="10sp"
                         android:translationY="-5sp"
-                        android:text="Untrained\nOlosing">
+                        android:text="Untrained\nOpening">
 
 
                     </TextView>

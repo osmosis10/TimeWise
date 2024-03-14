@@ -225,7 +225,7 @@ public class CalendarFragment extends Fragment {
 
                             Log.d("DayofWeek", dow);
                             fillArrayAdapters(adapterfulldayShift1, adapterfulldayShift2, fulldayShift1, fulldayShift2,
-                                    dow, "fullday", name2, name1, databaseHelper);
+                                    dow, "fullday", name1, name2, databaseHelper);
                         }
                     });
                     fulldayShift2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -533,7 +533,7 @@ public class CalendarFragment extends Fragment {
                 selection1 += " AND preferred_name != ?";
                 selection2 += " AND preferred_name != ?";
                 selectionArgsList1.add(name2);
-                selectionArgsList2.add(name1);
+                selectionArgsList2.add(name2);
             }
 
             if (!name1.isEmpty() && name2.isEmpty()) {
@@ -566,7 +566,7 @@ public class CalendarFragment extends Fragment {
                 selection1 += " AND preferred_name != ?";
                 selection2 += " AND preferred_name != ?";
                 selectionArgsList1.add(name2);
-                selectionArgsList2.add(name1);
+                selectionArgsList2.add(name2);
             }
 
             if (!name1.isEmpty() && name2.isEmpty()) {
@@ -589,26 +589,93 @@ public class CalendarFragment extends Fragment {
                 }
             }
         } else if (tod.equals("fullday")) {
+            // Possibly a lot of redundancy, but will fix for the next sprint
+            if (!name1.isEmpty()) {
+                selection1 += " AND preferred_name != ?";
+                selection2 += " AND preferred_name != ?";
+                selectionArgsList1.add(name1);
+                selectionArgsList2.add(name1);
+            }
+            if (!name2.isEmpty()) {
+                selection1 += " AND preferred_name != ?";
+                selection2 += " AND preferred_name != ?";
+                selectionArgsList1.add(name2);
+                selectionArgsList2.add(name2);
+            }
             if (!name1.isEmpty() && name2.isEmpty()) {
-                if (!name1_trained_closing) {
+                if (name1_trained_opening && name1_trained_closing) {
+                    selection2 += " AND (trained_opening = ? OR trained_closing = ?)";
+                    selectionArgsList2.add("1");
+                    selectionArgsList2.add("1");
+                } else if (name1_trained_closing) {
                     selection2 += " AND trained_opening = ?";
+                    selectionArgsList2.add("1");
+                } else if (name1_trained_opening) {
+                    selection2 += " AND trained_closing = ?";
                     selectionArgsList2.add("1");
                 }
             } else if (name1.isEmpty() && !name2.isEmpty()) {
-                if (!name2_trained_closing) {
+                if (name2_trained_opening && name2_trained_closing) {
+                    selection2 += " AND trained_opening = ? OR trained_closing = ?";
+                    selectionArgsList2.add("1");
+                    selectionArgsList2.add("1");
+                } else if (name2_trained_closing) {
                     selection1 += " AND trained_opening = ?";
                     selectionArgsList1.add("1");
+                } else if (name2_trained_opening) {
+                    selection1 += " AND trained_closing = ?";
+                    selectionArgsList1.add("1");
                 }
+
             } else if (!name1.isEmpty() && !name2.isEmpty()) {
-                if (!name1_trained_closing) {
+                if (name1_trained_opening) {
+                    selection2 += " AND trained_closing = ?";
+                    selectionArgsList2.add("1");
+                } else if (name1_trained_closing) {
                     selection2 += " AND trained_opening = ?";
                     selectionArgsList2.add("1");
-                } else if (!name2_trained_closing) {
+                }
+                if (name2_trained_opening) {
+                    selection1 += " AND trained_closing = ?";
+                    selectionArgsList1.add("1");
+                } else if (name2_trained_closing) {
                     selection1 += " AND trained_opening = ?";
                     selectionArgsList1.add("1");
                 }
             }
         }
+//            if (!name1.isEmpty()) {
+//                selection1 += " AND preferred_name != ?";
+//                selection2 += " AND preferred_name != ?";
+//                selectionArgsList1.add(name1);
+//                selectionArgsList2.add(name1);
+//            }
+//            if (!name2.isEmpty()) {
+//                selection1 += " AND preferred_name != ?";
+//                selection2 += " AND preferred_name != ?";
+//                selectionArgsList1.add(name2);
+//                selectionArgsList2.add(name2);
+//            }
+//            if (!name1.isEmpty() && name2.isEmpty()) {
+//                if (!name1_trained_closing) {
+//                    selection2 += " AND trained_opening = ?";
+//                    selectionArgsList2.add("1");
+//                }
+//            } else if (name1.isEmpty() && !name2.isEmpty()) {
+//                if (!name2_trained_closing) {
+//                    selection1 += " AND trained_opening = ?";
+//                    selectionArgsList1.add("1");
+//                }
+//            } else if (!name1.isEmpty() && !name2.isEmpty()) {
+//                if (!name1_trained_closing) {
+//                    selection2 += " AND trained_opening = ?";
+//                    selectionArgsList2.add("1");
+//                } else if (!name2_trained_closing) {
+//                    selection1 += " AND trained_opening = ?";
+//                    selectionArgsList1.add("1");
+//                }
+//            }
+
 
 
         String[] selectionArgs1 = selectionArgsList1.toArray(new String[0]);

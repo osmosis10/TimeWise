@@ -330,12 +330,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Fulldays
 
         insertEmployee("Michael", "Garcia", "Mike", "780-292-2020", "michael@example.com", "10-02-2024",
-                false, true, false, true, true, false, true, true, false, true, true, true, true, true);
+                false, true, false, true, true, false, true, true, false, true, true, true, true, false);
 
-        insertEmployee("Emily", "Rodriguez", "Em", "780-292-2020", "emily@example.com", "10-02-2024",
+        insertEmployee("Emily", "Rodriguez", "Emma", "780-292-2020", "emily@example.com", "10-02-2024",
                 false, false, true, true, true, false, true, true, false, true, true, true, true, true);
 
-        insertEmployee("David", "Hernandez", "Dave", "780-292-2020", "david@example.com", "10-02-2024",
+        insertEmployee("David", "Hernandez", "Davey", "780-292-2020", "david@example.com", "10-02-2024",
                 false, true, false, true, false, true, true, true, true, true, true, true, true, false);
 
     }
