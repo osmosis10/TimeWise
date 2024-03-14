@@ -123,7 +123,8 @@ public class addEmployee extends AppCompatActivity {
                 boolean fridayAfternoon = ((CheckBox) findViewById(R.id.AddEmployeeFridayAfternoonCheckbox)).isChecked();
                 boolean saturdayFullday = ((CheckBox) findViewById(R.id.AddEmployeeSatrudayFulldayCheckbox)).isChecked();
                 boolean sundayFullday = ((CheckBox) findViewById(R.id.AddEmployeeSundayFulldayCheckbox)).isChecked();
-                boolean trained = ((CheckBox) findViewById(R.id.TrainedCheckbox)).isChecked();
+                boolean trained_opening = ((CheckBox) findViewById(R.id.TrainedOpeningCheckbox)).isChecked();
+                boolean trained_closing = ((CheckBox) findViewById(R.id.TrainedClosingCheckbox)).isChecked();
 
                 // Create the Employee object
                 Employee newEmployee = new Employee(first_name, last_name, preferred_name,
@@ -133,7 +134,8 @@ public class addEmployee extends AppCompatActivity {
                         wednesdayMorning, wednesdayAfternoon,
                         thursdayMorning, thursdayAfternoon,
                         fridayMorning, fridayAfternoon,
-                        saturdayFullday, sundayFullday, trained);
+                        saturdayFullday, sundayFullday,
+                        trained_opening, trained_closing);
 
                 Intent data = new Intent();
                 data.putExtra("employeeFirstName", first_name);
@@ -156,7 +158,9 @@ public class addEmployee extends AppCompatActivity {
                 data.putExtra("fridayAfternoon", fridayAfternoon);
                 data.putExtra("saturdayFullday", saturdayFullday);
                 data.putExtra("sundayFullday", sundayFullday);
-                data.putExtra("trained", trained);
+                data.putExtra("trainedOpening", trained_opening);
+                data.putExtra("trainedClosing", trained_closing);
+
 
                 setResult(Activity.RESULT_OK, data);
                 // Close the current activity and return to the previous screen
@@ -246,6 +250,8 @@ public class addEmployee extends AppCompatActivity {
         return email.matches(emailRegex);
     }
 
+
+
     // Method to watch the email input, ensuring its valid
     private TextWatcher createEmailValidationWatcher(final EditText editText) {
         return new TextWatcher() {
@@ -318,6 +324,7 @@ public class addEmployee extends AppCompatActivity {
         EditText lastNameInput = findViewById(R.id.AddEmployeeLastNameInput);
         EditText phoneInput = findViewById(R.id.AddEmployeePhoneInput);
         EditText emailInput = findViewById(R.id.AddEmployeeEmailInput);
+        EditText preferredNameInput = findViewById(R.id.AddEmployeePreferredNameInput);
 
         // Check if any required field is empty or invalid
         if (TextUtils.isEmpty(firstNameInput.getText().toString().trim()) ||

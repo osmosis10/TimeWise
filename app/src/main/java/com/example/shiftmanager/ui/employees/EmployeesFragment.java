@@ -44,9 +44,11 @@ public class EmployeesFragment extends Fragment {
 
     private DatabaseHelper dbHelper;
 
-    private boolean isTrainedChecked = false;
+    private boolean isTrainedOpeningChecked = false;
+    private boolean isTrainedClosingChecked = false;
 
-    private boolean isUntrainedChecked = false;
+    private boolean isUntrainedOpeningChecked = false;
+    private boolean isunTrainedClosingCheckbox = false;
 
 
     @Override
@@ -60,6 +62,7 @@ public class EmployeesFragment extends Fragment {
         //dbHelper.removeAllEmployees();
         //dbHelper.insertRandomEmployees();
         //dbHelper.insertRandomEmployees();
+        //dbHelper.makeEmployees();
         /*
         employeesViewModel = new ViewModelProvider(this).get(EmployeesViewModel.class);
         employeesViewModel.getCleanAndPopulateComplete().observe(this, cleanAndPopulateCompleted -> {
@@ -96,7 +99,8 @@ public class EmployeesFragment extends Fragment {
                         boolean fridayAfternoon = result.getData().getBooleanExtra("fridayAfternoon", false);
                         boolean saturdayFullday = result.getData().getBooleanExtra("saturdayFullday", false);
                         boolean sundayFullday = result.getData().getBooleanExtra("sundayFullday", false);
-                        boolean trained = result.getData().getBooleanExtra("trained", false);
+                        boolean trainedOpening = result.getData().getBooleanExtra("trainedOpening", false);
+                        boolean trainedClosing = result.getData().getBooleanExtra("trainedClosing", false);
                         // Update the UI with the employee name
                         //addEmployeeNameToUI(employeeName);
                         // Save our employee to the database
@@ -104,7 +108,8 @@ public class EmployeesFragment extends Fragment {
                                         employeePhone, employeeEmail, employeeStartDate,
                                         mondayMorning, mondayAfternoon, tuesdayMorning, tuesdayAfternoon,
                                         wednesdayMorning, wednesdayAfternoon, thursdayMorning, thursdayAfternoon,
-                                        fridayMorning, fridayAfternoon, saturdayFullday, sundayFullday, trained);
+                                        fridayMorning, fridayAfternoon, saturdayFullday, sundayFullday,
+                                        trainedOpening, trainedClosing);
                     }
                 }
         );
@@ -126,7 +131,7 @@ public class EmployeesFragment extends Fragment {
                                   boolean tuesdayMorning, boolean tuesdayAfternoon, boolean wednesdayMorning,
                                   boolean wednesdayAfternoon, boolean thursdayMorning, boolean thursdayAfternoon,
                                   boolean fridayMorning, boolean fridayAfternoon, boolean saturdayFullday,
-                                  boolean sundayFullday, boolean trained) {
+                                  boolean sundayFullday, boolean trained_opening, boolean trained_closing) {
         //dbHelper = new DatabaseHelper(requireContext());
         dbHelper.insertEmployee(employeeFirstName,
                                 employeeLastName,
@@ -139,7 +144,7 @@ public class EmployeesFragment extends Fragment {
                                 wednesdayMorning, wednesdayAfternoon,
                                 thursdayMorning, thursdayAfternoon,
                                 fridayMorning, fridayAfternoon,
-                                saturdayFullday, sundayFullday, trained);
+                                saturdayFullday, sundayFullday, trained_opening, trained_closing);
 
         addEmployeeNameToUI(employeePreferredName);
     }
@@ -167,13 +172,22 @@ public class EmployeesFragment extends Fragment {
             //binding.EmployeeLinearLayout.setVisibility(View.VISIBLE);
         });
 
-        binding.trainedCheckbox.setOnCheckedChangeListener(((compoundButton, isChecked) -> {
-            isTrainedChecked = isChecked;
+        binding.trainedOpeningCheckbox.setOnCheckedChangeListener(((compoundButton, isChecked) -> {
+            isTrainedOpeningChecked = isChecked;
             updateEmployeeList();
         }));
 
-        binding.unTrainedCheckbox.setOnCheckedChangeListener(((compoundButton, isChecked) -> {
-            isUntrainedChecked = isChecked;
+        binding.trainedClosingCheckbox.setOnCheckedChangeListener(((compoundButton, isChecked) -> {
+            isTrainedClosingChecked = isChecked;
+            updateEmployeeList();
+        }));
+
+        binding.unTrainedOpeningCheckbox.setOnCheckedChangeListener(((compoundButton, isChecked) -> {
+            isUntrainedOpeningChecked = isChecked;
+            updateEmployeeList();
+        }));
+        binding.unTrainedClosingCheckbox.setOnCheckedChangeListener(((compoundButton, isChecked) -> {
+            isunTrainedClosingCheckbox = isChecked;
             updateEmployeeList();
         }));
         binding.EmployeeSearchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -211,38 +225,74 @@ public class EmployeesFragment extends Fragment {
             selectionArgsList.add("%" + query.toString() + "%");
         }
 
-        // If both trained and untrained are checked
-        if (isTrainedChecked && isUntrainedChecked) {
-            // All the if (selection != null) statement are for if the query isnt empty
-            // and selection has "preferred_name LIKE?" in it
-            if (selection != null) {
-                selection += " AND trained IN (?,?)";
-            } else {
-                selection = "trained IN (?,?)";
-            }
-            selectionArgsList.add("0");
-            selectionArgsList.add("1");
+
         // If trained is checked
-        } else if (isTrainedChecked) {
+        if (isTrainedOpeningChecked && isTrainedClosingChecked && !isUntrainedOpeningChecked
+                && !isunTrainedClosingCheckbox) {
             if (selection != null) {
-                selection += " AND trained = ?";
+                selection += " AND trained_opening = ? AND trained_closing = ?";
             } else {
-                selection = "trained = ?";
+                selection = "trained_opening = ? AND trained_closing = ?";
+            }
+            selectionArgsList.add("1");
+            selectionArgsList.add("1");
+        } else if (isTrainedOpeningChecked && !isTrainedClosingChecked && !isUntrainedOpeningChecked
+                && !isunTrainedClosingCheckbox) {
+            if (selection != null) {
+                selection += " AND trained_opening = ?";
+            } else {
+                selection = "trained_opening = ?";
             }
             selectionArgsList.add("1");
         // If untrained is checked
-        } else if (isUntrainedChecked) {
+        } else if (isTrainedClosingChecked && !isTrainedOpeningChecked && !isUntrainedOpeningChecked
+                && !isunTrainedClosingCheckbox) {
             if (selection != null) {
-                selection += " AND trained = ?";
+                selection += " AND trained_closing = ?";
             } else {
-                selection = "trained = ?";
+                selection = "trained_closing = ?";
+            }
+            selectionArgsList.add("1");
+        } else if (isunTrainedClosingCheckbox && !isTrainedOpeningChecked && !isTrainedClosingChecked
+                && !isUntrainedOpeningChecked) {
+            if (selection != null) {
+                selection += " AND trained_closing = ?";
+            } else {
+                selection = "trained_closing = ?";
             }
             selectionArgsList.add("0");
+        } else if (isUntrainedOpeningChecked && !isTrainedOpeningChecked && !isTrainedClosingChecked
+                && !isunTrainedClosingCheckbox) {
+            if (selection != null) {
+                selection += " AND trained_opening = ?";
+            } else {
+                selection = "trained_opening = ?";
+            }
+            selectionArgsList.add("0");
+        } else if (isUntrainedOpeningChecked && !isTrainedOpeningChecked && !isTrainedClosingChecked
+                && isunTrainedClosingCheckbox) {
+            if (selection != null) {
+                selection += " AND trained_opening = ? AND trained_closing = ?";
+            } else {
+                selection = "trained_opening = ? AND trained_closing = ?";
+            }
+            selectionArgsList.add("0");
+            selectionArgsList.add("0");
+        } else if (isUntrainedOpeningChecked && isTrainedOpeningChecked && isTrainedClosingChecked
+                && isunTrainedClosingCheckbox) {
+            if (selection != null) {
+                selection += "AND 1 = 0";
+            } else {
+                selection = " 1 = 0";
+            }
         }
 
+
         String[] selectionArgs = selectionArgsList.toArray(new String[0]);
-        updateEmployeeNamesUI(columns, selection, selectionArgs, null, null, null);
+        updateEmployeeNamesUI(columns, selection, selectionArgs, null, null, "preferred_name ASC");
     }
+
+
 
     private void slideIn(View view) {
         view.setVisibility(View.VISIBLE);
@@ -253,6 +303,18 @@ public class EmployeesFragment extends Fragment {
     }
     private void slideOut(View view) {
         binding.EmployeeSearchBar.setQuery("", false);
+        if (binding.trainedOpeningCheckbox.isChecked()) {
+            binding.trainedOpeningCheckbox.toggle();
+        }
+        if (binding.trainedClosingCheckbox.isChecked()) {
+            binding.trainedClosingCheckbox.toggle();
+        }
+        if (binding.unTrainedOpeningCheckbox.isChecked()) {
+            binding.unTrainedOpeningCheckbox.toggle();
+        }
+        if (binding.unTrainedClosingCheckbox.isChecked()) {
+            binding.unTrainedClosingCheckbox.toggle();
+        }
         ObjectAnimator slideOut = ObjectAnimator.ofFloat(view, "translationY", 0f, view.getHeight());
         slideOut.setDuration(500);
 
