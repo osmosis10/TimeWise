@@ -47,7 +47,8 @@ public class EmployeesFragment extends Fragment {
     private boolean isTrainedOpeningChecked = false;
     private boolean isTrainedClosingChecked = false;
 
-    private boolean isUntrainedChecked = false;
+    private boolean isUntrainedOpeningChecked = false;
+    private boolean isunTrainedClosingCheckbox = false;
 
 
     @Override
@@ -181,8 +182,12 @@ public class EmployeesFragment extends Fragment {
             updateEmployeeList();
         }));
 
-        binding.unTrainedCheckbox.setOnCheckedChangeListener(((compoundButton, isChecked) -> {
-            isUntrainedChecked = isChecked;
+        binding.unTrainedOpeningCheckbox.setOnCheckedChangeListener(((compoundButton, isChecked) -> {
+            isUntrainedOpeningChecked = isChecked;
+            updateEmployeeList();
+        }));
+        binding.unTrainedClosingCheckbox.setOnCheckedChangeListener(((compoundButton, isChecked) -> {
+            isunTrainedClosingCheckbox = isChecked;
             updateEmployeeList();
         }));
         binding.EmployeeSearchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -222,7 +227,8 @@ public class EmployeesFragment extends Fragment {
 
 
         // If trained is checked
-        if (isTrainedOpeningChecked && isTrainedClosingChecked && !isUntrainedChecked) {
+        if (isTrainedOpeningChecked && isTrainedClosingChecked && !isUntrainedOpeningChecked
+                && !isunTrainedClosingCheckbox) {
             if (selection != null) {
                 selection += " AND trained_opening = ? AND trained_closing = ?";
             } else {
@@ -230,7 +236,8 @@ public class EmployeesFragment extends Fragment {
             }
             selectionArgsList.add("1");
             selectionArgsList.add("1");
-        } else if (isTrainedOpeningChecked && !isTrainedClosingChecked && !isUntrainedChecked) {
+        } else if (isTrainedOpeningChecked && !isTrainedClosingChecked && !isUntrainedOpeningChecked
+                && !isunTrainedClosingCheckbox) {
             if (selection != null) {
                 selection += " AND trained_opening = ?";
             } else {
@@ -238,14 +245,32 @@ public class EmployeesFragment extends Fragment {
             }
             selectionArgsList.add("1");
         // If untrained is checked
-        } else if (isTrainedClosingChecked && !isTrainedOpeningChecked && !isUntrainedChecked) {
+        } else if (isTrainedClosingChecked && !isTrainedOpeningChecked && !isUntrainedOpeningChecked
+                && !isunTrainedClosingCheckbox) {
             if (selection != null) {
                 selection += " AND trained_closing = ?";
             } else {
                 selection = "trained_closing = ?";
             }
             selectionArgsList.add("1");
-        } else if (isUntrainedChecked && !isTrainedOpeningChecked && !isTrainedClosingChecked) {
+        } else if (isunTrainedClosingCheckbox && !isTrainedOpeningChecked && !isTrainedClosingChecked
+                && !isUntrainedOpeningChecked) {
+            if (selection != null) {
+                selection += " AND trained_closing = ?";
+            } else {
+                selection = "trained_closing = ?";
+            }
+            selectionArgsList.add("0");
+        } else if (isUntrainedOpeningChecked && !isTrainedOpeningChecked && !isTrainedClosingChecked
+                && !isunTrainedClosingCheckbox) {
+            if (selection != null) {
+                selection += " AND trained_opening = ?";
+            } else {
+                selection = "trained_opening = ?";
+            }
+            selectionArgsList.add("0");
+        } else if (isUntrainedOpeningChecked && !isTrainedOpeningChecked && !isTrainedClosingChecked
+                && isunTrainedClosingCheckbox) {
             if (selection != null) {
                 selection += " AND trained_opening = ? AND trained_closing = ?";
             } else {
@@ -253,11 +278,21 @@ public class EmployeesFragment extends Fragment {
             }
             selectionArgsList.add("0");
             selectionArgsList.add("0");
+        } else if (isUntrainedOpeningChecked && isTrainedOpeningChecked && isTrainedClosingChecked
+                && isunTrainedClosingCheckbox) {
+            if (selection != null) {
+                selection += "AND 1 = 0";
+            } else {
+                selection = " 1 = 0";
+            }
         }
 
+
         String[] selectionArgs = selectionArgsList.toArray(new String[0]);
-        updateEmployeeNamesUI(columns, selection, selectionArgs, null, null, null);
+        updateEmployeeNamesUI(columns, selection, selectionArgs, null, null, "preferred_name ASC");
     }
+
+
 
     private void slideIn(View view) {
         view.setVisibility(View.VISIBLE);
@@ -274,8 +309,11 @@ public class EmployeesFragment extends Fragment {
         if (binding.trainedClosingCheckbox.isChecked()) {
             binding.trainedClosingCheckbox.toggle();
         }
-        if (binding.unTrainedCheckbox.isChecked()) {
-            binding.unTrainedCheckbox.toggle();
+        if (binding.unTrainedOpeningCheckbox.isChecked()) {
+            binding.unTrainedOpeningCheckbox.toggle();
+        }
+        if (binding.unTrainedClosingCheckbox.isChecked()) {
+            binding.unTrainedClosingCheckbox.toggle();
         }
         ObjectAnimator slideOut = ObjectAnimator.ofFloat(view, "translationY", 0f, view.getHeight());
         slideOut.setDuration(500);
