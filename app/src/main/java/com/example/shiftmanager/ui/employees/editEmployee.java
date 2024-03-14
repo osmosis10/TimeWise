@@ -128,8 +128,13 @@ public class editEmployee extends AppCompatActivity {
                     // If its empty assign the first name as preferred + suffix if needed
                     preferred_name = dbHelper.getUniquePreferredName(first_name);
                 } else {
-                    // If its not empty, still check if there are similar names in the db
-                    preferred_name = dbHelper.getUniquePreferredName(preferred_name);
+                    boolean check = dbHelper.isPreferredNameExists(preferred_name);
+                    if (check) {
+                        Log.d("UniqueNameExits", preferred_name);
+                    } else {
+                        // If its not empty, still check if there are similar names in the db
+                        preferred_name = dbHelper.getUniquePreferredName(preferred_name);
+                    }
                 }
 
                 // Contact information

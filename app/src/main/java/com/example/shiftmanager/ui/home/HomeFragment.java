@@ -1,5 +1,6 @@
 package com.example.shiftmanager.ui.home;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ public class HomeFragment extends Fragment {
         View root = binding.getRoot();
 
         final TextView textView = binding.textHome;
+        textView.setTextColor(Color.BLACK);
         homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
