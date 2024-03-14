@@ -6,6 +6,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -15,6 +17,7 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -84,6 +87,7 @@ public class CalendarFragment extends Fragment {
 
     Button confirmButton;
 
+    ImageButton employeeList;
 
 
     @Override
@@ -164,6 +168,11 @@ public class CalendarFragment extends Fragment {
                 Log.d("Dayoftheweek", String.valueOf(isWeekendLayout));
 
                 Log.d("WeekNum", String.valueOf(weekNumber));
+
+                Date[] weekDates = getWeekDates(dateString);
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Log.d("Date",  dateFormat.format(weekDates[0]));
+                Log.d("Date",  dateFormat.format(weekDates[1]));
                 // builds and shows assign shifts page
                 alertDialog = builder.create();
                 alertDialog.show();
@@ -193,6 +202,15 @@ public class CalendarFragment extends Fragment {
                         alertDialog.dismiss(); // Closes assign shifts page
                     }
                 });
+
+                employeeList = addView.findViewById(R.id.unassignedList);
+                employeeList.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showMenu(v, weekNumber, dateString);
+                    }
+                });
+
                 int addViewId = addView.getId();
                 if (addViewId == R.id.assign_shifts_weekends) {
 
@@ -746,6 +764,24 @@ public class CalendarFragment extends Fragment {
             return -1;
         }
     }
+
+    public static Date[] getWeekDates(String dateString) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        try {
+            cal.setTime(format.parse(dateString));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
+
+        Date startDate = cal.getTime();
+
+        cal.add(Calendar.DATE, 6);
+        Date endDate = cal.getTime();
+        return new Date[]{startDate, endDate};
+    }
     private String getDayOfWeekString(int dayOfWeek) {
         switch (dayOfWeek) {
             case 0:
@@ -803,5 +839,42 @@ public class CalendarFragment extends Fragment {
         else {
             return newName;
         }
+    }
+    private void showMenu(View v, int weekNumber, String dateString) {
+        PopupMenu popupMenu = new PopupMenu(requireContext(), v);
+        List<String> unscheduledEmployees = databaseHelper.getUnscheduledEmployeeForWeek(weekNumber); // list of employees
+        popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
+
+        Date[] weekDates = getWeekDates(dateString);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Log.d("Date", String.valueOf(weekDates[0]));
+        Log.d("Date",  dateFormat.format(weekDates[1]));
+        String startDate = String.valueOf(dateFormat.format(weekDates[0]));
+        String endDate = String.valueOf(dateFormat.format(weekDates[1]));
+        String datesofWeek = startDate + " - " + endDate;
+        popupMenu.getMenu().add(Menu.NONE, Menu.NONE, Menu.NONE, datesofWeek);
+        popupMenu.getMenu().add(Menu.NONE, Menu.NONE, Menu.NONE, "Unscheduled Employees:");
+        // Dynamically add names to pop up
+        for (String name : unscheduledEmployees) {
+            popupMenu.getMenu().add(Menu.NONE, Menu.NONE, unscheduledEmployees.indexOf(name), name);
+        }
+        // Set up a listener for menu item clicks
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // Handle the selected menu item click
+                switch (item.getItemId()) {
+                    case Menu.NONE:
+                        // Handle click on dynamically added menu item
+                        String selectedName = item.getTitle().toString();
+                        //Toast.makeText(getApplicationContext(), selectedName + " clicked", Toast.LENGTH_SHORT).show();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+
+        popupMenu.show();
     }
 }
