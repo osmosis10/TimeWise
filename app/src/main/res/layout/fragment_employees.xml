@@ -23,7 +23,7 @@
             <LinearLayout
                 android:id="@+id/SearchBarLinearLayout"
                 android:layout_width="match_parent"
-                android:layout_height="75dp"
+                android:layout_height="80dp"
                 android:orientation="vertical"
                 android:visibility="gone">
 
@@ -37,7 +37,6 @@
                     android:src="@drawable/backicon"
                     android:translationX="25px"
                     android:translationY="55px"
-                    android:visibility="visible"
                     tools:src="@drawable/backicon" />
 
                 <SearchView
@@ -55,12 +54,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_gravity="center_vertical"
-                    android:translationX="100dp">
+                    android:translationX="60dp"
+                    android:layout_gravity="center_vertical">
 
 
                     <CheckBox
-                        android:id="@+id/trainedCheckbox"
+                        android:id="@+id/trainedOpeningCheckbox"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
@@ -70,12 +69,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-black"
-                        android:text="Trained">
+                        android:textSize="10sp"
+                        android:translationY="-5sp"
+                        android:text="Trained\nOpening">
 
                     </TextView>
 
                     <CheckBox
-                        android:id="@+id/unTrainedCheckbox"
+                        android:id="@+id/trainedClosingCheckbox"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
@@ -85,7 +86,45 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-black"
-                        android:text="Untrained">
+                        android:textSize="10sp"
+                        android:translationY="-5sp"
+                        android:text="Trained\nClosing">
+
+
+                    </TextView>
+
+                    <CheckBox
+                        android:id="@+id/unTrainedOpeningCheckbox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                    </CheckBox>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-black"
+                        android:textSize="10sp"
+                        android:translationY="-5sp"
+                        android:text="Untrained\nOlosing">
+
+
+                    </TextView>
+
+                    <CheckBox
+                        android:id="@+id/unTrainedClosingCheckbox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                    </CheckBox>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-black"
+                        android:textSize="10sp"
+                        android:translationY="-5sp"
+                        android:text="Untrained\nClosing">
 
 
                     </TextView>

@@ -21,7 +21,8 @@ public class Employee {
     private boolean saturdayFullday;
     private boolean sundayFullday;
 
-    private boolean isTrained;
+    private boolean isTrainedOpening;
+    private boolean isTrainedClosing;
 
     // Constructor
     public Employee(String first_name, String last_name, String preferred_name,
@@ -31,7 +32,8 @@ public class Employee {
                     boolean wednesdayMorning, boolean wednesdayAfternoon,
                     boolean thursdayMorning, boolean thursdayAfternoon,
                     boolean fridayMorning, boolean fridayAfternoon,
-                    boolean saturdayFullday, boolean sundayFullday, boolean isTrained) {
+                    boolean saturdayFullday, boolean sundayFullday,
+                    boolean isTrainedOpening, boolean isTrainedClosing) {
         this.first_name = first_name;
         this.last_name = first_name;
         this.preferred_name = first_name;
@@ -50,7 +52,8 @@ public class Employee {
         this.fridayAfternoon = fridayAfternoon;
         this.saturdayFullday = saturdayFullday;
         this.sundayFullday = sundayFullday;
-        this.isTrained = isTrained;
+        this.isTrainedOpening = isTrainedOpening;
+        this.isTrainedClosing = isTrainedClosing;
     }
 
     // Getters
@@ -120,8 +123,11 @@ public class Employee {
         return sundayFullday;
     }
 
-    public boolean isTrained() {
-        return isTrained;
+    public boolean isTrainedOpening() {
+        return isTrainedOpening();
+    }
+    public boolean isTrainedClosing() {
+        return isTrainedClosing();
     }
 
     // Setters
@@ -196,7 +202,10 @@ public class Employee {
         this.sundayFullday = sundayFullday;
     }
 
-    public void setTrained(boolean trained) {
-        this.isTrained = trained;
+    public void setTrainedOpening(boolean trainedOpening) {
+        this.isTrainedOpening = trainedOpening;
+    }
+    public void setTrained(boolean trainedClosing) {
+        this.isTrainedClosing = trainedClosing;
     }
 }

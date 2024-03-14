@@ -16,7 +16,7 @@ import java.util.Random;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "schedulingdb.db";
-    private static final int DATABASE_VERSION = 20;
+    private static final int DATABASE_VERSION = 23;
     private static final String TABLE_EMPLOYEE = "employees";
     // Employee Table
     private static final String COL_EMPLOYEE_ID = "id";
@@ -45,10 +45,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COL_EMPLOYEE_FRIDAY_MORNING = "friday_morning";
     private static final String COL_EMPLOYEE_FRIDAY_AFTERNOON = "friday_afternoon";
 
-    private static final String COL_EMPLOYEE_SATURDAY = "saturday";
-    private static final String COL_EMPLOYEE_SUNDAY = "sunday";
+    private static final String COL_EMPLOYEE_SATURDAY = "saturday_fullday";
+    private static final String COL_EMPLOYEE_SUNDAY = "sunday_fullday";
 
-    private static final String COL_EMPLOYEE_TRAINED = "trained";
+    private static final String COL_EMPLOYEE_TRAINED_OPENING = "trained_opening";
+    private static final String COL_EMPLOYEE_TRAINED_CLOSING = "trained_closing";
 
 
 
@@ -120,7 +121,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COL_EMPLOYEE_FRIDAY_AFTERNOON + " INTEGER," +
                 COL_EMPLOYEE_SATURDAY + " INTEGER," +
                 COL_EMPLOYEE_SUNDAY + " INTEGER," +
-                COL_EMPLOYEE_TRAINED + " INTEGER" +
+                COL_EMPLOYEE_TRAINED_OPENING + " INTEGER," +
+                COL_EMPLOYEE_TRAINED_CLOSING + " INTEGER" +
                 ")";
     }
     public String createShiftTable() {
@@ -154,7 +156,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                boolean tuesdayMorning, boolean tuesdayAfternoon, boolean wednesdayMorning,
                                boolean wednesdayAfternoon, boolean thursdayMorning, boolean thursdayAfternoon,
                                boolean fridayMorning, boolean fridayAfternoon, boolean saturdayFullday,
-                               boolean sundayFullday, boolean trained) {
+                               boolean sundayFullday, boolean trained_opening, boolean trained_closing) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues data = new ContentValues();
         data.put(COL_EMPLOYEE_FIRST_NAME, first_name);
@@ -175,7 +177,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         data.put(COL_EMPLOYEE_FRIDAY_AFTERNOON, fridayAfternoon);
         data.put(COL_EMPLOYEE_SATURDAY, saturdayFullday);
         data.put(COL_EMPLOYEE_SUNDAY, sundayFullday);
-        data.put(COL_EMPLOYEE_TRAINED, trained);
+        data.put(COL_EMPLOYEE_TRAINED_OPENING, trained_opening);
+        data.put(COL_EMPLOYEE_TRAINED_CLOSING, trained_closing);
         long rowID = db.insert(TABLE_EMPLOYEE, null, data);
         db.close();
         return rowID;
@@ -286,8 +289,54 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "780-292-2020", "example@email.com", "10-02-2024",
                     randBool, randBool, randBool, randBool,
                     randBool, randBool,randBool,randBool,randBool,
-                    randBool,randBool, randBool, randBool);
+                    randBool,randBool, randBool, randBool, randBool);
         }
+
+    }
+
+    public void makeEmployees() {
+        // Mornings
+        insertEmployee("John", "Doe", "Johnny", "780-292-2020", "john@example.com", "10-02-2024",
+                true, false, true, false, true, false, true, false, true, false, true, false, true, true);
+
+        insertEmployee("Jane", "Smith", "Janie", "780-292-2020", "jane@example.com", "10-02-2024",
+                false, true, false, true, false, true, false, true, false, true, false, true, false, true);
+
+        insertEmployee("Alice", "Johnson", "Ally", "780-292-2020", "alice@example.com", "10-02-2024",
+                true, true, false, false, true, true, false, false, true, true, false, false, true, false);
+
+        insertEmployee("Bob", "Williams", "Bobby", "780-292-2020", "bob@example.com", "10-02-2024",
+                false, true, true, false, false, true, true, false, false, true, true, false, false, true);
+
+        insertEmployee("Emily", "Brown", "Em", "780-292-2020", "emily@example.com", "10-02-2024",
+                true, false, true, true, false, false, true, true, false, false, true, true, false, true);
+
+       // Afternoons
+        insertEmployee("David", "Taylor", "Dave", "780-292-2020", "david@example.com", "10-02-2024",
+                false, true, false, true, false, true, false, true, false, true, false, true, false, true);
+
+        insertEmployee("Sarah", "Anderson", "Sar", "780-292-2020", "sarah@example.com", "10-02-2024",
+                true, false, true, false, true, false, true, false, true, false, true, false, true, false);
+
+        insertEmployee("Matthew", "Thomas", "Matt", "780-292-2020", "matthew@example.com", "10-02-2024",
+                false, true, false, true, false, true, false, true, false, true, false, true, false, true);
+
+        insertEmployee("Olivia", "Wilson", "Liv", "780-292-2020", "olivia@example.com", "10-02-2024",
+                true, false, true, false, true, false, true, false, true, false, true, false, true, true);
+
+        insertEmployee("Sophia", "Martinez", "Soph", "780-292-2020", "sophia@example.com", "10-02-2024",
+                false, true, false, true, false, true, false, true, false, true, false, true, false, true);
+
+        // Fulldays
+
+        insertEmployee("Michael", "Garcia", "Mike", "780-292-2020", "michael@example.com", "10-02-2024",
+                false, true, false, true, true, false, true, true, false, true, true, true, true, true);
+
+        insertEmployee("Emily", "Rodriguez", "Em", "780-292-2020", "emily@example.com", "10-02-2024",
+                false, false, true, true, true, false, true, true, false, true, true, true, true, true);
+
+        insertEmployee("David", "Hernandez", "Dave", "780-292-2020", "david@example.com", "10-02-2024",
+                false, true, false, true, false, true, true, true, true, true, true, true, true, false);
 
     }
     /*
@@ -610,7 +659,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COL_EMPLOYEE_FRIDAY_AFTERNOON,
                 COL_EMPLOYEE_SATURDAY,
                 COL_EMPLOYEE_SUNDAY,
-                COL_EMPLOYEE_TRAINED
+                COL_EMPLOYEE_TRAINED_OPENING,
+                COL_EMPLOYEE_TRAINED_CLOSING
         };
 
         // Specify the criteria for selection
@@ -650,7 +700,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_FRIDAY_AFTERNOON)));
                 employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_SATURDAY)));
                 employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_SUNDAY)));
-                employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_TRAINED)));
+                employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_TRAINED_OPENING)));
+                employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_TRAINED_CLOSING)));
             } while (cursor.moveToNext());
             cursor.close();
         }
@@ -915,14 +966,47 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long rowId;
 
         ContentValues values = new ContentValues();
-        values.put(COL_DAILY_ASSIGNMENT_DAYSHIFT1_PREFERRED_NAME, dayshift1_employee);
-        values.put(COL_DAILY_ASSIGNMENT_DAYSHIFT2_PREFERRED_NAME, dayshift2_employee);
-        values.put(COL_DAILY_ASSIGNMENT_DAYSHIFT3_PREFERRED_NAME, dayshift3_employee);
-        values.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT1_PREFERRED_NAME, nightshift1_employee);
-        values.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT2_PREFERRED_NAME, nightshift2_employee);
-        values.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT3_PREFERRED_NAME, nightshift3_employee);
-        values.put(COL_DAILY_ASSIGNMENT_FULLDAY1_PREFERRED_NAME, fulldayshift1_employee);
-        values.put(COL_DAILY_ASSIGNMENT_FULLDAY2_PREFERRED_NAME, fulldayshift2_employee);
+        if (dayshift1_employee != null && dayshift1_employee.isEmpty()) {
+            values.put(COL_DAILY_ASSIGNMENT_DAYSHIFT1_PREFERRED_NAME, (String) null);
+        } else {
+            values.put(COL_DAILY_ASSIGNMENT_DAYSHIFT1_PREFERRED_NAME, dayshift1_employee);
+        }
+        if (dayshift2_employee != null && dayshift2_employee.isEmpty()) {
+            values.put(COL_DAILY_ASSIGNMENT_DAYSHIFT2_PREFERRED_NAME, (String) null);
+        } else {
+            values.put(COL_DAILY_ASSIGNMENT_DAYSHIFT2_PREFERRED_NAME, dayshift2_employee);
+        }
+        if (dayshift3_employee != null && dayshift3_employee.isEmpty()) {
+            values.put(COL_DAILY_ASSIGNMENT_DAYSHIFT3_PREFERRED_NAME, (String) null);
+        } else {
+            values.put(COL_DAILY_ASSIGNMENT_DAYSHIFT3_PREFERRED_NAME, dayshift3_employee);
+        }
+        if (nightshift1_employee != null && nightshift1_employee.isEmpty()) {
+            values.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT1_PREFERRED_NAME, (String) null);
+        } else {
+            values.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT1_PREFERRED_NAME, nightshift1_employee);
+        }
+        if (nightshift2_employee != null && nightshift2_employee.isEmpty()) {
+            values.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT2_PREFERRED_NAME, (String) null);
+        } else {
+            values.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT2_PREFERRED_NAME, nightshift2_employee);
+        }
+        if (nightshift3_employee != null && nightshift3_employee.isEmpty()) {
+            values.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT3_PREFERRED_NAME, (String) null);
+        } else {
+            values.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT3_PREFERRED_NAME, nightshift3_employee);
+        }
+        if (fulldayshift1_employee != null && fulldayshift1_employee.isEmpty()) {
+            values.put(COL_DAILY_ASSIGNMENT_FULLDAY1_PREFERRED_NAME, (String) null);
+        } else {
+            values.put(COL_DAILY_ASSIGNMENT_FULLDAY1_PREFERRED_NAME, fulldayshift1_employee);
+        }
+        if (fulldayshift2_employee != null && fulldayshift2_employee.isEmpty()) {
+            values.put(COL_DAILY_ASSIGNMENT_FULLDAY2_PREFERRED_NAME, (String) null);
+        } else {
+            values.put(COL_DAILY_ASSIGNMENT_FULLDAY2_PREFERRED_NAME, fulldayshift2_employee);
+        }
+
         values.put(COL_DAILY_ASSIGNMENT_WEEKNUM, week_num);
        if (cursor != null && cursor.moveToFirst()) {
 
@@ -941,13 +1025,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
        return rowId;
     }
 
-    public boolean isEmployeeTrained(String employee_name) {
+    //tod is time of day
+    public boolean isEmployeeTrainedOpening(String employee_name) {
         SQLiteDatabase db = getReadableDatabase();
 
         Cursor cursor = null;
 
+
         try {
-            String[] projection = {"trained"};
+            String[] projection = {"trained_opening"};
             String selection = "preferred_name = ?";
             String[] selectionArgs = {employee_name};
 
@@ -959,7 +1045,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                             null,
                             null);
             if (cursor != null && cursor.moveToFirst()) {
-                @SuppressLint("Range") int trainedValue = cursor.getInt(cursor.getColumnIndex("trained"));
+                @SuppressLint("Range") int trainedValue = cursor.getInt(cursor.getColumnIndex("trained_opening"));
                 return trainedValue == 1;
             }
         } finally {
@@ -967,6 +1053,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     cursor.close();
                 }
                 db.close();
+        }
+        return false;
+    }
+
+    public boolean isEmployeeTrainedClosing(String employee_name) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = null;
+
+
+        try {
+            String[] projection = {"trained_closing"};
+            String selection = "preferred_name = ?";
+            String[] selectionArgs = {employee_name};
+
+            cursor = db.query(TABLE_EMPLOYEE,
+                    projection,
+                    selection,
+                    selectionArgs,
+                    null,
+                    null,
+                    null);
+            if (cursor != null && cursor.moveToFirst()) {
+                @SuppressLint("Range") int trainedValue = cursor.getInt(cursor.getColumnIndex("trained_closing"));
+                return trainedValue == 1;
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
         }
         return false;
     }
@@ -1013,7 +1130,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                          boolean thursdayMorning, boolean thursdayAfternoon,
                                          boolean fridayMorning, boolean fridayAfternoon,
                                          boolean saturday, boolean sunday,
-                                         boolean trained) {
+                                         boolean trained_opening, boolean trained_closing) {
         SQLiteDatabase db = getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -1034,7 +1151,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COL_EMPLOYEE_FRIDAY_AFTERNOON, fridayAfternoon);
         values.put(COL_EMPLOYEE_SATURDAY, saturday);
         values.put(COL_EMPLOYEE_SUNDAY, sunday);
-        values.put(COL_EMPLOYEE_TRAINED, trained);
+        values.put(COL_EMPLOYEE_TRAINED_OPENING, trained_opening);
+        values.put(COL_EMPLOYEE_TRAINED_CLOSING, trained_closing);
 
         // Define the criteria for selecting the correct record to update
         String selection = COL_EMPLOYEE_PREFERRED_NAME + " = ?";
