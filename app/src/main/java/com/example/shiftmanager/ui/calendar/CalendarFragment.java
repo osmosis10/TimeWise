@@ -513,44 +513,103 @@ public class CalendarFragment extends Fragment {
         List<String> selectionArgsList1 = new ArrayList<>(Arrays.asList("1"));
         List<String> selectionArgsList2 = new ArrayList<>(Arrays.asList("1"));
 
-        boolean name1_trained = databaseHelper.isEmployeeTrained(name1);
-        boolean name2_trained = databaseHelper.isEmployeeTrained(name2);
+        boolean name1_trained_opening = databaseHelper.isEmployeeTrainedOpening(name1);
+        boolean name2_trained_opening = databaseHelper.isEmployeeTrainedOpening(name2);
+
+        boolean name1_trained_closing = databaseHelper.isEmployeeTrainedClosing(name1);
+        boolean name2_trained_closing = databaseHelper.isEmployeeTrainedClosing(name2);
 
         shiftNames1.add("");
         shiftNames2.add("");
 
-        if (!name1.isEmpty()) {
-            selection1 += " AND preferred_name != ?";
-            selection2 += " AND preferred_name != ?";
-            selectionArgsList1.add(name1);
-            selectionArgsList2.add(name1);
-        }
-        if (!name2.isEmpty()) {
-            selection1 += " AND preferred_name != ?";
-            selection2 += " AND preferred_name != ?";
-            selectionArgsList1.add(name2);
-            selectionArgsList2.add(name1);
+        if (tod.equals("morning")) {
+            if (!name1.isEmpty()) {
+                selection1 += " AND preferred_name != ?";
+                selection2 += " AND preferred_name != ?";
+                selectionArgsList1.add(name1);
+                selectionArgsList2.add(name1);
+            }
+            if (!name2.isEmpty()) {
+                selection1 += " AND preferred_name != ?";
+                selection2 += " AND preferred_name != ?";
+                selectionArgsList1.add(name2);
+                selectionArgsList2.add(name1);
+            }
+
+            if (!name1.isEmpty() && name2.isEmpty()) {
+                if (!name1_trained_opening) {
+                    selection2 += " AND trained_opening = ?";
+                    selectionArgsList2.add("1");
+                }
+            } else if (name1.isEmpty() && !name2.isEmpty()) {
+                if (!name2_trained_opening) {
+                    selection1 += " AND trained_opening = ?";
+                    selectionArgsList1.add("1");
+                }
+            } else if (!name1.isEmpty() && !name2.isEmpty()) {
+                if (!name1_trained_opening) {
+                    selection2 += " AND trained_opening = ?";
+                    selectionArgsList2.add("1");
+                } else if (!name2_trained_opening) {
+                    selection1 += " AND trained_opening = ?";
+                    selectionArgsList1.add("1");
+                }
+            }
+        } else if (tod.equals("afternoon")) {
+            if (!name1.isEmpty()) {
+                selection1 += " AND preferred_name != ?";
+                selection2 += " AND preferred_name != ?";
+                selectionArgsList1.add(name1);
+                selectionArgsList2.add(name1);
+            }
+            if (!name2.isEmpty()) {
+                selection1 += " AND preferred_name != ?";
+                selection2 += " AND preferred_name != ?";
+                selectionArgsList1.add(name2);
+                selectionArgsList2.add(name1);
+            }
+
+            if (!name1.isEmpty() && name2.isEmpty()) {
+                if (!name1_trained_closing) {
+                    selection2 += " AND trained_closing = ?";
+                    selectionArgsList2.add("1");
+                }
+            } else if (name1.isEmpty() && !name2.isEmpty()) {
+                if (!name2_trained_closing) {
+                    selection1 += " AND trained_closing = ?";
+                    selectionArgsList1.add("1");
+                }
+            } else if (!name1.isEmpty() && !name2.isEmpty()) {
+                if (!name1_trained_closing) {
+                    selection2 += " AND trained_closing = ?";
+                    selectionArgsList2.add("1");
+                } else if (!name2_trained_closing) {
+                    selection1 += " AND trained_closing = ?";
+                    selectionArgsList1.add("1");
+                }
+            }
+        } else if (tod.equals("fullday")) {
+            if (!name1.isEmpty() && name2.isEmpty()) {
+                if (!name1_trained_closing) {
+                    selection2 += " AND trained_opening = ?";
+                    selectionArgsList2.add("1");
+                }
+            } else if (name1.isEmpty() && !name2.isEmpty()) {
+                if (!name2_trained_closing) {
+                    selection1 += " AND trained_opening = ?";
+                    selectionArgsList1.add("1");
+                }
+            } else if (!name1.isEmpty() && !name2.isEmpty()) {
+                if (!name1_trained_closing) {
+                    selection2 += " AND trained_opening = ?";
+                    selectionArgsList2.add("1");
+                } else if (!name2_trained_closing) {
+                    selection1 += " AND trained_opening = ?";
+                    selectionArgsList1.add("1");
+                }
+            }
         }
 
-        if (!name1.isEmpty() && name2.isEmpty()) {
-            if (!name1_trained) {
-                selection2 += " AND trained = ?";
-                selectionArgsList2.add("1");
-            }
-        } else if (name1.isEmpty() && !name2.isEmpty()) {
-            if (!name2_trained) {
-                selection1 += " AND trained = ?";
-                selectionArgsList1.add("1");
-            }
-        } else if (!name1.isEmpty() && !name2.isEmpty()) {
-            if (!name1_trained) {
-                selection2 += " AND trained = ?";
-                selectionArgsList2.add("1");
-            } else if (!name2_trained) {
-                selection1 += " AND trained = ?";
-                selectionArgsList1.add("1");
-            }
-        }
 
         String[] selectionArgs1 = selectionArgsList1.toArray(new String[0]);
         String[] selectionArgs2 = selectionArgsList2.toArray(new String[0]);
