@@ -163,7 +163,7 @@ public class CalendarFragment extends Fragment {
                 Log.d("Dayoftheweek", dow);
                 Log.d("Dayoftheweek", String.valueOf(isWeekendLayout));
 
-
+                Log.d("WeekNum", String.valueOf(weekNumber));
                 // builds and shows assign shifts page
                 alertDialog = builder.create();
                 alertDialog.show();
@@ -179,7 +179,11 @@ public class CalendarFragment extends Fragment {
 
                 Log.d("dow",dow);
                 //databaseHelper.insertDate(dbDate);
+                //List<String> unscheduledEmployees = databaseHelper.getUnscheduledEmployeeForWeek(weekNumber);
 
+//                for (String emps:unscheduledEmployees) {
+//                    Log.d("Unscheduled Employees", emps);
+//                }
                 Log.d("DbDay", "The date sire " + dateString);
                 // Set onClickListener for the back button inside the AlertDialog
                 assignBackButton = addView.findViewById(R.id.exitAssign); // Initialize back button
@@ -468,8 +472,8 @@ public class CalendarFragment extends Fragment {
 
     private ArrayAdapter<String> setupAdapters(String date, String dow, String tod) {
         String[] employeeColumn = {"dayshift1_employee", "dayshift2_employee",
-                "nightshift1_employee", "nightshift2_employee, " +
-                "fullday1_employee, fullday2_employee"};
+                "nightshift1_employee", "nightshift2_employee",
+                "fullday1_employee", "fullday2_employee"};
         List<String> employees = databaseHelper.getDailyAssignmentsEmployee(employeeColumn, "date = ?", new String[]{date});
         List<String> shiftNames = new ArrayList<>();
 
