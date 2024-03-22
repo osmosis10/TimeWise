@@ -150,7 +150,6 @@ public class CalendarFragment extends Fragment {
                 localCalendar.set(Integer.parseInt(curYear), currentMonth, Integer.parseInt(dayNum));
 
 
-
                 String dateString = curYear + "-" + String.format("%02d", currentMonth) + "-" + dbDay;
                 int weekNumber = getWeekNumber(dateString);
                 boolean isWeekendLayout = dow.equals("sunday") || dow.equals("saturday");
@@ -416,9 +415,24 @@ public class CalendarFragment extends Fragment {
                         String fulldaySelection1;
                         String fulldaySelection2;
 
+                        ImageView dayImage = view.findViewById(R.id.shiftStatus);
+                        dayImage.setImageDrawable(null);
+
                         if (addView.getId() == R.id.assign_shifts_weekends) {
                             fulldaySelection1 = fulldayShift1.getText().toString();
                             fulldaySelection2 = fulldayShift2.getText().toString();
+
+                            if (!fulldaySelection1.isEmpty() || !fulldaySelection2.isEmpty()) {
+                                dayImage.setImageResource(R.mipmap.warning);
+                            }
+                            if (!fulldaySelection1.isEmpty() && !fulldaySelection2.isEmpty()) {
+                                dayImage.setImageResource(R.mipmap.accept);
+                            }
+                            if (fulldaySelection1.isEmpty() && fulldaySelection2.isEmpty()) {
+                                dayImage.setImageResource(R.mipmap.exclamation);
+                            }
+
+
                             databaseHelper.insertOrUpdateDailyAssignments(dateString, null, null, null,
                                     null, null, null, fulldaySelection1, fulldaySelection2, weekNumber);
                         } else {
