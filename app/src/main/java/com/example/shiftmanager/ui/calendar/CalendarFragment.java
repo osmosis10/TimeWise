@@ -294,7 +294,7 @@ public class CalendarFragment extends Fragment {
                     afternoonShift2 = addView.findViewById(R.id.nightShift2);
 
 
-                    //databaseHelper.removeAllDailyAssignments();
+
 
                     // DROP DOWN PERSISTENCE
                     // Retrieve the saved values from SharedPreferences after selection has occured

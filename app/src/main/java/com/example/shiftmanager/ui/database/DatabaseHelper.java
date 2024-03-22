@@ -1169,5 +1169,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return count; // Return the count of updated rows
     }
 
-
 }
