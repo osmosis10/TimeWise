@@ -416,9 +416,9 @@ public class CalendarFragment extends Fragment {
                         String fulldaySelection1;
                         String fulldaySelection2;
 
-                        if (addView.getId() == R.layout.assign_shifts_weekends) {
+                        if (addView.getId() == R.id.assign_shifts_weekends) {
                             fulldaySelection1 = fulldayShift1.getText().toString();
-                            fulldaySelection2 = fulldayShift1.getText().toString();
+                            fulldaySelection2 = fulldayShift2.getText().toString();
                             databaseHelper.insertOrUpdateDailyAssignments(dateString, null, null, null,
                                     null, null, null, fulldaySelection1, fulldaySelection2, weekNumber);
                         } else {
