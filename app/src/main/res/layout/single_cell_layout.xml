@@ -32,7 +32,7 @@
         android:id="@+id/eventsID"
         android:textColor="@color/black"
         android:layout_gravity="center"
-        android:background="@drawable/cell_outline">
+        android:background="@drawable/round_corner">
 
     </TextView>
 
