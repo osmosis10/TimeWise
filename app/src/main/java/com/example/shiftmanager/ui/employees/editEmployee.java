@@ -102,8 +102,10 @@ public class editEmployee extends AppCompatActivity {
         checkBoxSaturday.setChecked("1".equals(employeeInformation.get(16)));
         CheckBox checkBoxSunday = findViewById(R.id.EditEmployeeSundayFulldayCheckbox);
         checkBoxSunday.setChecked("1".equals(employeeInformation.get(17)));
-        CheckBox checkBoxTrained = findViewById(R.id.EditEmployeeTrainedCheckBox);
-        checkBoxTrained.setChecked("1".equals(employeeInformation.get(18)));
+        CheckBox checkBoxTrainedOpening = findViewById(R.id.EditEmployeeTrainedOpeningCheckBox);
+        checkBoxTrainedOpening.setChecked("1".equals(employeeInformation.get(18)));
+        CheckBox checkBoxTrainedClosing = findViewById(R.id.EditEmployeeTrainedClosingCheckBox);
+        checkBoxTrainedClosing.setChecked("1".equals(employeeInformation.get(19)));
 
         Button editButton = findViewById(R.id.EditEmployeeAddButton);
 
@@ -154,13 +156,14 @@ public class editEmployee extends AppCompatActivity {
                 boolean fridayAfternoon = ((CheckBox) findViewById(R.id.EditEmployeeFridayAfternoonCheckbox)).isChecked();
                 boolean saturdayFullday = ((CheckBox) findViewById(R.id.EditEmployeeSatrudayFulldayCheckbox)).isChecked();
                 boolean sundayFullday = ((CheckBox) findViewById(R.id.EditEmployeeSundayFulldayCheckbox)).isChecked();
-                boolean trained = ((CheckBox) findViewById(R.id.EditEmployeeTrainedCheckBox)).isChecked();
+                boolean trained_opening = ((CheckBox) findViewById(R.id.EditEmployeeTrainedOpeningCheckBox)).isChecked();
+                boolean trained_closing = ((CheckBox) findViewById(R.id.EditEmployeeTrainedClosingCheckBox)).isChecked();
 
                 // Modify the database to reflect updated employee information
                 dbHelper.updateEmployeeInformation(preferredName, first_name, last_name, preferred_name, phone, email,
                         mondayMorning, mondayAfternoon, tuesdayMorning, tuesdayAfternoon, wednesdayMorning,
                         wednesdayAfternoon, thursdayMorning, thursdayAfternoon, fridayMorning, fridayAfternoon,
-                        saturdayFullday, sundayFullday, trained);
+                        saturdayFullday, sundayFullday, trained_opening, trained_closing);
 
                 setResult(Activity.RESULT_OK);
                 // Close the current activity and return to the previous screen
@@ -229,6 +232,7 @@ public class editEmployee extends AppCompatActivity {
         String emailRegex = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$";
         return email.matches(emailRegex);
     }
+
 
     // Method to watch the email input, ensuring its valid
     private TextWatcher createEmailValidationWatcher(final EditText editText) {
@@ -302,6 +306,7 @@ public class editEmployee extends AppCompatActivity {
         EditText lastNameInput = findViewById(R.id.EditEmployeeLastNameInput);
         EditText phoneInput = findViewById(R.id.EditEmployeePhoneInput);
         EditText emailInput = findViewById(R.id.EditEmployeeEmailInput);
+        EditText preferredNameInput = findViewById(R.id.EditEmployeePreferredNameInput);
 
         // Check if any required field is empty or invalid
         if (TextUtils.isEmpty(firstNameInput.getText().toString().trim()) ||
@@ -312,6 +317,7 @@ public class editEmployee extends AppCompatActivity {
                 !isValidName(firstNameInput.getText().toString().trim()) ||
                 !isValidName(lastNameInput.getText().toString().trim()) ||
                 !isValidPhone(phoneInput.getText().toString().trim())
+
         ) {
             if (TextUtils.isEmpty(firstNameInput.getText().toString().trim()) ||
                     TextUtils.isEmpty(lastNameInput.getText().toString().trim()) ||

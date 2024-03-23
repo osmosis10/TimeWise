@@ -50,7 +50,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:background="@color/black">
+        android:background="@color/black_transparent">
 
         <TextView
             android:layout_width="wrap_content"
@@ -135,7 +135,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/gridView"
         android:numColumns="7"
-        android:background="@drawable/outline"
         android:padding="8dp">
     </GridView>
 

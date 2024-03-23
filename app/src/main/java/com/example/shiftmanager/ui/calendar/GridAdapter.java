@@ -2,6 +2,7 @@ package com.example.shiftmanager.ui.calendar;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,17 +15,28 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.shiftmanager.R;
+import com.example.shiftmanager.ui.database.DatabaseHelper;
 
+import org.w3c.dom.Text;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class GridAdapter extends ArrayAdapter {
     List<Date> dates;
     Calendar currentDate;
     ImageView cellDay;
     List<Events> events;
+
+    Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
+    TextView cellNum;
+
+    private DatabaseHelper databaseHelper;
     LayoutInflater inflater;
 
     public GridAdapter(@NonNull Context context, List<Date> dates, Calendar currentDate, List<Events> events) {
@@ -33,6 +45,7 @@ public class GridAdapter extends ArrayAdapter {
         this.dates = dates; // List of dates for grid
         this.currentDate = currentDate; // Current date
         this.events = events; // List of events to be associated with dates
+        databaseHelper = new DatabaseHelper(getContext());
         inflater = LayoutInflater.from(context); // creates the views from the xml layout
     }
 
@@ -45,12 +58,22 @@ public class GridAdapter extends ArrayAdapter {
 
 
 
+
         // assigns necessary data to required variables
         int dayNo = dateCalendar.get(Calendar.DAY_OF_MONTH);
         int displayMonth = dateCalendar.get(Calendar.MONTH) + 1;
         int displayYear = dateCalendar.get(Calendar.YEAR);
         int currentMonth = currentDate.get(Calendar.MONTH) + 1;
         int currentYear = currentDate.get(Calendar.YEAR);
+        int currentDay = currentDate.get(Calendar.DAY_OF_MONTH); // get current day of the month
+
+        DateFormat monthFormat = new SimpleDateFormat("MM");
+        DateFormat yearFormat = new SimpleDateFormat("yyyy");
+        Date date = new Date();
+        String monthString = monthFormat.format(date); // ex. '03'
+        String yearString = yearFormat.format(date); // ex. '2023'
+        int monthInt = Integer.parseInt(monthString);
+        int yearInt = Integer.parseInt(yearString);
 
         View view = convertView;
 
@@ -60,21 +83,30 @@ public class GridAdapter extends ArrayAdapter {
             view = inflater.inflate(R.layout.single_cell_layout, parent, false);
             cellDay = view.findViewById(R.id.shiftStatus);
         }
+
         // sets color of current month days BLACK
         if (displayMonth == currentMonth && displayYear == currentYear) {
             view.setBackgroundColor(getContext().getResources().getColor(R.color.black));
+            Drawable backgroundDrawable = getContext().getResources().getDrawable(R.drawable.round_corner);
+            view.setBackground(backgroundDrawable);
             view.setClickable(false); // Clickable even thought it seems like it should be
 
         }
         //sets color of previous and next month days to GREY
         else {
             cellDay.setImageDrawable(null); // removes the icons from previous or next months
-            view.setBackgroundColor(Color.parseColor("#808080"));
+            Drawable backgroundDrawable = getContext().getResources().getDrawable(R.drawable.rounded_corner2);
+            view.setBackground(backgroundDrawable);
             view.setClickable(true); // Not clickable even thought it seems like it should be
         }
         // Obtains day numbers and set's it to each cell respectively
         TextView dayNumber = view.findViewById(R.id.calendarDay);
         dayNumber.setText(String.valueOf(dayNo));
+
+        // Set's current day of month to the color gold (COLOUR TBD)
+        if (dayNo == currentDay && displayMonth == monthInt && displayYear == yearInt) {
+            dayNumber.setTextColor(Color.parseColor("#FFD700"));
+        }
 
         Calendar shiftCalendar = Calendar.getInstance();
         ArrayList<String> arrayList = new ArrayList<>();
