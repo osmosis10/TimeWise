@@ -28,7 +28,7 @@
             android:layout_marginTop="4dp"
             android:text="Current Date"
             android:id="@+id/currentDate"
-            android:textColor="@color/gold"
+            android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_weight="3">
@@ -50,14 +50,14 @@
         android:layout_height="wrap_content"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:background="@color/black">
+        android:background="@color/black_transparent">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="SUN"
-            android:textColor="@color/gold"
+            android:textColor="@color/white"
             android:layout_marginTop="4dp"
             android:layout_weight="1"
             android:textStyle="bold">
@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="MON"
-            android:textColor="@color/gold"
+            android:textColor="@color/white"
             android:layout_marginTop="4dp"
             android:layout_weight="1"
             android:textStyle="bold">
@@ -79,7 +79,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="TUE"
-            android:textColor="@color/gold"
+            android:textColor="@color/white"
             android:layout_marginTop="4dp"
             android:layout_weight="1"
             android:textStyle="bold">
@@ -90,7 +90,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="WED"
-            android:textColor="@color/gold"
+            android:textColor="@color/white"
             android:layout_marginTop="4dp"
             android:layout_weight="1"
             android:textStyle="bold">
@@ -102,7 +102,7 @@
             android:gravity="center"
             android:text="THU"
             android:layout_marginTop="4dp"
-            android:textColor="@color/gold"
+            android:textColor="@color/white"
             android:layout_weight="1"
             android:textStyle="bold">
         </TextView>
@@ -112,7 +112,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="FRI"
-            android:textColor="@color/gold"
+            android:textColor="@color/white"
             android:layout_marginTop="4dp"
             android:layout_weight="1"
             android:textStyle="bold">
@@ -123,7 +123,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="SAT"
-            android:textColor="@color/gold"
+            android:textColor="@color/white"
             android:layout_marginTop="4dp"
             android:layout_weight="1"
             android:textStyle="bold">

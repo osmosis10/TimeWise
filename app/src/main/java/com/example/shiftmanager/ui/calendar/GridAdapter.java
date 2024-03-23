@@ -103,7 +103,7 @@ public class GridAdapter extends ArrayAdapter {
         TextView dayNumber = view.findViewById(R.id.calendarDay);
         dayNumber.setText(String.valueOf(dayNo));
 
-        // Set's current day of month to the color gold
+        // Set's current day of month to the color gold (COLOUR TBD)
         if (dayNo == currentDay && displayMonth == monthInt && displayYear == yearInt) {
             dayNumber.setTextColor(Color.parseColor("#FFD700"));
         }
