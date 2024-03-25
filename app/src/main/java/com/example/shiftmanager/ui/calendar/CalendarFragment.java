@@ -215,7 +215,6 @@ public class CalendarFragment extends Fragment {
 
                     if (adapterfulldayShift1 == null) {
                         adapterfulldayShift1 = setupAdapters(dateString, dow, "fullday");
-                        Log.d("Array", adapterfulldayShift1.getItem(2));
                     }
                     if (adapterfulldayShift2 == null) {
                         adapterfulldayShift2 = setupAdapters(dateString, dow, "fullday");
