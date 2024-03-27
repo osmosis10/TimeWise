@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.Layout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,6 +60,7 @@ public class GridAdapter extends ArrayAdapter {
 
 
 
+        //YYYY/MM/DD
         // assigns necessary data to required variables
         int dayNo = dateCalendar.get(Calendar.DAY_OF_MONTH);
         int displayMonth = dateCalendar.get(Calendar.MONTH) + 1;
@@ -69,6 +71,7 @@ public class GridAdapter extends ArrayAdapter {
 
         DateFormat monthFormat = new SimpleDateFormat("MM");
         DateFormat yearFormat = new SimpleDateFormat("yyyy");
+
         Date date = new Date();
         String monthString = monthFormat.format(date); // ex. '03'
         String yearString = yearFormat.format(date); // ex. '2023'
@@ -86,6 +89,12 @@ public class GridAdapter extends ArrayAdapter {
 
         // sets color of current month days BLACK
         if (displayMonth == currentMonth && displayYear == currentYear) {
+            // WRITE FUNCTION HERE
+            String dayNoString = String.format("%02d", dayNo);
+            String dateString = yearString + "-" + monthString + "-" +dayNoString;
+
+            setIcon(dateString, cellDay); // Set's icons on calendar based on progress
+
             view.setBackgroundColor(getContext().getResources().getColor(R.color.black));
             Drawable backgroundDrawable = getContext().getResources().getDrawable(R.drawable.round_corner);
             view.setBackground(backgroundDrawable);
@@ -132,6 +141,36 @@ public class GridAdapter extends ArrayAdapter {
     @Override
     public Object getItem(int position) {
         return dates.get(position);
+    }
+
+    public int setIcon(String date, ImageView cellDay) {
+        String[] employeeColumn = {"dayshift1_employee", "dayshift2_employee",
+                "nightshift1_employee", "nightshift2_employee",
+                "fullday1_employee", "fullday2_employee"};
+
+        List<String> employees = databaseHelper.getDailyAssignmentsEmployee(employeeColumn, "date = ?", new String[]{date});
+        Log.d("DATE", date);
+        //Log.d("SIZE", "Size = " + employees.size());
+            for(int i=0;i<employees.size(); i++){
+                if (employees.get(i) != null) {
+                    for (String employee : employees) {
+                        if (employee != null) {
+                            //Log.d("EMPLOYEE LIST", employee);
+                            cellDay.setImageResource(R.mipmap.warning);
+                            return 0; // Exit the method after setting the image resource
+                        }
+                    }
+
+                }
+
+            }
+
+            cellDay.setImageResource(R.mipmap.exclamation);
+
+
+
+
+        return 0;
     }
 
 }

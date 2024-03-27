@@ -50,7 +50,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:background="@color/black_transparent">
+        android:background="@drawable/round_corner">
 
         <TextView
             android:layout_width="wrap_content"
