@@ -370,51 +370,55 @@ public class EmployeesFragment extends Fragment {
     }
     @SuppressLint("ClickableViewAccessibility")
     private void addEmployeeNameToUI(String employeeName) {
+        // Parent container for all views
+        LinearLayout mainContainer = new LinearLayout(getContext());
+        mainContainer.setOrientation(LinearLayout.VERTICAL); // Set the main container to vertical
+        mainContainer.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.squared_background));
 
-        // Container to hold both the employee name and imagebutton
+        // Adjust the mainContainer's height
+        LinearLayout.LayoutParams mainContainerParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        mainContainerParams.height = 220; // Make the container default height for 3 lines
+        mainContainer.setLayoutParams(mainContainerParams);
+
+        // Container for the employee name and edit button
         LinearLayout nameContainer = new LinearLayout(getContext());
         nameContainer.setOrientation(LinearLayout.HORIZONTAL);
-        nameContainer.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.squared_background));
+        LinearLayout.LayoutParams nameContainerParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        nameContainer.setLayoutParams(nameContainerParams);
 
+        // TextView for employee name
         TextView employeeNameView = new TextView(getContext());
         employeeNameView.setText(employeeName);
         employeeNameView.setTextSize(30);
         employeeNameView.setTextColor(Color.WHITE);
-        //employeeNameView.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.rounded_background)); // Set the rounded corner background
 
-        // Set layout parameters to center the name horizontally
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
-        int marginTopPx = (int) (10 * getResources().getDisplayMetrics().density);
-        layoutParams.setMargins(0, marginTopPx, 0, 0); // Apply top margin
-        employeeNameView.setLayoutParams(layoutParams);
-
-        int paddingDp = 8; // Example padding in dp
-        int paddingPx = (int) (paddingDp * getResources().getDisplayMetrics().density);
+        // Setting layout parameters and padding
+        int paddingPx = (int) (8 * getResources().getDisplayMetrics().density); // Example padding in dp
         employeeNameView.setPadding(paddingPx, paddingPx, paddingPx, paddingPx); // Apply padding
-        employeeNameView.setWidth(650);
-        employeeNameView.setHeight(100);
+        employeeNameView.setWidth(650); // Set width
+        employeeNameView.setHeight(100); // Set height
 
-        // We set the image to edit_icon which we create in res/drawable/edit_icon.xml
-        // Set the background to the options in /res/drawable/rounded_button.xml
-        // setSoundEffectsEnabled turns on the android click sound
+        // ImageButton for edit
         ImageButton editButton = new ImageButton(getContext());
+        // Setting image resource, background, sound effects, and layout params
         editButton.setImageResource(R.drawable.edit_icon);
         editButton.setBackgroundResource(R.drawable.rounded_button);
         editButton.setSoundEffectsEnabled(true);
-
-        // We have the dimensions set in res/values/dimens.xml
         int buttonWidth = (int) getResources().getDimension(R.dimen.button_width);
         int buttonHeight = (int) getResources().getDimension(R.dimen.button_height);
-
-        LinearLayout.LayoutParams buttonLayoutParams = new LinearLayout.LayoutParams(buttonWidth,buttonHeight);
+        LinearLayout.LayoutParams buttonLayoutParams = new LinearLayout.LayoutParams(buttonWidth, buttonHeight);
         buttonLayoutParams.gravity = Gravity.CENTER_VERTICAL;
         editButton.setLayoutParams(buttonLayoutParams);
 
-        // Simple animation that scales the edit_icon down on ACTION_DOWN and scales up on ACTION_CANCEL
-        // Helps to communicate responsiveness of button
+        // Adding views to the nameContainer
+        nameContainer.addView(employeeNameView);
+        nameContainer.addView(editButton);
+
+        // Edit button Touch listener
         editButton.setOnTouchListener(new View.OnTouchListener(){
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -442,17 +446,73 @@ public class EmployeesFragment extends Fragment {
 
         });
 
+        // Add nameContainer to mainContainer
+        mainContainer.addView(nameContainer); // Add the container with the name and edit button
 
+        // Get employeeEmail and employeePhone
+        String employeeEmail = dbHelper.getEmployeeInformation(employeeName).get(4).toString();
+        String employeePhone = dbHelper.getEmployeeInformation(employeeName).get(3).toString();
 
-        // We set the employee name and the image button in a container called nameContainer
-        nameContainer.addView(employeeNameView);
-        nameContainer.addView(editButton);
+        // If employeeEmail <= 17 characters, put employeePhone and employeeEmail on same line
+        if (employeeEmail.length() <= 17) {
+            // TextView for employee email
+            TextView employeeContactView = new TextView(getContext());
+            employeeContactView.setText(employeeEmail + " | " + employeePhone); // Format for email and phone
+            employeeContactView.setTextSize(20); // Adjusted text size for differentiation
+            employeeContactView.setTextColor(Color.WHITE);
+            employeeContactView.setPadding(paddingPx, 0, 0, 0); // Apply padding
+            employeeContactView.setWidth(650); // Set width
+            mainContainerParams.height = 170;
+            // Adding employeeContactView to the main container
+            mainContainer.addView(employeeContactView);
 
-        // We then bind nameContianer in another container Employee container
-        binding.EmployeeContainer.addView(nameContainer);
-        //binding.EmployeeContainer.addView(employeeNameView); // Add the name TextView to employee layout
-        //binding.EmployeeContainer.addView(editButton);
+        // If employeeEmail > 32 characters, put employeeEmail on two lines
+        } else if (employeeEmail.length() > 32){
+            // TextView for employee email
+            TextView employeeEmailView = new TextView(getContext()); // 4
+            employeeEmailView.setText(employeeEmail); // Email Text
+            employeeEmailView.setTextSize(20); // Adjusted text size for differentiation
+            employeeEmailView.setTextColor(Color.WHITE);
+            employeeEmailView.setPadding(paddingPx, 0, 0, 0); // Apply padding
+            employeeEmailView.setWidth(650); // Set width
+            mainContainerParams.height = 270; // Adjust mainContainer height to add another line
+            // TextView for employee phone
+            TextView employeePhoneView = new TextView(getContext());
+            employeePhoneView.setText(employeePhone); // Phone Number text
+            employeePhoneView.setTextSize(20); // Adjusted text size for differentiation
+            employeePhoneView.setTextColor(Color.WHITE);
+            employeePhoneView.setPadding(paddingPx, 0, 0, 0); // Apply padding
+            employeePhoneView.setWidth(650); // Set width
+
+            // Adding phone and email containers to the main container
+            mainContainer.addView(employeeEmailView); // Add the email view on two lines
+            mainContainer.addView(employeePhoneView); // Add the phone view on another new line
+
+        // Otherwise, employeeEmail on one line and employeePhone on one line
+        } else {
+            // TextView for employee email
+            TextView employeeEmailView = new TextView(getContext());
+            employeeEmailView.setText(employeeEmail); // Email Text
+            employeeEmailView.setTextSize(20); // Adjusted text size for differentiation
+            employeeEmailView.setTextColor(Color.WHITE);
+            employeeEmailView.setPadding(paddingPx, 0, 0, 0); // Apply padding
+            employeeEmailView.setWidth(650); // Set width
+            // TextView for employee phone
+            TextView employeePhoneView = new TextView(getContext());
+            employeePhoneView.setText(employeePhone); // Phone Number text
+            employeePhoneView.setTextSize(20); // Adjusted text size for differentiation
+            employeePhoneView.setTextColor(Color.WHITE);
+            employeePhoneView.setPadding(paddingPx, 0, 0, 0); // Apply padding
+            employeePhoneView.setWidth(650); // Set width
+
+            // Adding phone and email containers to the main container
+            mainContainer.addView(employeeEmailView); // Add the email view on a new line
+            mainContainer.addView(employeePhoneView); // Add the phone view on another new line
+        }
+        // Finally, add the main container to the EmployeeContainer in your layout
+        binding.EmployeeContainer.addView(mainContainer);
     }
+
 
     private void animateButton(View view, float scale) {
         ObjectAnimator scaleDownX = ObjectAnimator.ofFloat(view, "scaleX", scale);
