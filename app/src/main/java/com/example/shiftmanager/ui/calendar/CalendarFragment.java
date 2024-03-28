@@ -840,7 +840,7 @@ public class CalendarFragment extends Fragment {
 
         }
         // sets the gridview to according to GridAdapter constructor
-        gridAdapter = new GridAdapter(context, dates, calendar, eventsList);
+        gridAdapter = new GridAdapter(context, dates, calendar, eventsList, curDate);
         gridView.setAdapter(gridAdapter);
 
     }
