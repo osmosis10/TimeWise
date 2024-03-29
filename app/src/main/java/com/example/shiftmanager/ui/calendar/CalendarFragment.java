@@ -1,9 +1,18 @@
 package com.example.shiftmanager.ui.calendar;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.pdf.PdfDocument;
+import android.nfc.Tag;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,14 +28,25 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.shiftmanager.R;
 import com.example.shiftmanager.databinding.FragmentCalendarBinding;
 import com.example.shiftmanager.ui.database.DatabaseHelper;
 
+import java.io.Externalizable;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,13 +55,17 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import androidx.core.app.ActivityCompat;
 
+@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class CalendarFragment extends Fragment {
 
     private FragmentCalendarBinding binding;
 
     private DatabaseHelper databaseHelper;
     ImageButton nextButton, previousButton;
+
+    Button exportPDF;
     TextView currentDate;
     GridView gridView;
 
@@ -89,6 +113,7 @@ public class CalendarFragment extends Fragment {
 
     ImageButton employeeList;
 
+    final static int REQUEST_CODE = 1232;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -101,6 +126,7 @@ public class CalendarFragment extends Fragment {
         previousButton = root.findViewById(R.id.prevButton);
         currentDate = root.findViewById(R.id.currentDate);
         gridView = root.findViewById(R.id.gridView);
+        exportPDF = root.findViewById(R.id.exportPDF);
         databaseHelper = new DatabaseHelper(requireContext());
 
         // Clicking will cycle to previous month
@@ -118,6 +144,15 @@ public class CalendarFragment extends Fragment {
             public void onClick(View v) {
                 calendar.add(Calendar.MONTH, 1);
                 setUpCalendar(requireContext());
+            }
+        });
+
+        exportPDF.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                askPermissions();
+                Log.d("EXPORT", "CLICKED EXPORT");
+                createPDF();
             }
         });
 
@@ -890,4 +925,47 @@ public class CalendarFragment extends Fragment {
 
         popupMenu.show();
     }
+
+    private void askPermissions() {
+        ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_MEDIA_IMAGES}, REQUEST_CODE);
+    }
+
+    // Talk to raj concerning red var/function names
+    private void createPDF() {
+        PdfDocument document = new PdfDocument();
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(1080, 1920, 1).create();
+        PdfDocument.Page page = document.startPage(pageInfo);
+
+        Canvas canvas = page.getCanvas();
+
+        Paint paint = new Paint();
+        paint.setColor(Color.RED);
+        paint.setTextSize(42);
+
+        String text = "Employee Scheduele";
+        float x = 500;
+        float y = 900;
+
+        canvas.drawText(text, x, y, paint);
+        document.finishPage(page);
+
+        File downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        String fileName = "scheduele_pdf.pdf";
+        File file = new File(downloadDir, fileName);
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            document.writeTo(fos);
+            document.close();
+            fos.close();
+            Toast.makeText(requireContext(), "PDF Created !", Toast.LENGTH_SHORT).show();
+        } catch (FileNotFoundException e) {
+            Log.d("ERROR FILE NOT FOUND", "Not found");
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
 }
