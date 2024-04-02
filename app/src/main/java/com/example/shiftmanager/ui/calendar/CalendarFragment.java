@@ -13,12 +13,15 @@ import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -26,6 +29,7 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,6 +60,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import androidx.core.app.ActivityCompat;
+
+import org.w3c.dom.Text;
 
 @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class CalendarFragment extends Fragment {
@@ -152,7 +158,7 @@ public class CalendarFragment extends Fragment {
             public void onClick(View v) {
                 askPermissions();
                 Log.d("EXPORT", "CLICKED EXPORT");
-                createPDF();
+                createPDF(Calendar.MONTH, Calendar.YEAR);
             }
         });
 
@@ -931,35 +937,95 @@ public class CalendarFragment extends Fragment {
     }
 
     // Talk to raj concerning red var/function names
-    private void createPDF() {
-        PdfDocument document = new PdfDocument();
-        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(1080, 1920, 1).create();
-        PdfDocument.Page page = document.startPage(pageInfo);
+    private void createPDF(int month, int year) {
 
+
+        // Inflate view
+        String currentdate = currentDate.getText().toString();
+        String employeeNames = "";
+
+        View view = LayoutInflater.from(requireContext()).inflate(R.layout.export_pdf, null);
+        LinearLayout parentLayout = view.findViewById(R.id.pdfParent);
+
+        for (int i = 1; i <= 31; i++) {
+            employeeNames = "";
+            TextView dateText = new TextView(requireContext());
+            TextView employeeText = new TextView(requireContext());
+
+            // Obtaining current date
+            String dayString = String.format("%02d", i); // obtains current day
+            String curMonth = monthFormat.format(calendar.getTime()); // obtains current year
+            String curYear = yearFormat.format(calendar.getTime()); // obtains current month
+            int currentMonth = getMonthNum(curMonth);
+            Calendar localCalendar = Calendar.getInstance(Locale.CANADA);
+            localCalendar.set(Integer.parseInt(curYear), currentMonth, Integer.parseInt(dayString));
+            String dateString = curYear + "-" + String.format("%02d", currentMonth) + "-" + dayString;
+
+
+            String[] employeeColumn = {"dayshift1_employee", "dayshift2_employee",
+                    "nightshift1_employee", "nightshift2_employee",
+                    "fullday1_employee", "fullday2_employee"};
+
+            List<String> employees = databaseHelper.getDailyAssignmentsEmployee(employeeColumn, "date = ?", new String[]{dateString});
+
+            for(int j =0; j<employees.size(); j++){
+                if (employees.get(j) != null) {
+                    for (String employee : employees) {
+                        if (employee != null) {
+                            employeeNames = employeeNames + employee + ", ";
+                        }
+                    }
+
+
+                }
+
+            }
+
+            dateText.setText(dateString);
+            employeeText.setText(employeeNames);
+            parentLayout.addView(dateText);
+            parentLayout.addView(employeeText);
+
+
+        }
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            requireContext().getDisplay().getRealMetrics(displayMetrics);
+
+        }
+        else requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+        view.measure(View.MeasureSpec.makeMeasureSpec(displayMetrics.widthPixels, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(displayMetrics.heightPixels, View.MeasureSpec.EXACTLY));
+        view.layout(0,0, displayMetrics.widthPixels, displayMetrics.heightPixels);
+        PdfDocument document = new PdfDocument(); // New pdf object
+
+        int viewWidth = view.getMeasuredWidth();
+        int viewHeight = view.getMeasuredHeight();
+
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(viewWidth, viewHeight, 1).create();
+        PdfDocument.Page page = document.startPage(pageInfo); // page is created and set to first page of pdf
+
+        // Canvas, used to draw whatever onto the page
         Canvas canvas = page.getCanvas();
+        view.draw(canvas);
 
-        Paint paint = new Paint();
-        paint.setColor(Color.RED);
-        paint.setTextSize(42);
-
-        String text = "Employee Scheduele";
-        float x = 500;
-        float y = 900;
-
-        canvas.drawText(text, x, y, paint);
+        //Finish the page
         document.finishPage(page);
 
-        File downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        String fileName = "scheduele_pdf.pdf";
-        File file = new File(downloadDir, fileName);
+        File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        String fileName = "employee_scheduele.pdf";
+        File file = new File(downloadsDir, fileName);
+
         try {
             FileOutputStream fos = new FileOutputStream(file);
             document.writeTo(fos);
             document.close();
             fos.close();
-            Toast.makeText(requireContext(), "PDF Created !", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "PDF Exported !", Toast.LENGTH_SHORT).show();
         } catch (FileNotFoundException e) {
-            Log.d("ERROR FILE NOT FOUND", "Not found");
+            Log.d("PDF ERROR", "Error while writing");
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
