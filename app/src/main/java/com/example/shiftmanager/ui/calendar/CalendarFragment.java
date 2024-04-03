@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.graphics.pdf.PdfDocument;
 import android.nfc.Tag;
 import android.os.Build;
@@ -158,7 +159,7 @@ public class CalendarFragment extends Fragment {
             public void onClick(View v) {
                 askPermissions();
                 Log.d("EXPORT", "CLICKED EXPORT");
-                createPDF(Calendar.MONTH, Calendar.YEAR);
+                createPDF();
             }
         });
 
@@ -936,24 +937,23 @@ public class CalendarFragment extends Fragment {
         ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_MEDIA_IMAGES}, REQUEST_CODE);
     }
 
-    // Talk to raj concerning red var/function names
-    private void createPDF(int month, int year) {
 
-
-        // Inflate view
-        String currentdate = currentDate.getText().toString();
-        String employeeNames = "";
-
+    private void createPDF() {
+        // Obtaining view and parent layout for export_pdf.xml
         View view = LayoutInflater.from(requireContext()).inflate(R.layout.export_pdf, null);
         LinearLayout parentLayout = view.findViewById(R.id.pdfParent);
 
+        Typeface boldTypeFace = Typeface.defaultFromStyle(Typeface.BOLD);
+        String employeeNames = ""; // String to store each day's employee names
+
+        // loop runs 31 times (max number of days in a month)
         for (int i = 1; i <= 31; i++) {
             employeeNames = "";
             TextView dateText = new TextView(requireContext());
             TextView employeeText = new TextView(requireContext());
 
-            // Obtaining current date
-            String dayString = String.format("%02d", i); // obtains current day
+            // Obtaining the dates for each iterated day
+            String dayString = String.format("%02d", i); // obtains i'th day
             String curMonth = monthFormat.format(calendar.getTime()); // obtains current year
             String curYear = yearFormat.format(calendar.getTime()); // obtains current month
             int currentMonth = getMonthNum(curMonth);
@@ -961,34 +961,45 @@ public class CalendarFragment extends Fragment {
             localCalendar.set(Integer.parseInt(curYear), currentMonth, Integer.parseInt(dayString));
             String dateString = curYear + "-" + String.format("%02d", currentMonth) + "-" + dayString;
 
-
+            // Database query and employee info result
             String[] employeeColumn = {"dayshift1_employee", "dayshift2_employee",
                     "nightshift1_employee", "nightshift2_employee",
                     "fullday1_employee", "fullday2_employee"};
-
             List<String> employees = databaseHelper.getDailyAssignmentsEmployee(employeeColumn, "date = ?", new String[]{dateString});
 
+            // adds each employee on the i'th day of the month to the employeeNames string
             for(int j =0; j<employees.size(); j++){
                 if (employees.get(j) != null) {
-                    for (String employee : employees) {
-                        if (employee != null) {
-                            employeeNames = employeeNames + employee + ", ";
-                        }
-                    }
-
-
+                    employeeNames = employeeNames + employees.get(j);
+                    employeeNames = employeeNames + ", ";
                 }
 
             }
+            // strips the ending comma and space
+            if (employeeNames.endsWith(", ")) {
+                employeeNames = employeeNames.substring(0, employeeNames.length() - 2);
+            }
 
+            // Setting text and adding to parent layout
             dateText.setText(dateString);
             employeeText.setText(employeeNames);
+            employeeText.setTypeface(boldTypeFace);
+
             parentLayout.addView(dateText);
             parentLayout.addView(employeeText);
+
+            // line between each entry
+            View separator = new View(requireContext());
+            separator.setLayoutParams(new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, 4)); // Adjust height as needed
+            separator.setBackgroundColor(Color.DKGRAY);
+
+            parentLayout.addView(separator);
 
 
         }
 
+        // For size/Dimensions
         DisplayMetrics displayMetrics = new DisplayMetrics();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             requireContext().getDisplay().getRealMetrics(displayMetrics);
@@ -996,14 +1007,17 @@ public class CalendarFragment extends Fragment {
         }
         else requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
+        // for height, View.MeasureSpec is UNSPECIFIED to get one long page
         view.measure(View.MeasureSpec.makeMeasureSpec(displayMetrics.widthPixels, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(displayMetrics.heightPixels, View.MeasureSpec.EXACTLY));
+                View.MeasureSpec.makeMeasureSpec(displayMetrics.heightPixels, View.MeasureSpec.UNSPECIFIED));
         view.layout(0,0, displayMetrics.widthPixels, displayMetrics.heightPixels);
+
         PdfDocument document = new PdfDocument(); // New pdf object
 
         int viewWidth = view.getMeasuredWidth();
         int viewHeight = view.getMeasuredHeight();
 
+        // Set's new page for pdf object cand canvas class draws the view onto the pdf's page
         PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(viewWidth, viewHeight, 1).create();
         PdfDocument.Page page = document.startPage(pageInfo); // page is created and set to first page of pdf
 
@@ -1014,6 +1028,7 @@ public class CalendarFragment extends Fragment {
         //Finish the page
         document.finishPage(page);
 
+        // Exporting functionality
         File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         String fileName = "employee_scheduele.pdf";
         File file = new File(downloadsDir, fileName);
