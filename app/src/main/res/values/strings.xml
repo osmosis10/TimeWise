@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Shift Manager</string>
+    <string name="app_name">TimeWise</string>
     <string name="title_home">Home</string>
     <string name="title_calendar">Calendar</string>
     <string name="title_employees">Employees</string>

@@ -185,11 +185,11 @@ public class GridAdapter extends ArrayAdapter {
             }
 
             else if (weekdaycounter == 4) {
-                cellDay.setImageResource(R.mipmap.accept);
+                cellDay.setImageResource(R.mipmap.check);
             }
 
             else if (weekendcounter == 2) {
-                cellDay.setImageResource(R.mipmap.accept);
+                cellDay.setImageResource(R.mipmap.check);
             }
 
         return 0;
