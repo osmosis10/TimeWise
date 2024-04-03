@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:translationY="-5dp"
     android:id="@+id/customCalendar">
 
     <LinearLayout
@@ -50,7 +51,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:background="@color/black_transparent">
+        android:background="@drawable/round_corner">
 
         <TextView
             android:layout_width="wrap_content"
@@ -137,6 +138,15 @@
         android:numColumns="7"
         android:padding="8dp">
     </GridView>
+
+    <Button
+        android:id="@+id/exportPDF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:translationY="-10dp"
+        android:layout_gravity="center_horizontal"
+        android:text="Export PDF">
+    </Button>
 
 
 
