@@ -481,6 +481,22 @@ public class CalendarFragment extends Fragment {
                             daySelection2 = dayShift2.getText().toString();
                             nightSelection1 = afternoonShift1.getText().toString();
                             nightSelection2 = afternoonShift2.getText().toString();
+
+                            if (!daySelection1.isEmpty() || !daySelection2.isEmpty() ||
+                                    !nightSelection1.isEmpty() || !nightSelection2.isEmpty()) {
+                                dayImage.setImageResource(R.mipmap.warning);
+                            }
+
+                            if (!daySelection1.isEmpty() && !daySelection2.isEmpty() &&
+                                    !nightSelection1.isEmpty() && !nightSelection2.isEmpty()) {
+                                dayImage.setImageResource(R.mipmap.accept);
+                            }
+
+                            else if (daySelection1.isEmpty() && daySelection2.isEmpty() &&
+                                    nightSelection1.isEmpty() && nightSelection2.isEmpty()) {
+                                dayImage.setImageResource(R.mipmap.exclamation);
+                            }
+
                             databaseHelper.insertOrUpdateDailyAssignments(dateString, daySelection1, daySelection2, null,
                                     nightSelection1, nightSelection2, null, null, null, weekNumber);
                         }
