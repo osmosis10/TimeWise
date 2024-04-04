@@ -148,6 +148,7 @@ public class GridAdapter extends ArrayAdapter {
         return dates.get(position);
     }
 
+    // remove second for loop and try counter (if counter == loop limit -1...)
     public int setIcon(String date, ImageView cellDay) {
         String[] employeeColumn = {"dayshift1_employee", "dayshift2_employee",
                 "nightshift1_employee", "nightshift2_employee",
@@ -155,22 +156,41 @@ public class GridAdapter extends ArrayAdapter {
 
         List<String> employees = databaseHelper.getDailyAssignmentsEmployee(employeeColumn, "date = ?", new String[]{date});
         Log.d("DATE", date);
+        int weekdaycounter = 0;
+        int weekendcounter = 0;
         //Log.d("SIZE", "Size = " + employees.size());
             for(int i=0;i<employees.size(); i++){
                 if (employees.get(i) != null) {
-                    for (String employee : employees) {
-                        if (employee != null) {
-                            //Log.d("EMPLOYEE LIST", employee);
-                            cellDay.setImageResource(R.mipmap.warning);
-                            return 0; // Exit the method after setting the image resource
-                        }
+                    if (i < 4) {
+                        weekdaycounter++;
                     }
 
+                    else if (i > 3){
+                        weekendcounter++;
+                    }
                 }
 
             }
+            Log.d("ICON COUNTER", "DAY = " + String.valueOf(weekdaycounter) + "END" + String.valueOf(weekendcounter) + "Size = "+ String.valueOf(employees.size()));
+            if (weekendcounter == 0 && weekdaycounter == 0) {
+                cellDay.setImageResource(R.mipmap.exclamation);
+            }
 
-            cellDay.setImageResource(R.mipmap.exclamation);
+            else if (weekdaycounter < 4 && weekendcounter == 0) {
+                cellDay.setImageResource(R.mipmap.warning);
+            }
+
+            else if (weekendcounter < 2 && weekdaycounter == 0) {
+                cellDay.setImageResource(R.mipmap.warning);
+            }
+
+            else if (weekdaycounter == 4) {
+                cellDay.setImageResource(R.mipmap.check);
+            }
+
+            else if (weekendcounter == 2) {
+                cellDay.setImageResource(R.mipmap.check);
+            }
 
         return 0;
     }
