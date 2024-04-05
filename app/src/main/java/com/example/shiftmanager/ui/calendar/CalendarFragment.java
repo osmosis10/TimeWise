@@ -88,6 +88,8 @@ public class CalendarFragment extends Fragment {
     SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM", Locale.ENGLISH);
     SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy", Locale.ENGLISH);
 
+    SimpleDateFormat stringDateFormat = new SimpleDateFormat("EEEE, MMMM yyyy, dd", Locale.ENGLISH);
+
     SimpleDateFormat standardFormat = new SimpleDateFormat("YYYY-MM-DD", Locale.ENGLISH);
 
     GridAdapter gridAdapter;
@@ -220,6 +222,7 @@ public class CalendarFragment extends Fragment {
 
                 // Assigning and displaying date of current day in assign shifts UI
                 TextView assignDate = addView.findViewById(R.id.shiftDate);
+
 
                 assignDate.setText(Date); // Display's shifts date
 
