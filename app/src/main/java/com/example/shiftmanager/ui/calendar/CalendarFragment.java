@@ -1,15 +1,28 @@
 package com.example.shiftmanager.ui.calendar;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.graphics.pdf.PdfDocument;
+import android.nfc.Tag;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -17,16 +30,28 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.shiftmanager.R;
 import com.example.shiftmanager.databinding.FragmentCalendarBinding;
 import com.example.shiftmanager.ui.database.DatabaseHelper;
 
+import java.io.Externalizable;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,13 +60,21 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
+import androidx.core.app.ActivityCompat;
+
+import org.w3c.dom.Text;
+
+@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class CalendarFragment extends Fragment {
 
     private FragmentCalendarBinding binding;
 
     private DatabaseHelper databaseHelper;
     ImageButton nextButton, previousButton;
+
+    Button exportPDF;
     TextView currentDate;
     GridView gridView;
 
@@ -56,6 +89,8 @@ public class CalendarFragment extends Fragment {
     SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
     SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM", Locale.ENGLISH);
     SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy", Locale.ENGLISH);
+
+    SimpleDateFormat stringDateFormat = new SimpleDateFormat("EEEE, MMMM yyyy, dd", Locale.ENGLISH);
 
     SimpleDateFormat standardFormat = new SimpleDateFormat("YYYY-MM-DD", Locale.ENGLISH);
 
@@ -89,6 +124,7 @@ public class CalendarFragment extends Fragment {
 
     ImageButton employeeList;
 
+    final static int REQUEST_CODE = 1232;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -101,6 +137,7 @@ public class CalendarFragment extends Fragment {
         previousButton = root.findViewById(R.id.prevButton);
         currentDate = root.findViewById(R.id.currentDate);
         gridView = root.findViewById(R.id.gridView);
+        exportPDF = root.findViewById(R.id.exportPDF);
         databaseHelper = new DatabaseHelper(requireContext());
 
         // Clicking will cycle to previous month
@@ -118,6 +155,15 @@ public class CalendarFragment extends Fragment {
             public void onClick(View v) {
                 calendar.add(Calendar.MONTH, 1);
                 setUpCalendar(requireContext());
+            }
+        });
+
+        exportPDF.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                askPermissions();
+                Log.d("EXPORT", "CLICKED EXPORT");
+                createPDF();
             }
         });
 
@@ -178,6 +224,7 @@ public class CalendarFragment extends Fragment {
 
                 // Assigning and displaying date of current day in assign shifts UI
                 TextView assignDate = addView.findViewById(R.id.shiftDate);
+
 
                 assignDate.setText(Date); // Display's shifts date
 
@@ -425,7 +472,7 @@ public class CalendarFragment extends Fragment {
                                 dayImage.setImageResource(R.mipmap.warning);
                             }
                             if (!fulldaySelection1.isEmpty() && !fulldaySelection2.isEmpty()) {
-                                dayImage.setImageResource(R.mipmap.accept);
+                                dayImage.setImageResource(R.mipmap.check);
                             }
                             if (fulldaySelection1.isEmpty() && fulldaySelection2.isEmpty()) {
                                 dayImage.setImageResource(R.mipmap.exclamation);
@@ -439,6 +486,22 @@ public class CalendarFragment extends Fragment {
                             daySelection2 = dayShift2.getText().toString();
                             nightSelection1 = afternoonShift1.getText().toString();
                             nightSelection2 = afternoonShift2.getText().toString();
+
+                            if (!daySelection1.isEmpty() || !daySelection2.isEmpty() ||
+                                    !nightSelection1.isEmpty() || !nightSelection2.isEmpty()) {
+                                dayImage.setImageResource(R.mipmap.warning);
+                            }
+
+                            if (!daySelection1.isEmpty() && !daySelection2.isEmpty() &&
+                                    !nightSelection1.isEmpty() && !nightSelection2.isEmpty()) {
+                                dayImage.setImageResource(R.mipmap.check);
+                            }
+
+                            else if (daySelection1.isEmpty() && daySelection2.isEmpty() &&
+                                    nightSelection1.isEmpty() && nightSelection2.isEmpty()) {
+                                dayImage.setImageResource(R.mipmap.exclamation);
+                            }
+
                             databaseHelper.insertOrUpdateDailyAssignments(dateString, daySelection1, daySelection2, null,
                                     nightSelection1, nightSelection2, null, null, null, weekNumber);
                         }
@@ -840,7 +903,7 @@ public class CalendarFragment extends Fragment {
 
         }
         // sets the gridview to according to GridAdapter constructor
-        gridAdapter = new GridAdapter(context, dates, calendar, eventsList);
+        gridAdapter = new GridAdapter(context, dates, calendar, eventsList, curDate);
         gridView.setAdapter(gridAdapter);
 
     }
@@ -890,4 +953,141 @@ public class CalendarFragment extends Fragment {
 
         popupMenu.show();
     }
+
+    private void askPermissions() {
+        ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_MEDIA_IMAGES}, REQUEST_CODE);
+    }
+
+
+    private void createPDF() {
+        // Obtaining view and parent layout for export_pdf.xml
+        View view = LayoutInflater.from(requireContext()).inflate(R.layout.export_pdf, null);
+        LinearLayout parentLayout = view.findViewById(R.id.pdfParent);
+
+        Typeface boldTypeFace = Typeface.defaultFromStyle(Typeface.BOLD);
+        String employeeNames = "| "; // String to store each day's employee names
+
+        // loop runs 31 times (max number of days in a month)
+        for (int i = 1; i <= 31; i++) {
+            employeeNames = "";
+            TextView dateText = new TextView(requireContext());
+            TextView employeeText = new TextView(requireContext());
+
+            // Obtaining the dates for each iterated day
+            String dayString = String.format("%02d", i); // obtains i'th day
+            String curMonth = monthFormat.format(calendar.getTime()); // obtains current year
+            String curYear = yearFormat.format(calendar.getTime()); // obtains current month
+            int currentMonth = getMonthNum(curMonth);
+            Calendar localCalendar = Calendar.getInstance(Locale.CANADA);
+            localCalendar.set(Integer.parseInt(curYear), currentMonth, Integer.parseInt(dayString));
+            String dateString = curYear + "-" + String.format("%02d", currentMonth) + "-" + dayString;
+
+            // Database query and employee scheduele result
+            String[] employeeColumn = {"dayshift1_employee", "dayshift2_employee",
+                    "nightshift1_employee", "nightshift2_employee",
+                    "fullday1_employee", "fullday2_employee"};
+
+            // Database query and employee info result
+            List<String> employees = databaseHelper.getDailyAssignmentsEmployee(employeeColumn, "date = ?", new String[]{dateString});
+            List<String> employeeInfo;
+            String openStatus = "";
+            String closeStatus = "";
+
+            // adds each employee on the i'th day of the month to the employeeNames string
+            for(int j =0; j<employees.size(); j++){
+                if (employees.get(j) != null) {
+                    employeeInfo = databaseHelper.getEmployeeInformation(employees.get(j));
+
+                    // Conditions, training status is stored as 1 or 0,
+                    // converts to 'yes' or no for both opening/closing
+                    // training status
+                    if (Objects.equals(employeeInfo.get(18), "1")) {
+                        openStatus = "Yes";
+                    }
+
+                    else {
+                        openStatus = "No";
+                    }
+
+                    if (Objects.equals(employeeInfo.get(19), "1")) {
+                        closeStatus = "Yes";
+                    }
+
+                    else {
+                        closeStatus = "No";
+                    }
+                    //ex. | Name | Open Training: Yes | Closed Training: Yes|\n
+                    employeeNames = employeeNames + employees.get(j) + " | Open Training: " + openStatus + " | " + "Closing Training: " + closeStatus + " |";
+                    employeeNames = employeeNames + "\n";
+                }
+
+            }
+
+            // Setting text and adding to parent layout
+            dateText.setText(dateString);
+            employeeText.setText(employeeNames);
+            employeeText.setTypeface(boldTypeFace);
+
+            parentLayout.addView(dateText);
+            parentLayout.addView(employeeText);
+
+            // line between each entry
+            View separator = new View(requireContext());
+            separator.setLayoutParams(new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, 4)); // Adjust height as needed
+            separator.setBackgroundColor(Color.DKGRAY);
+            parentLayout.addView(separator);
+
+        }
+
+        // For size/Dimensions
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            requireContext().getDisplay().getRealMetrics(displayMetrics);
+
+        }
+        else requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+        // for height, View.MeasureSpec is UNSPECIFIED to get one long page
+        view.measure(View.MeasureSpec.makeMeasureSpec(displayMetrics.widthPixels, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(displayMetrics.heightPixels, View.MeasureSpec.UNSPECIFIED));
+        view.layout(0,0, displayMetrics.widthPixels, displayMetrics.heightPixels);
+
+        PdfDocument document = new PdfDocument(); // New pdf object
+
+        int viewWidth = view.getMeasuredWidth();
+        int viewHeight = view.getMeasuredHeight();
+
+        // Set's new page for pdf object cand canvas class draws the view onto the pdf's page
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(viewWidth, viewHeight, 1).create();
+        PdfDocument.Page page = document.startPage(pageInfo); // page is created and set to first page of pdf
+
+        // Canvas, used to draw whatever onto the page
+        Canvas canvas = page.getCanvas();
+        view.draw(canvas);
+
+        //Finish the page
+        document.finishPage(page);
+
+        // Exporting functionality
+        File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        String fileName = "employee_scheduele.pdf";
+        File file = new File(downloadsDir, fileName);
+
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            document.writeTo(fos);
+            document.close();
+            fos.close();
+            Toast.makeText(requireContext(), "PDF Exported !", Toast.LENGTH_SHORT).show();
+        } catch (FileNotFoundException e) {
+            Log.d("PDF ERROR", "Error while writing");
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
 }
