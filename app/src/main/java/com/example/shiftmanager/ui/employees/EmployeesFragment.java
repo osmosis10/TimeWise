@@ -8,6 +8,9 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.RotateDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,9 +19,12 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -33,6 +39,7 @@ import com.example.shiftmanager.databinding.FragmentEmployeesBinding;
 import com.example.shiftmanager.ui.database.DatabaseHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class EmployeesFragment extends Fragment {
@@ -49,6 +56,7 @@ public class EmployeesFragment extends Fragment {
 
     private boolean isUntrainedOpeningChecked = false;
     private boolean isunTrainedClosingCheckbox = false;
+    RelativeLayout layout;
 
 
     @Override
@@ -101,6 +109,7 @@ public class EmployeesFragment extends Fragment {
                         boolean sundayFullday = result.getData().getBooleanExtra("sundayFullday", false);
                         boolean trainedOpening = result.getData().getBooleanExtra("trainedOpening", false);
                         boolean trainedClosing = result.getData().getBooleanExtra("trainedClosing", false);
+                        boolean isArchived = false;
                         // Update the UI with the employee name
                         //addEmployeeNameToUI(employeeName);
                         // Save our employee to the database
@@ -109,7 +118,7 @@ public class EmployeesFragment extends Fragment {
                                         mondayMorning, mondayAfternoon, tuesdayMorning, tuesdayAfternoon,
                                         wednesdayMorning, wednesdayAfternoon, thursdayMorning, thursdayAfternoon,
                                         fridayMorning, fridayAfternoon, saturdayFullday, sundayFullday,
-                                        trainedOpening, trainedClosing);
+                                        trainedOpening, trainedClosing, isArchived);
                     }
                 }
         );
@@ -131,7 +140,8 @@ public class EmployeesFragment extends Fragment {
                                   boolean tuesdayMorning, boolean tuesdayAfternoon, boolean wednesdayMorning,
                                   boolean wednesdayAfternoon, boolean thursdayMorning, boolean thursdayAfternoon,
                                   boolean fridayMorning, boolean fridayAfternoon, boolean saturdayFullday,
-                                  boolean sundayFullday, boolean trained_opening, boolean trained_closing) {
+                                  boolean sundayFullday, boolean trained_opening, boolean trained_closing,
+                                  boolean is_archived) {
         //dbHelper = new DatabaseHelper(requireContext());
         dbHelper.insertEmployee(employeeFirstName,
                                 employeeLastName,
@@ -144,9 +154,10 @@ public class EmployeesFragment extends Fragment {
                                 wednesdayMorning, wednesdayAfternoon,
                                 thursdayMorning, thursdayAfternoon,
                                 fridayMorning, fridayAfternoon,
-                                saturdayFullday, sundayFullday, trained_opening, trained_closing);
+                                saturdayFullday, sundayFullday, trained_opening, trained_closing,
+                                is_archived);
 
-        addEmployeeNameToUI(employeePreferredName);
+        addEmployeeNameToUI(employeePreferredName, Color.BLACK);
     }
 
     @Override
@@ -340,14 +351,41 @@ public class EmployeesFragment extends Fragment {
         //List<String> employeeNames = dbHelper.getAllEmployeeNames();
         // Remove all existing child views so we can cleanly repopulate
         binding.EmployeeContainer.removeAllViews();
-        List<String> employeeNames = dbHelper.getAllEmployeePreferredNames(columns,selection,selectionArgs,groupBy,having,orderBy);
+        if (selectionArgs == null){
+            selectionArgs = new String[0];
+        }
+        if (selection == null) {
+            selection = "is_archived = ?";
+        } else {
+            selection += "AND is_archived = ?";
+        }
+        List<String> selectionArgsListActive = new ArrayList<>(Arrays.asList(selectionArgs));
+        List<String> selectionArgsListInactive = new ArrayList<>(Arrays.asList(selectionArgs));
+        selectionArgsListActive.add("0");
+        selectionArgsListInactive.add("1");
 
-        for (String employeeName : employeeNames) {
-            if (!isEmployeeNameInUI(employeeName)) {
-                Log.d("EmployeeNames", "Employee Name: " + employeeName);
-                addEmployeeNameToUI(employeeName);
+        String[] selectionArgsActive = selectionArgsListActive.toArray(new String[0]);
+        String[] selectionArgsInactive = selectionArgsListInactive.toArray(new String[0]);
+        Log.d("Selection", "Selection: " + selection);
+        Log.d("SelectionArgs", "Selection Args: " + Arrays.toString(selectionArgsInactive));
+        List<String> employeeActiveNames = dbHelper.getAllEmployeePreferredNames(columns,selection,selectionArgsActive,groupBy,having,orderBy);
+
+        for (String employeeActiveName : employeeActiveNames) {
+            if (!isEmployeeNameInUI(employeeActiveName)) {
+                Log.d("EmployeeActiveNames", "Employee Name: " + employeeActiveName);
+                addEmployeeNameToUI(employeeActiveName, Color.BLACK);
             }
         }
+        List<String> employeeInactiveNames = dbHelper.getAllEmployeePreferredNames(columns,selection,selectionArgsInactive,groupBy,having,orderBy);
+        for (String employeeInactiveName : employeeInactiveNames) {
+            if (!isEmployeeNameInUI(employeeInactiveName)) {
+                Log.d("EmployeeInactiveNames", "Employee Name: " + employeeInactiveName);
+                int customColor = Color.parseColor("#40403f");
+                addEmployeeNameToUI(employeeInactiveName, customColor);
+            }
+        }
+
+
     }
 
     /*
@@ -369,11 +407,16 @@ public class EmployeesFragment extends Fragment {
         return false;
     }
     @SuppressLint("ClickableViewAccessibility")
-    private void addEmployeeNameToUI(String employeeName) {
+    private void addEmployeeNameToUI(String employeeName, int bgColor) {
         // Parent container for all views
         LinearLayout mainContainer = new LinearLayout(getContext());
         mainContainer.setOrientation(LinearLayout.VERTICAL); // Set the main container to vertical
-        mainContainer.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.squared_background));
+        GradientDrawable mainDrawable = new GradientDrawable();
+        mainDrawable.setShape(GradientDrawable.RECTANGLE);
+        mainDrawable.setColor(bgColor);
+        mainDrawable.setStroke(4, Color.GRAY);
+        mainContainer.setBackground(mainDrawable);
+        //mainContainer.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.squared_background));
 
         // Adjust the mainContainer's height
         LinearLayout.LayoutParams mainContainerParams = new LinearLayout.LayoutParams(
@@ -385,15 +428,15 @@ public class EmployeesFragment extends Fragment {
         // Container for the employee name and edit button
         LinearLayout nameContainer = new LinearLayout(getContext());
         nameContainer.setOrientation(LinearLayout.HORIZONTAL);
-        LinearLayout.LayoutParams nameContainerParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams nameContainerParams = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
         nameContainer.setLayoutParams(nameContainerParams);
 
         // TextView for employee name
         TextView employeeNameView = new TextView(getContext());
         employeeNameView.setText(employeeName);
-        employeeNameView.setTextSize(30);
+        employeeNameView.setTextSize(25);
         employeeNameView.setTextColor(Color.WHITE);
 
         // Setting layout parameters and padding
@@ -402,21 +445,50 @@ public class EmployeesFragment extends Fragment {
         employeeNameView.setWidth(650); // Set width
         employeeNameView.setHeight(100); // Set height
 
+        // Round background
+        GradientDrawable roundDrawable = new GradientDrawable();
+        roundDrawable.setShape(GradientDrawable.OVAL);
+        roundDrawable.setColor(bgColor);
+
         // ImageButton for edit
         ImageButton editButton = new ImageButton(getContext());
         // Setting image resource, background, sound effects, and layout params
         editButton.setImageResource(R.drawable.edit_icon);
-        editButton.setBackgroundResource(R.drawable.rounded_button);
-        editButton.setSoundEffectsEnabled(true);
-        int buttonWidth = (int) getResources().getDimension(R.dimen.button_width);
-        int buttonHeight = (int) getResources().getDimension(R.dimen.button_height);
-        LinearLayout.LayoutParams buttonLayoutParams = new LinearLayout.LayoutParams(buttonWidth, buttonHeight);
-        buttonLayoutParams.gravity = Gravity.CENTER_VERTICAL;
-        editButton.setLayoutParams(buttonLayoutParams);
 
+        editButton.setBackground(roundDrawable);
+        //editButton.setBackgroundResource(R.drawable.rounded_button);
+        editButton.setSoundEffectsEnabled(true);
+        int editButtonWidth = (int) getResources().getDimension(R.dimen.button_width);
+        int editButtonHeight = (int) getResources().getDimension(R.dimen.button_height);
+        editButton.setTranslationX(-50);
+        LinearLayout.LayoutParams editButtonLayoutParams = new LinearLayout.LayoutParams(editButtonWidth, editButtonHeight);
+        editButtonLayoutParams.gravity = Gravity.CENTER_VERTICAL;
+        editButton.setLayoutParams(editButtonLayoutParams);
+
+        // ArchiveButton for archiving
+        ImageButton archiveButton = new ImageButton(getContext());
+
+        // Setting image resource, background, sound effects, and layout params
+        //archiveButton.setImageDrawable(archiveDrawable);
+        if (bgColor == Color.BLACK) {
+            archiveButton.setImageResource(R.drawable.archive_button);
+        } else {
+            archiveButton.setImageResource(R.drawable.archive_button_180);
+        }
+
+        archiveButton.setBackground(roundDrawable);
+        //archiveButton.setBackgroundResource(R.drawable.rounded_button);
+        archiveButton.setSoundEffectsEnabled(true);
+        int archiveButtonWidth = (int) getResources().getDimension(R.dimen.button_width);
+        int archiveButtonHeight = (int) getResources().getDimension(R.dimen.button_height);
+        archiveButton.setTranslationX(-50);
+        LinearLayout.LayoutParams archiveButtonLayoutParams = new LinearLayout.LayoutParams(archiveButtonWidth, archiveButtonHeight);
+        archiveButtonLayoutParams.gravity = Gravity.CENTER_VERTICAL;
+        archiveButton.setLayoutParams(archiveButtonLayoutParams);
         // Adding views to the nameContainer
         nameContainer.addView(employeeNameView);
         nameContainer.addView(editButton);
+        nameContainer.addView(archiveButton);
 
         // Edit button Touch listener
         editButton.setOnTouchListener(new View.OnTouchListener(){
@@ -445,6 +517,31 @@ public class EmployeesFragment extends Fragment {
             }
 
         });
+
+        archiveButton.setOnTouchListener(new View.OnTouchListener(){
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        animateButton(view, 0.8f);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        animateButton(view, 1.0f);
+                        break;
+                }
+                return false;
+            }
+        });
+        archiveButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                CreatePopUpWindow(employeeName);
+            }
+
+        });
+
+
 
         // Add nameContainer to mainContainer
         mainContainer.addView(nameContainer); // Add the container with the name and edit button
@@ -513,7 +610,49 @@ public class EmployeesFragment extends Fragment {
         binding.EmployeeContainer.addView(mainContainer);
     }
 
+    private void CreatePopUpWindow(String employeeName) {
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View popUpview = inflater.inflate(R.layout.archive_confirmation, null);
+        Button confirmButton = popUpview.findViewById(R.id.confirmarchive);
+        Button cancelButton = popUpview.findViewById(R.id.cancelarchive);
+        int width = ViewGroup.LayoutParams.MATCH_PARENT;
+        int height = ViewGroup.LayoutParams.MATCH_PARENT;
+        boolean focusable = true;
+        PopupWindow popupWindow = new PopupWindow(popUpview, width, height, focusable);
+        popupWindow.showAtLocation(popUpview, Gravity.CENTER, 0, 0);
 
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean archiveStatus = dbHelper.getEmployeeArchiveStatus(employeeName);
+                if (archiveStatus) {
+                    String[] columns = {"preferred_name"};
+                    String selection = null;
+                    List<String> selectionArgsList = new ArrayList<>();
+                    dbHelper.setEmployeeArchiveStatus(employeeName, false);
+                    String[] selectionArgs = selectionArgsList.toArray(new String[0]);
+                    updateEmployeeNamesUI(columns, selection, selectionArgs, null, null, "preferred_name ASC");
+                    popupWindow.dismiss();
+                } else {
+                    String[] columns = {"preferred_name"};
+                    String selection = null;
+                    List<String> selectionArgsList = new ArrayList<>();
+                    dbHelper.setEmployeeArchiveStatus(employeeName, true);
+                    String[] selectionArgs = selectionArgsList.toArray(new String[0]);
+                    updateEmployeeNamesUI(columns, selection, selectionArgs, null, null, "preferred_name ASC");
+                    popupWindow.dismiss();
+                }
+
+            }
+        });
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                popupWindow.dismiss();
+            }
+        });
+
+    }
     private void animateButton(View view, float scale) {
         ObjectAnimator scaleDownX = ObjectAnimator.ofFloat(view, "scaleX", scale);
         ObjectAnimator scaleDownY = ObjectAnimator.ofFloat(view, "scaleY", scale);

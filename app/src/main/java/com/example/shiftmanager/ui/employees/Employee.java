@@ -23,6 +23,7 @@ public class Employee {
 
     private boolean isTrainedOpening;
     private boolean isTrainedClosing;
+    private boolean isArchived;
 
     // Constructor
     public Employee(String first_name, String last_name, String preferred_name,
@@ -33,7 +34,8 @@ public class Employee {
                     boolean thursdayMorning, boolean thursdayAfternoon,
                     boolean fridayMorning, boolean fridayAfternoon,
                     boolean saturdayFullday, boolean sundayFullday,
-                    boolean isTrainedOpening, boolean isTrainedClosing) {
+                    boolean isTrainedOpening, boolean isTrainedClosing,
+                    boolean isArchived) {
         this.first_name = first_name;
         this.last_name = first_name;
         this.preferred_name = first_name;
@@ -54,6 +56,7 @@ public class Employee {
         this.sundayFullday = sundayFullday;
         this.isTrainedOpening = isTrainedOpening;
         this.isTrainedClosing = isTrainedClosing;
+        this.isArchived = isArchived;
     }
 
     // Getters
@@ -129,6 +132,7 @@ public class Employee {
     public boolean isTrainedClosing() {
         return isTrainedClosing();
     }
+    public boolean isArchived() { return isArchived();}
 
     // Setters
     public void setFirstName(String first_name) {
@@ -208,4 +212,5 @@ public class Employee {
     public void setTrained(boolean trainedClosing) {
         this.isTrainedClosing = trainedClosing;
     }
+    public void setArchived(boolean isArchived) { this.isArchived = isArchived;}
 }

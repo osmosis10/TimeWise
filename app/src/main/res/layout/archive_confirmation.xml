@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#D6000000"
+
+    >
+
+
+    <LinearLayout
+        android:id="@+id/archive_layout"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_margin="10dp"
+        android:layout_centerVertical="true"
+        android:background="@drawable/archiveconfirm"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="sans-serif-black"
+            android:text="Warning: Archiving an employee will permanently remove their access and data from the system."
+            android:textSize="20dp"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-black"
+            android:textAlignment="center"
+            android:layout_marginTop="20dp"
+            android:text="Proceed to archive this employee? This action is irreversible. Confirm or Cancel to abort."
+            android:textColor="@color/black"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            >
+
+
+            <Button
+                android:id="@+id/confirmarchive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/confirm_x2713"
+                android:layout_marginBottom="10dp"
+                android:layout_alignParentLeft="true"
+                android:translationX="50dp"
+                android:layout_weight="1"
+                />
+            <Button
+                android:id="@+id/cancelarchive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cancel_10006"
+                android:layout_marginBottom="10dp"
+                android:layout_alignParentRight="true"
+                android:translationX="-50dp"
+                android:layout_weight="1"
+                />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>
