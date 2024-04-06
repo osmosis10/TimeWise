@@ -77,18 +77,20 @@
                 android:translationY="15dp"
                 android:orientation="horizontal">
 
-                <Switch
-                    android:id="@+id/busyswitchweekend"
+                <CheckBox
+                    android:id="@+id/busycheckboxweekend"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Busy Day"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:paddingRight="180dp"/>
 
                 <ImageButton
                     android:id="@+id/unassignedList"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_gravity="center_horizontal"
+                    android:paddingTop="20dp"
+                    android:layout_gravity="center_vertical"
                     android:background="@mipmap/question">
                 </ImageButton>
             </LinearLayout>
@@ -183,6 +185,37 @@
                 android:textSize="12sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="-20dp"
+            android:layout_marginBottom="20dp"
+            android:translationY="10dp">
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+                <AutoCompleteTextView
+                    android:id="@+id/fulldayShift3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:autoSizeTextType="uniform"
+                    android:hint="Fullday Shift"
+                    android:inputType="none"
+                    android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                    android:textSize="12sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
 
 

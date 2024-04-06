@@ -69,6 +69,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:translationY="-5dp">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -76,18 +77,20 @@
                 android:translationY="15dp"
                 android:orientation="horizontal">
 
-                <Switch
-                    android:id="@+id/busyswitchweekday"
+                <CheckBox
+                    android:id="@+id/busycheckboxweekday"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Busy Day"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:paddingRight="180dp"/>
 
                 <ImageButton
                     android:id="@+id/unassignedList"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_gravity="center_horizontal"
+                    android:paddingTop="20dp"
+                    android:layout_gravity="center_vertical"
                     android:background="@mipmap/question">
                 </ImageButton>
             </LinearLayout>
@@ -107,12 +110,13 @@
 
                 <AutoCompleteTextView
                     android:id="@+id/dayShift1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
+                    android:layout_width="150pt"
+                    android:layout_height="15pt"
+                    android:layout_marginBottom="10dp"
                     android:autoSizeTextType="uniform"
                     android:hint="Day Shift"
                     android:inputType="none"
+                    android:layout_gravity="center"
                     android:textAppearance="?android:attr/textAppearanceListItemSmall"
                     android:textSize="12sp" />
 
@@ -126,12 +130,34 @@
 
                 <AutoCompleteTextView
                     android:id="@+id/dayShift2"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:textSize="12sp"
-                    android:inputType="none"/>
+                    android:layout_width="150pt"
+                    android:layout_height="15pt"
+                    android:layout_marginBottom="10dp"
+                    android:autoSizeTextType="uniform"
+                    android:hint="Day Shift"
+                    android:inputType="none"
+                    android:layout_gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+                <AutoCompleteTextView
+                    android:id="@+id/dayShift3"
+                    android:layout_width="150pt"
+                    android:layout_height="15pt"
+                    android:layout_marginBottom="10dp"
+                    android:autoSizeTextType="uniform"
+                    android:hint="Day Shift"
+                    android:inputType="none"
+                    android:layout_gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                    android:textSize="12sp" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -164,19 +190,20 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-10dp"
                 android:hint="Afternoon Shift"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
                 <AutoCompleteTextView
-                    android:id="@+id/nightShift1"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:textSize="12sp"
+                    android:id="@+id/afternoonShift1"
+                    android:layout_width="150pt"
+                    android:layout_height="15pt"
+                    android:layout_marginBottom="10dp"
+                    android:autoSizeTextType="uniform"
+                    android:hint="Afternoon Shift"
                     android:inputType="none"
-                    android:layout_weight="1"/>
+                    android:layout_gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                    android:textSize="12sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -187,14 +214,36 @@
                 android:hint="Afternoon Shift">
 
                 <AutoCompleteTextView
-                    android:id="@+id/nightShift2"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:textSize="12sp"
-                    android:layout_weight="1"
-                    android:inputType="none" />
+                    android:id="@+id/afternoonShift2"
+                    android:layout_width="150pt"
+                    android:layout_height="15pt"
+                    android:layout_marginBottom="10dp"
+                    android:autoSizeTextType="uniform"
+                    android:hint="Afternoon Shift"
+                    android:inputType="none"
+                    android:layout_gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                    android:textSize="12sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Afternoon Shift">
+
+                <AutoCompleteTextView
+                    android:id="@+id/afternoonShift3"
+                    android:layout_width="150pt"
+                    android:layout_height="15pt"
+                    android:layout_marginBottom="10dp"
+                    android:autoSizeTextType="uniform"
+                    android:hint="Afternoon Shift"
+                    android:inputType="none"
+                    android:layout_gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                    android:textSize="12sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

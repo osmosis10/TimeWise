@@ -4,29 +4,25 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.pdf.PdfDocument;
-import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -38,20 +34,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.shiftmanager.R;
 import com.example.shiftmanager.databinding.FragmentCalendarBinding;
 import com.example.shiftmanager.ui.database.DatabaseHelper;
 
-import java.io.Externalizable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -60,9 +52,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import androidx.core.app.ActivityCompat;
-
-import org.w3c.dom.Text;
 
 @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class CalendarFragment extends Fragment {
@@ -98,12 +87,13 @@ public class CalendarFragment extends Fragment {
 
     AutoCompleteTextView dayShift1;
     AutoCompleteTextView dayShift2;
-
+    AutoCompleteTextView dayShift3;
     AutoCompleteTextView afternoonShift1;
     AutoCompleteTextView afternoonShift2;
-
+    AutoCompleteTextView afternoonShift3;
     AutoCompleteTextView fulldayShift1;
     AutoCompleteTextView fulldayShift2;
+    AutoCompleteTextView fulldayShift3;
     ArrayAdapter<String> adapterDayShift1;
     ArrayAdapter<String> adapterDayShift2;
     ArrayAdapter<String> adapterDayShift3;
@@ -113,7 +103,7 @@ public class CalendarFragment extends Fragment {
 
     ArrayAdapter<String> adapterfulldayShift1;
     ArrayAdapter<String> adapterfulldayShift2;
-
+    ArrayAdapter<String> adapterfulldayShift3;
     ImageButton assignBackButton;
 
     Button confirmButton;
@@ -169,7 +159,6 @@ public class CalendarFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //ASSIGN SHIFTS PAGE
-
                 // Launches assign shifts UI
                 AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
                 builder.setCancelable(true);
@@ -196,12 +185,24 @@ public class CalendarFragment extends Fragment {
                 int weekNumber = getWeekNumber(dateString);
                 boolean isWeekendLayout = dow.equals("sunday") || dow.equals("saturday");
                 View addView;
+                CheckBox busyCheckbox;
                 if (dow.equals("sunday") || dow.equals("saturday")) {
-                    addView = LayoutInflater.from(parent.getContext()).inflate(R.layout.assign_shifts_busy_weekdays, null);
-                    addView.setId(R.id.assign_shifts_weekends);
+                    addView = LayoutInflater.from(parent.getContext()).inflate(R.layout.assign_shifts_weekends, null);
+                    busyCheckbox = addView.findViewById(R.id.busycheckboxweekend);
+
+                    fulldayShift1 = addView.findViewById(R.id.fulldayShift1);
+                    fulldayShift2 = addView.findViewById(R.id.fulldayShift2);
+                    fulldayShift3 = addView.findViewById(R.id.fulldayShift3);
                 } else {
-                    addView = LayoutInflater.from(parent.getContext()).inflate(R.layout.assign_shifts_busy_weekdays, null);
-                    addView.setId(R.id.assign_shifts_weekdays);
+                    addView = LayoutInflater.from(parent.getContext()).inflate(R.layout.assign_shifts_weekdays, null);
+                    busyCheckbox = addView.findViewById(R.id.busycheckboxweekday);
+
+                    dayShift1 = addView.findViewById(R.id.dayShift1);
+                    dayShift2 = addView.findViewById(R.id.dayShift2);
+                    dayShift3 = addView.findViewById(R.id.dayShift3);
+                    afternoonShift1 = addView.findViewById(R.id.afternoonShift1);
+                    afternoonShift2 = addView.findViewById(R.id.afternoonShift2);
+                    afternoonShift3 = addView.findViewById(R.id.afternoonShift3);
                 }
                 builder.setView(addView);
 
@@ -253,6 +254,37 @@ public class CalendarFragment extends Fragment {
                 });
 
                 int addViewId = addView.getId();
+                busyCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    if (dow.equals("sunday") || dow.equals("saturday")) {
+                        fulldayShift1.setEnabled(isChecked);
+                        fulldayShift2.setEnabled(isChecked);
+                        fulldayShift3.setEnabled(isChecked); // Enable or disable based on checkbox
+                    } else {
+                        dayShift1.setEnabled(isChecked || dayShift1.isEnabled());
+                        dayShift2.setEnabled(isChecked || dayShift2.isEnabled());
+                        dayShift3.setEnabled(isChecked || dayShift3.isEnabled());
+                        afternoonShift1.setEnabled(isChecked || afternoonShift1.isEnabled());
+                        afternoonShift2.setEnabled(isChecked || afternoonShift2.isEnabled());
+                        afternoonShift3.setEnabled(isChecked || afternoonShift3.isEnabled());
+                        // Enable or disable additional shifts based on checkbox
+                    }
+                });
+
+                if (!busyCheckbox.isChecked()) {
+                    if (dow.equals("sunday") || dow.equals("saturday")) {
+                        fulldayShift1.setEnabled(true);
+                        fulldayShift2.setEnabled(true);
+                        fulldayShift3.setEnabled(false);
+                    } else {
+                        dayShift1.setEnabled(true);
+                        dayShift2.setEnabled(true);
+                        dayShift3.setEnabled(false);
+                        afternoonShift1.setEnabled(true);
+                        afternoonShift2.setEnabled(true);
+                        afternoonShift3.setEnabled(false);
+                    }
+                }
+
                 if (addViewId == R.id.assign_shifts_weekends) {
 
                     if (adapterfulldayShift1 == null) {
@@ -261,15 +293,20 @@ public class CalendarFragment extends Fragment {
                     if (adapterfulldayShift2 == null) {
                         adapterfulldayShift2 = setupAdapters(dateString, dow, "fullday");
                     }
-
+                    if (adapterfulldayShift3 == null) {
+                        adapterfulldayShift3 = setupAdapters(dateString, dow, "fullday");
+                    }
                     fulldayShift1 = addView.findViewById(R.id.fulldayShift1);
                     fulldayShift2 = addView.findViewById(R.id.fulldayShift2);
+                    fulldayShift3 = addView.findViewById(R.id.fulldayShift3);
 
                     String savedFulldayShift1 = databaseHelper.getShiftValues("fullday1_employee", dateString);
                     String savedFulldayShift2 = databaseHelper.getShiftValues("fullday2_employee", dateString);
+                    String savedFulldayShift3 = databaseHelper.getShiftValues("fullday3_employee", dateString);
 
                     fulldayShift1.getText().clear();
                     fulldayShift2.getText().clear();
+                    fulldayShift3.getText().clear();
 
                     if (savedFulldayShift1 != null && !savedFulldayShift1.isEmpty()) {
                         fulldayShift1.setText(savedFulldayShift1);
@@ -277,13 +314,18 @@ public class CalendarFragment extends Fragment {
                     if (savedFulldayShift2 != null && !savedFulldayShift2.isEmpty()) {
                         fulldayShift2.setText(savedFulldayShift2);
                     }
+                    if (savedFulldayShift3 != null && !savedFulldayShift3.isEmpty()) {
+                        fulldayShift3.setText(savedFulldayShift3);
+                    }
                     fulldayShift1.setAdapter(adapterfulldayShift1);
                     fulldayShift2.setAdapter(adapterfulldayShift2);
+                    fulldayShift3.setAdapter(adapterfulldayShift3);
                     fulldayShift1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                             String name1 = fulldayShift1.getText().toString();
                             String name2 = fulldayShift2.getText().toString();
+                            String name3 = fulldayShift3.getText().toString();
 
                             Log.d("DayofWeek", dow);
                             fillArrayAdapters(adapterfulldayShift1, adapterfulldayShift2, fulldayShift1, fulldayShift2,
@@ -295,6 +337,19 @@ public class CalendarFragment extends Fragment {
                         public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                             String name1 = fulldayShift1.getText().toString();
                             String name2 = fulldayShift2.getText().toString();
+                            String name3 = fulldayShift2.getText().toString();
+
+                            Log.d("DayofWeek", dow);
+                            fillArrayAdapters(adapterfulldayShift2, adapterfulldayShift1, fulldayShift2, fulldayShift1,
+                                    dow, "fullday", name2, name1, databaseHelper);
+                        }
+                    });
+                    fulldayShift3.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                            String name1 = fulldayShift1.getText().toString();
+                            String name2 = fulldayShift2.getText().toString();
+                            String name3 = fulldayShift2.getText().toString();
 
                             Log.d("DayofWeek", dow);
                             fillArrayAdapters(adapterfulldayShift2, adapterfulldayShift1, fulldayShift2, fulldayShift1,
@@ -315,6 +370,11 @@ public class CalendarFragment extends Fragment {
                         adapterDayShift2 = setupAdapters(dateString, dow,  "morning");
 
                     }
+                    if (adapterDayShift3 == null) {
+                        // Drop down list variables
+                        adapterDayShift3 = setupAdapters(dateString, dow,  "morning");
+
+                    }
                     if (adapterafternoonShift1 == null) {
                         // Drop down list variables
                         adapterafternoonShift1 = setupAdapters(dateString, dow,  "afternoon");
@@ -324,15 +384,20 @@ public class CalendarFragment extends Fragment {
                         // Drop down list variables
                         adapterafternoonShift2 = setupAdapters(dateString, dow,  "afternoon");
                     }
+                    if (adapterafternoonShift3 == null) {
+                        // Drop down list variables
+                        adapterafternoonShift3 = setupAdapters(dateString, dow,  "afternoon");
+                    }
 
 
 
                     // Set's view for the shift dropdowns
                     dayShift1 = addView.findViewById(R.id.dayShift1);
                     dayShift2 = addView.findViewById(R.id.dayShift2);
-                    afternoonShift1 = addView.findViewById(R.id.nightShift1);
-                    afternoonShift2 = addView.findViewById(R.id.nightShift2);
-
+                    dayShift3 = addView.findViewById(R.id.dayShift3);
+                    afternoonShift1 = addView.findViewById(R.id.afternoonShift1);
+                    afternoonShift2 = addView.findViewById(R.id.afternoonShift2);
+                    afternoonShift3 = addView.findViewById(R.id.afternoonShift3);
 
 
 
@@ -345,16 +410,18 @@ public class CalendarFragment extends Fragment {
 //                String savedNightShift2 = preferences.getString("nightShift2_" + Date, "");
                     String savedDayShift1 = databaseHelper.getShiftValues("dayshift1_employee", dateString);
                     String savedDayShift2 = databaseHelper.getShiftValues("dayshift2_employee", dateString);
+                    String savedDayShift3 = databaseHelper.getShiftValues("dayshift3_employee", dateString);
                     String savedNightShift1 = databaseHelper.getShiftValues("nightshift1_employee", dateString);
                     String savedNightShift2 = databaseHelper.getShiftValues("nightshift2_employee", dateString);
-
+                    String savedNightShift3 = databaseHelper.getShiftValues("nightshift3_employee", dateString);
                     // Set the saved values in the AutoCompleteTextViews
 
                     dayShift1.getText().clear();
                     dayShift2.getText().clear();
+                    dayShift3.getText().clear();
                     afternoonShift1.getText().clear();
                     afternoonShift2.getText().clear();
-
+                    afternoonShift3.getText().clear();
 
                     if (savedDayShift1 != null && !savedDayShift1.isEmpty()) {
                         dayShift1.setText(savedDayShift1);
@@ -386,6 +453,7 @@ public class CalendarFragment extends Fragment {
                         public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                             String name1 = dayShift1.getText().toString();
                             String name2 = dayShift2.getText().toString();
+                            String name3 = dayShift3.getText().toString();
                             Log.d("name1 and name2", name1 + " " +  name2);
                             if (name2.isEmpty()) {
                                 Log.d("name 1 and name2", "yes");
@@ -403,7 +471,7 @@ public class CalendarFragment extends Fragment {
                         public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                             String name1 = dayShift1.getText().toString();
                             String name2 = dayShift2.getText().toString();
-
+                            String name3 = dayShift3.getText().toString();
                             Log.d("DayofWeek", dow);
                             fillArrayAdapters(adapterDayShift2, adapterDayShift1, dayShift2, dayShift1,
                                     dow, "morning", name2, name1, databaseHelper);
@@ -416,7 +484,7 @@ public class CalendarFragment extends Fragment {
                         public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                             String name1 = afternoonShift1.getText().toString();
                             String name2 = afternoonShift2.getText().toString();
-
+                            String name3 = afternoonShift3.getText().toString();
                             Log.d("DayofWeek", dow);
                             fillArrayAdapters(adapterafternoonShift1, adapterafternoonShift2, afternoonShift1, afternoonShift2,
                                     dow, "afternoon", name1, name2, databaseHelper);
@@ -430,7 +498,7 @@ public class CalendarFragment extends Fragment {
                         public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                             String name1 = afternoonShift1.getText().toString();
                             String name2 = afternoonShift2.getText().toString();
-
+                            String name3 = afternoonShift3.getText().toString();
                             Log.d("DayofWeek", dow);
                             fillArrayAdapters(adapterafternoonShift2, adapterafternoonShift1, afternoonShift2, afternoonShift1,
                                     dow, "afternoon", name2, name1, databaseHelper);
