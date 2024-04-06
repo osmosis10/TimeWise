@@ -3,4 +3,6 @@
     <string name="title_home">Home</string>
     <string name="title_calendar">Calendar</string>
     <string name="title_employees">Employees</string>
+    <string name="cancel_10006">Cancel ✖</string>
+    <string name="confirm_x2713">Confirm ✓</string>
 </resources>

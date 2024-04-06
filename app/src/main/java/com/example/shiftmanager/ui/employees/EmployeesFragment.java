@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -388,9 +389,9 @@ public class EmployeesFragment extends Fragment {
         // Container for the employee name and edit button
         LinearLayout nameContainer = new LinearLayout(getContext());
         nameContainer.setOrientation(LinearLayout.HORIZONTAL);
-        LinearLayout.LayoutParams nameContainerParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams nameContainerParams = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
         nameContainer.setLayoutParams(nameContainerParams);
 
         // TextView for employee name
@@ -411,15 +412,29 @@ public class EmployeesFragment extends Fragment {
         editButton.setImageResource(R.drawable.edit_icon);
         editButton.setBackgroundResource(R.drawable.rounded_button);
         editButton.setSoundEffectsEnabled(true);
-        int buttonWidth = (int) getResources().getDimension(R.dimen.button_width);
-        int buttonHeight = (int) getResources().getDimension(R.dimen.button_height);
-        LinearLayout.LayoutParams buttonLayoutParams = new LinearLayout.LayoutParams(buttonWidth, buttonHeight);
-        buttonLayoutParams.gravity = Gravity.CENTER_VERTICAL;
-        editButton.setLayoutParams(buttonLayoutParams);
+        int editButtonWidth = (int) getResources().getDimension(R.dimen.button_width);
+        int editButtonHeight = (int) getResources().getDimension(R.dimen.button_height);
+        editButton.setTranslationX(-50);
+        LinearLayout.LayoutParams editButtonLayoutParams = new LinearLayout.LayoutParams(editButtonWidth, editButtonHeight);
+        editButtonLayoutParams.gravity = Gravity.CENTER_VERTICAL;
+        editButton.setLayoutParams(editButtonLayoutParams);
 
+        // ArchiveButton for archiving
+        ImageButton archiveButton = new ImageButton(getContext());
+        // Setting image resource, background, sound effects, and layout params
+        archiveButton.setImageResource(R.drawable.archive_button);
+        archiveButton.setBackgroundResource(R.drawable.rounded_button);
+        archiveButton.setSoundEffectsEnabled(true);
+        int archiveButtonWidth = (int) getResources().getDimension(R.dimen.button_width);
+        int archiveButtonHeight = (int) getResources().getDimension(R.dimen.button_height);
+        archiveButton.setTranslationX(-50);
+        LinearLayout.LayoutParams archiveButtonLayoutParams = new LinearLayout.LayoutParams(archiveButtonWidth, archiveButtonHeight);
+        archiveButtonLayoutParams.gravity = Gravity.CENTER_VERTICAL;
+        archiveButton.setLayoutParams(archiveButtonLayoutParams);
         // Adding views to the nameContainer
         nameContainer.addView(employeeNameView);
         nameContainer.addView(editButton);
+        nameContainer.addView(archiveButton);
 
         // Edit button Touch listener
         editButton.setOnTouchListener(new View.OnTouchListener(){
