@@ -408,6 +408,66 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return employeeNames;
     }
 
+    public List<String> getAllActiveEmployeePreferredNames(String[] columns, String selection, String[] selectionArgs,
+                                                     String groupBy, String having, String orderBy) {
+        List<String> employeeNames = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.query(
+                TABLE_EMPLOYEE,
+                columns,
+                selection,
+                selectionArgs,
+                groupBy,
+                having,
+                orderBy
+        );
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                int preferredNameIndex = cursor.getColumnIndex(COL_EMPLOYEE_PREFERRED_NAME);
+                if (preferredNameIndex != -1) {
+                    String preferred_name = cursor.getString(preferredNameIndex);
+
+
+                    Log.d("EmployeeNames", "Adding employee name: " + preferred_name);
+                    employeeNames.add(preferred_name);
+                }
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        return employeeNames;
+    }
+    public List<String> getAllInactiveEmployeePreferredNames(String[] columns, String selection, String[] selectionArgs,
+                                                     String groupBy, String having, String orderBy) {
+        List<String> employeeNames = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.query(
+                TABLE_EMPLOYEE,
+                columns,
+                selection,
+                selectionArgs,
+                groupBy,
+                having,
+                orderBy
+        );
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                int preferredNameIndex = cursor.getColumnIndex(COL_EMPLOYEE_PREFERRED_NAME);
+                if (preferredNameIndex != -1) {
+                    String preferred_name = cursor.getString(preferredNameIndex);
+
+
+                    Log.d("EmployeeNames", "Adding employee name: " + preferred_name);
+                    employeeNames.add(preferred_name);
+                }
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        return employeeNames;
+    }
     /*
     This returns the preferredName + highestSuffix
     So if a preffered name John3 exists, this would return John4 if the input was John
