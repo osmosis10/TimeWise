@@ -86,9 +86,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COL_DAILY_ASSIGNMENT_NIGHTSHIFT3_PREFERRED_NAME = "nightshift3_employee";
     private static final String COL_DAILY_ASSIGNMENT_FULLDAY1_PREFERRED_NAME = "fullday1_employee";
     private static final String COL_DAILY_ASSIGNMENT_FULLDAY2_PREFERRED_NAME = "fullday2_employee";
+    private static final String COL_DAILY_ASSIGNMENT_FULLDAY3_PREFERRED_NAME = "fullday3_employee";
     private static final String COL_DAILY_ASSIGNMENT_WEEKNUM = "week_num";
 
-
+    private static final String COL_BUSYDAY = "busy_day";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -146,8 +147,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COL_DAILY_ASSIGNMENT_NIGHTSHIFT3_PREFERRED_NAME + " TEXT NULL," +
                 COL_DAILY_ASSIGNMENT_FULLDAY1_PREFERRED_NAME + " TEXT NULL," +
                 COL_DAILY_ASSIGNMENT_FULLDAY2_PREFERRED_NAME + " TEXT NULL," +
+                COL_DAILY_ASSIGNMENT_FULLDAY3_PREFERRED_NAME + "TEXT NULL" +
                 COL_DAILY_ASSIGNMENT_WEEKNUM + " INTEGER NOT NULL" +
-                ")";
+                COL_BUSYDAY + "INTEGER NOT NULL" + ")";
     }
 
     public long insertEmployee(String first_name, String last_name, String preferred_name,
@@ -206,7 +208,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                       String nightshift3_employee,
                                       String fullday1_employee,
                                       String fullday2_employee,
-                                      int week_num) {
+                                      String fullday3_employee,
+                                      int week_num,
+                                      int busy_day) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues data = new ContentValues();
         data.put(COL_DAILY_ASSIGNMENT_DATE, date);
@@ -217,8 +221,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         data.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT2_PREFERRED_NAME, nightshift2_employee);
         data.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT3_PREFERRED_NAME, nightshift3_employee);
         data.put(COL_DAILY_ASSIGNMENT_FULLDAY1_PREFERRED_NAME, fullday1_employee);
-        data.put(COL_DAILY_ASSIGNMENT_NIGHTSHIFT3_PREFERRED_NAME, fullday2_employee);
+        data.put(COL_DAILY_ASSIGNMENT_FULLDAY2_PREFERRED_NAME, fullday2_employee);
+        data.put(COL_DAILY_ASSIGNMENT_FULLDAY3_PREFERRED_NAME, fullday3_employee);
         data.put(COL_DAILY_ASSIGNMENT_WEEKNUM, week_num);
+        data.put(COL_BUSYDAY, busy_day);
         long rowID = db.insert(TABLE_DAILY_ASSIGNMENTS, null, data);
         db.close();
         return rowID;
@@ -951,7 +957,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                                String nightshift3_employee,
                                                String fulldayshift1_employee,
                                                String fulldayshift2_employee,
-                                               int week_num) {
+                                               String fulldayshift3_employee,
+                                               int week_num,
+                                               int busy_day) {
         SQLiteDatabase db = getWritableDatabase();
 
 
@@ -1006,8 +1014,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } else {
             values.put(COL_DAILY_ASSIGNMENT_FULLDAY2_PREFERRED_NAME, fulldayshift2_employee);
         }
+        if (fulldayshift3_employee != null && fulldayshift3_employee.isEmpty()) {
+            values.put(COL_DAILY_ASSIGNMENT_FULLDAY3_PREFERRED_NAME, (String) null);
+        } else {
+            values.put(COL_DAILY_ASSIGNMENT_FULLDAY3_PREFERRED_NAME, fulldayshift3_employee);
+        }
 
         values.put(COL_DAILY_ASSIGNMENT_WEEKNUM, week_num);
+        values.put(COL_BUSYDAY, busy_day);
        if (cursor != null && cursor.moveToFirst()) {
 
            rowId = db.update(
