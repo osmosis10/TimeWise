@@ -6,28 +6,195 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/linear_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TimeWise"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:gravity="center_horizontal">
-    </TextView>
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/black_transparent"
+        android:paddingTop="10dp">
 
+        <TextView
+            android:id="@+id/todayDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="Today's date"
+            android:textSize="30sp"
+            android:layout_gravity="center_vertical|center_horizontal" />
 
-    <TextView
-        android:id="@+id/text_home"
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/employeeBox"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
+        android:layout_height="200dp"
+        android:background="@drawable/round_corner"
+        android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/linear_layout"
+        app:layout_constraintVertical_bias="0.18">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/TITLE"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:text="Today's employee's"
+                android:textColor="@color/white"
+                android:textStyle="bold">
+            </TextView>
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="155dp"
+                android:layout_height="155dp"
+                android:padding="16dp"
+                android:src="@mipmap/timetable" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/topLeft"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|top"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/round_corner_white"
+                    android:padding="4dp"
+                    android:text="None"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:translationX="10dp" />
+
+                <TextView
+                    android:id="@+id/middleLeft"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|top"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/round_corner_white"
+                    android:padding="4dp"
+                    android:text="None"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:translationX="10dp" />
+
+
+                <TextView
+                    android:id="@+id/bottomLeft"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|top"
+                    android:layout_marginTop="20dp"
+                    android:padding="4dp"
+                    android:text="None"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:translationX="10dp"
+                    app:autoSizeTextType="uniform"
+                    app:autoSizeMaxTextSize="14sp"
+                    android:background="@drawable/round_corner_white"
+                    app:autoSizeMinTextSize="8sp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/topRight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|top"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/round_corner_white"
+                    android:padding="4dp"
+                    android:text="None"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:translationX="-10dp" />
+
+                <TextView
+                    android:id="@+id/middleRight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|top"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/round_corner_white"
+                    android:padding="4dp"
+                    android:text="None"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:translationX="-10dp" />
+
+                <!-- Bottom right TextView -->
+                <TextView
+                    android:id="@+id/bottomRight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|top"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/round_corner_white"
+                    android:padding="4dp"
+                    android:text="None"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:translationX="-10dp" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/bottomLeftText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TimeWise"
+        android:textColor="@android:color/black"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:translationY="-50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

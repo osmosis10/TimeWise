@@ -52,6 +52,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+
+import androidx.core.app.ActivityCompat;
+
+import org.w3c.dom.Text;
 
 @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class CalendarFragment extends Fragment {
@@ -76,6 +81,8 @@ public class CalendarFragment extends Fragment {
     SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
     SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM", Locale.ENGLISH);
     SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy", Locale.ENGLISH);
+
+    SimpleDateFormat stringDateFormat = new SimpleDateFormat("EEEE, MMMM yyyy, dd", Locale.ENGLISH);
 
     SimpleDateFormat standardFormat = new SimpleDateFormat("YYYY-MM-DD", Locale.ENGLISH);
 
@@ -221,6 +228,7 @@ public class CalendarFragment extends Fragment {
 
                 // Assigning and displaying date of current day in assign shifts UI
                 TextView assignDate = addView.findViewById(R.id.shiftDate);
+
 
                 assignDate.setText(Date); // Display's shifts date
 
@@ -1030,7 +1038,7 @@ public class CalendarFragment extends Fragment {
         LinearLayout parentLayout = view.findViewById(R.id.pdfParent);
 
         Typeface boldTypeFace = Typeface.defaultFromStyle(Typeface.BOLD);
-        String employeeNames = ""; // String to store each day's employee names
+        String employeeNames = "| "; // String to store each day's employee names
 
         // loop runs 31 times (max number of days in a month)
         for (int i = 1; i <= 31; i++) {
@@ -1047,23 +1055,45 @@ public class CalendarFragment extends Fragment {
             localCalendar.set(Integer.parseInt(curYear), currentMonth, Integer.parseInt(dayString));
             String dateString = curYear + "-" + String.format("%02d", currentMonth) + "-" + dayString;
 
-            // Database query and employee info result
+            // Database query and employee scheduele result
             String[] employeeColumn = {"dayshift1_employee", "dayshift2_employee",
                     "nightshift1_employee", "nightshift2_employee",
                     "fullday1_employee", "fullday2_employee"};
+
+            // Database query and employee info result
             List<String> employees = databaseHelper.getDailyAssignmentsEmployee(employeeColumn, "date = ?", new String[]{dateString});
+            List<String> employeeInfo;
+            String openStatus = "";
+            String closeStatus = "";
 
             // adds each employee on the i'th day of the month to the employeeNames string
             for(int j =0; j<employees.size(); j++){
                 if (employees.get(j) != null) {
-                    employeeNames = employeeNames + employees.get(j);
-                    employeeNames = employeeNames + ", ";
+                    employeeInfo = databaseHelper.getEmployeeInformation(employees.get(j));
+
+                    // Conditions, training status is stored as 1 or 0,
+                    // converts to 'yes' or no for both opening/closing
+                    // training status
+                    if (Objects.equals(employeeInfo.get(18), "1")) {
+                        openStatus = "Yes";
+                    }
+
+                    else {
+                        openStatus = "No";
+                    }
+
+                    if (Objects.equals(employeeInfo.get(19), "1")) {
+                        closeStatus = "Yes";
+                    }
+
+                    else {
+                        closeStatus = "No";
+                    }
+                    //ex. | Name | Open Training: Yes | Closed Training: Yes|\n
+                    employeeNames = employeeNames + employees.get(j) + " | Open Training: " + openStatus + " | " + "Closing Training: " + closeStatus + " |";
+                    employeeNames = employeeNames + "\n";
                 }
 
-            }
-            // strips the ending comma and space
-            if (employeeNames.endsWith(", ")) {
-                employeeNames = employeeNames.substring(0, employeeNames.length() - 2);
             }
 
             // Setting text and adding to parent layout
@@ -1079,9 +1109,7 @@ public class CalendarFragment extends Fragment {
             separator.setLayoutParams(new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, 4)); // Adjust height as needed
             separator.setBackgroundColor(Color.DKGRAY);
-
             parentLayout.addView(separator);
-
 
         }
 
