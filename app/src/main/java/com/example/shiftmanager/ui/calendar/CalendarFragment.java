@@ -196,10 +196,10 @@ public class CalendarFragment extends Fragment {
                 boolean isWeekendLayout = dow.equals("sunday") || dow.equals("saturday");
                 View addView;
                 if (dow.equals("sunday") || dow.equals("saturday")) {
-                    addView = LayoutInflater.from(parent.getContext()).inflate(R.layout.assign_shifts_weekends, null);
+                    addView = LayoutInflater.from(parent.getContext()).inflate(R.layout.assign_shifts_busy_weekdays, null);
                     addView.setId(R.id.assign_shifts_weekends);
                 } else {
-                    addView = LayoutInflater.from(parent.getContext()).inflate(R.layout.assign_shifts_weekdays, null);
+                    addView = LayoutInflater.from(parent.getContext()).inflate(R.layout.assign_shifts_busy_weekdays, null);
                     addView.setId(R.id.assign_shifts_weekdays);
                 }
                 builder.setView(addView);
@@ -450,10 +450,13 @@ public class CalendarFragment extends Fragment {
                         // Obtains the selections for each box of a given day
                         String daySelection1;
                         String daySelection2;
+                        String daySelection3;
                         String nightSelection1;
                         String nightSelection2;
+                        String nightSelection3;
                         String fulldaySelection1;
                         String fulldaySelection2;
+                        String fulldaySelection3;
 
                         ImageView dayImage = view.findViewById(R.id.shiftStatus);
                         dayImage.setImageDrawable(null);
@@ -472,16 +475,15 @@ public class CalendarFragment extends Fragment {
                                 dayImage.setImageResource(R.mipmap.exclamation);
                             }
 
-
                             databaseHelper.insertOrUpdateDailyAssignments(dateString, null, null, null,
-                                    null, null, null, fulldaySelection1, fulldaySelection2, weekNumber);
-                        } else {
+                                    null, null, null, fulldaySelection1, fulldaySelection2, null, weekNumber, 0);
+                        } else if (addView.getId() == R.id.assign_shifts_weekdays){
                             daySelection1 = dayShift1.getText().toString();
                             daySelection2 = dayShift2.getText().toString();
                             nightSelection1 = afternoonShift1.getText().toString();
                             nightSelection2 = afternoonShift2.getText().toString();
                             databaseHelper.insertOrUpdateDailyAssignments(dateString, daySelection1, daySelection2, null,
-                                    nightSelection1, nightSelection2, null, null, null, weekNumber);
+                                    nightSelection1, nightSelection2, null, null, null, null, weekNumber, 0);
                         }
 
 

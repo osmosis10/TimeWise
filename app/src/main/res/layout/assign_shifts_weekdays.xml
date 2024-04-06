@@ -73,9 +73,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:translationX="140dp"
                 android:translationY="15dp"
                 android:orientation="horizontal">
+
+                <Switch
+                    android:id="@+id/busyswitchweekday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Busy Day"
+                    android:textStyle="bold" />
+
                 <ImageButton
                     android:id="@+id/unassignedList"
                     android:layout_width="30dp"

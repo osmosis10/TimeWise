@@ -62,7 +62,6 @@ public class GridAdapter extends ArrayAdapter {
 
 
 
-
         //YYYY/MM/DD
         // assigns necessary data to required variables
         int dayNo = dateCalendar.get(Calendar.DAY_OF_MONTH);
@@ -99,7 +98,6 @@ public class GridAdapter extends ArrayAdapter {
             String dayNoString = String.format("%02d", dayNo);
             String dateString = month[1] + "-" + String.format("%02d", monthnum) + "-" +dayNoString;
             setIcon(dateString, cellDay);
-
             view.setBackgroundColor(getContext().getResources().getColor(R.color.black));
             Drawable backgroundDrawable = getContext().getResources().getDrawable(R.drawable.round_corner);
             view.setBackground(backgroundDrawable);
