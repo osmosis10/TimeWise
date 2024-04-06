@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.RotateDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -465,8 +467,15 @@ public class EmployeesFragment extends Fragment {
 
         // ArchiveButton for archiving
         ImageButton archiveButton = new ImageButton(getContext());
+
         // Setting image resource, background, sound effects, and layout params
-        archiveButton.setImageResource(R.drawable.archive_button);
+        //archiveButton.setImageDrawable(archiveDrawable);
+        if (bgColor == Color.BLACK) {
+            archiveButton.setImageResource(R.drawable.archive_button);
+        } else {
+            archiveButton.setImageResource(R.drawable.archive_button_180);
+        }
+
         archiveButton.setBackground(roundDrawable);
         //archiveButton.setBackgroundResource(R.drawable.rounded_button);
         archiveButton.setSoundEffectsEnabled(true);
@@ -615,13 +624,25 @@ public class EmployeesFragment extends Fragment {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String[] columns = {"preferred_name"};
-                String selection = null;
-                List<String> selectionArgsList = new ArrayList<>();
-                dbHelper.setEmployeeArchiveStatus(employeeName, true);
-                String[] selectionArgs = selectionArgsList.toArray(new String[0]);
-                updateEmployeeNamesUI(columns, selection, selectionArgs, null, null, "preferred_name ASC");
-                popupWindow.dismiss();
+                boolean archiveStatus = dbHelper.getEmployeeArchiveStatus(employeeName);
+                if (archiveStatus) {
+                    String[] columns = {"preferred_name"};
+                    String selection = null;
+                    List<String> selectionArgsList = new ArrayList<>();
+                    dbHelper.setEmployeeArchiveStatus(employeeName, false);
+                    String[] selectionArgs = selectionArgsList.toArray(new String[0]);
+                    updateEmployeeNamesUI(columns, selection, selectionArgs, null, null, "preferred_name ASC");
+                    popupWindow.dismiss();
+                } else {
+                    String[] columns = {"preferred_name"};
+                    String selection = null;
+                    List<String> selectionArgsList = new ArrayList<>();
+                    dbHelper.setEmployeeArchiveStatus(employeeName, true);
+                    String[] selectionArgs = selectionArgsList.toArray(new String[0]);
+                    updateEmployeeNamesUI(columns, selection, selectionArgs, null, null, "preferred_name ASC");
+                    popupWindow.dismiss();
+                }
+
             }
         });
         cancelButton.setOnClickListener(new View.OnClickListener() {

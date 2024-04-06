@@ -1258,5 +1258,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close(); // Close the database connection
         return count; // Return the count of updated rows
     }
+    public boolean getEmployeeArchiveStatus(String preferredName) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String[] columns = {COL_EMPLOYEE_ARCHIVED};
+
+
+        // Define the criteria for selecting the correct record to update
+        String selection = COL_EMPLOYEE_PREFERRED_NAME + " = ?";
+        String[] selectionArgs = { preferredName };
+
+        // Perform the update on the database
+        Cursor cursor = db.query(
+                TABLE_EMPLOYEE,
+                columns,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+        boolean archiveStatus = false;
+        if (cursor != null && cursor.moveToFirst()) {
+            int archiveStatusIndex = cursor.getColumnIndex(COL_EMPLOYEE_ARCHIVED);
+            if (archiveStatusIndex != -1) {
+                archiveStatus = cursor.getInt(archiveStatusIndex) == 1;
+            }
+            cursor.close();
+        }
+
+        db.close();
+        return archiveStatus;
+
+    }
 
 }
