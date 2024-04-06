@@ -2,13 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#D6D6D6">
+    android:background="#D6000000"
+
+    >
 
 
     <LinearLayout
+        android:id="@+id/archive_layout"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_margin="10dp"
+        android:layout_centerVertical="true"
         android:background="@drawable/archiveconfirm"
         android:orientation="vertical">
 
@@ -31,7 +35,7 @@
             android:fontFamily="sans-serif-black"
             android:textAlignment="center"
             android:layout_marginTop="20dp"
-            android:text="Proceed to archive this employee? This action is irreversible. Confirm with Yes or Cancel to abort."
+            android:text="Proceed to archive this employee? This action is irreversible. Confirm or Cancel to abort."
             android:textColor="@color/black"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
@@ -45,7 +49,7 @@
 
 
             <Button
-                android:id="@id/confirmarchive"
+                android:id="@+id/confirmarchive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/confirm_x2713"
@@ -55,7 +59,7 @@
                 android:layout_weight="1"
                 />
             <Button
-                android:id="@id/cancelarchive"
+                android:id="@+id/cancelarchive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/cancel_10006"

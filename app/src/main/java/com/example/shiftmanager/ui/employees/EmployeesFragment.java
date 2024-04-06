@@ -16,9 +16,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -50,6 +51,7 @@ public class EmployeesFragment extends Fragment {
 
     private boolean isUntrainedOpeningChecked = false;
     private boolean isunTrainedClosingCheckbox = false;
+    RelativeLayout layout;
 
 
     @Override
@@ -397,7 +399,7 @@ public class EmployeesFragment extends Fragment {
         // TextView for employee name
         TextView employeeNameView = new TextView(getContext());
         employeeNameView.setText(employeeName);
-        employeeNameView.setTextSize(30);
+        employeeNameView.setTextSize(25);
         employeeNameView.setTextColor(Color.WHITE);
 
         // Setting layout parameters and padding
@@ -463,6 +465,31 @@ public class EmployeesFragment extends Fragment {
             }
 
         });
+
+        archiveButton.setOnTouchListener(new View.OnTouchListener(){
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        animateButton(view, 0.8f);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        animateButton(view, 1.0f);
+                        break;
+                }
+                return false;
+            }
+        });
+        archiveButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                CreatePopUpWindow(employeeName);
+            }
+
+        });
+
+
 
         // Add nameContainer to mainContainer
         mainContainer.addView(nameContainer); // Add the container with the name and edit button
@@ -531,7 +558,32 @@ public class EmployeesFragment extends Fragment {
         binding.EmployeeContainer.addView(mainContainer);
     }
 
+    private void CreatePopUpWindow(String employeeName) {
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View popUpview = inflater.inflate(R.layout.archive_confirmation, null);
+        Button confirmButton = popUpview.findViewById(R.id.confirmarchive);
+        Button cancelButton = popUpview.findViewById(R.id.cancelarchive);
+        int width = ViewGroup.LayoutParams.MATCH_PARENT;
+        int height = ViewGroup.LayoutParams.MATCH_PARENT;
+        boolean focusable = true;
+        PopupWindow popupWindow = new PopupWindow(popUpview, width, height, focusable);
+        popupWindow.showAtLocation(popUpview, Gravity.CENTER, 0, 0);
 
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dbHelper.setEmployeeArchiveStatus(employeeName, true);
+                popupWindow.dismiss();
+            }
+        });
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                popupWindow.dismiss();
+            }
+        });
+
+    }
     private void animateButton(View view, float scale) {
         ObjectAnimator scaleDownX = ObjectAnimator.ofFloat(view, "scaleX", scale);
         ObjectAnimator scaleDownY = ObjectAnimator.ofFloat(view, "scaleY", scale);

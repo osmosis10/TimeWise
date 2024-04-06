@@ -1177,4 +1177,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return count; // Return the count of updated rows
     }
 
+    public int setEmployeeArchiveStatus(String preferredName, boolean archiveStatus) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COL_EMPLOYEE_ARCHIVED, archiveStatus);
+
+
+        // Define the criteria for selecting the correct record to update
+        String selection = COL_EMPLOYEE_PREFERRED_NAME + " = ?";
+        String[] selectionArgs = { preferredName };
+
+        // Perform the update on the database
+        int count = db.update(
+                TABLE_EMPLOYEE,
+                values,
+                selection,
+                selectionArgs);
+
+        db.close(); // Close the database connection
+        return count; // Return the count of updated rows
+    }
+
 }
