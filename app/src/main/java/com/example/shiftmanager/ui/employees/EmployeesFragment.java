@@ -101,6 +101,7 @@ public class EmployeesFragment extends Fragment {
                         boolean sundayFullday = result.getData().getBooleanExtra("sundayFullday", false);
                         boolean trainedOpening = result.getData().getBooleanExtra("trainedOpening", false);
                         boolean trainedClosing = result.getData().getBooleanExtra("trainedClosing", false);
+                        boolean isArchived = false;
                         // Update the UI with the employee name
                         //addEmployeeNameToUI(employeeName);
                         // Save our employee to the database
@@ -109,7 +110,7 @@ public class EmployeesFragment extends Fragment {
                                         mondayMorning, mondayAfternoon, tuesdayMorning, tuesdayAfternoon,
                                         wednesdayMorning, wednesdayAfternoon, thursdayMorning, thursdayAfternoon,
                                         fridayMorning, fridayAfternoon, saturdayFullday, sundayFullday,
-                                        trainedOpening, trainedClosing);
+                                        trainedOpening, trainedClosing, isArchived);
                     }
                 }
         );
@@ -131,7 +132,8 @@ public class EmployeesFragment extends Fragment {
                                   boolean tuesdayMorning, boolean tuesdayAfternoon, boolean wednesdayMorning,
                                   boolean wednesdayAfternoon, boolean thursdayMorning, boolean thursdayAfternoon,
                                   boolean fridayMorning, boolean fridayAfternoon, boolean saturdayFullday,
-                                  boolean sundayFullday, boolean trained_opening, boolean trained_closing) {
+                                  boolean sundayFullday, boolean trained_opening, boolean trained_closing,
+                                  boolean is_archived) {
         //dbHelper = new DatabaseHelper(requireContext());
         dbHelper.insertEmployee(employeeFirstName,
                                 employeeLastName,
@@ -144,7 +146,8 @@ public class EmployeesFragment extends Fragment {
                                 wednesdayMorning, wednesdayAfternoon,
                                 thursdayMorning, thursdayAfternoon,
                                 fridayMorning, fridayAfternoon,
-                                saturdayFullday, sundayFullday, trained_opening, trained_closing);
+                                saturdayFullday, sundayFullday, trained_opening, trained_closing,
+                                is_archived);
 
         addEmployeeNameToUI(employeePreferredName);
     }
