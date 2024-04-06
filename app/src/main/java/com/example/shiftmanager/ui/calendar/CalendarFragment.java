@@ -195,6 +195,7 @@ public class CalendarFragment extends Fragment {
                 CheckBox busyCheckbox;
                 if (dow.equals("sunday") || dow.equals("saturday")) {
                     addView = LayoutInflater.from(parent.getContext()).inflate(R.layout.assign_shifts_weekends, null);
+                    addView.setId(R.id.assign_shifts_weekends);
                     busyCheckbox = addView.findViewById(R.id.busycheckboxweekend);
 
                     fulldayShift1 = addView.findViewById(R.id.fulldayShift1);
@@ -202,6 +203,7 @@ public class CalendarFragment extends Fragment {
                     fulldayShift3 = addView.findViewById(R.id.fulldayShift3);
                 } else {
                     addView = LayoutInflater.from(parent.getContext()).inflate(R.layout.assign_shifts_weekdays, null);
+                    addView.setId(R.id.assign_shifts_weekdays);
                     busyCheckbox = addView.findViewById(R.id.busycheckboxweekday);
 
                     dayShift1 = addView.findViewById(R.id.dayShift1);
@@ -212,7 +214,12 @@ public class CalendarFragment extends Fragment {
                     afternoonShift3 = addView.findViewById(R.id.afternoonShift3);
                 }
                 builder.setView(addView);
-
+                Log.d("AddView", "Resource ID: " + addView.getId());
+                Log.d("AddView", "View details: " + addView.toString());
+                int layoutId = R.id.assign_shifts_weekdays;
+                Log.d("Layout ID weekday", String.valueOf(layoutId));
+                int layoutId2 = R.id.assign_shifts_weekends;
+                Log.d("Layout ID weekend", String.valueOf(layoutId2));
                 Log.d("Dayoftheweek", dow);
                 Log.d("Dayoftheweek", String.valueOf(isWeekendLayout));
 
@@ -264,16 +271,31 @@ public class CalendarFragment extends Fragment {
                 int addViewId = addView.getId();
                 busyCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     if (dow.equals("sunday") || dow.equals("saturday")) {
-                        fulldayShift1.setEnabled(isChecked);
-                        fulldayShift2.setEnabled(isChecked);
-                        fulldayShift3.setEnabled(isChecked); // Enable or disable based on checkbox
+                        if (isChecked) {
+                            fulldayShift1.setEnabled(isChecked || fulldayShift1.isEnabled());
+                            fulldayShift2.setEnabled(isChecked || fulldayShift2.isEnabled());
+                            fulldayShift3.setEnabled(isChecked || fulldayShift3.isEnabled()); // Enable or disable based on checkbox
+                        } else if (!isChecked) {
+                            fulldayShift1.setEnabled(true);
+                            fulldayShift2.setEnabled(true);
+                            fulldayShift3.setEnabled(false);
+                        }
                     } else {
-                        dayShift1.setEnabled(isChecked || dayShift1.isEnabled());
-                        dayShift2.setEnabled(isChecked || dayShift2.isEnabled());
-                        dayShift3.setEnabled(isChecked || dayShift3.isEnabled());
-                        afternoonShift1.setEnabled(isChecked || afternoonShift1.isEnabled());
-                        afternoonShift2.setEnabled(isChecked || afternoonShift2.isEnabled());
-                        afternoonShift3.setEnabled(isChecked || afternoonShift3.isEnabled());
+                        if (isChecked) {
+                            dayShift1.setEnabled(isChecked || dayShift1.isEnabled());
+                            dayShift2.setEnabled(isChecked || dayShift2.isEnabled());
+                            dayShift3.setEnabled(isChecked || dayShift3.isEnabled());
+                            afternoonShift1.setEnabled(isChecked || afternoonShift1.isEnabled());
+                            afternoonShift2.setEnabled(isChecked || afternoonShift2.isEnabled());
+                            afternoonShift3.setEnabled(isChecked || afternoonShift3.isEnabled());
+                        } else if (!isChecked) {
+                            dayShift1.setEnabled(true);
+                            dayShift2.setEnabled(true);
+                            dayShift3.setEnabled(false);
+                            afternoonShift1.setEnabled(true);
+                            afternoonShift2.setEnabled(true);
+                            afternoonShift3.setEnabled(false);
+                        }
                         // Enable or disable additional shifts based on checkbox
                     }
                 });
@@ -452,9 +474,10 @@ public class CalendarFragment extends Fragment {
                     // Set database employee names to shift dropdown menu's (creates list)
                     dayShift1.setAdapter(adapterDayShift1);
                     dayShift2.setAdapter(adapterDayShift2);
+                    dayShift3.setAdapter(adapterDayShift3);
                     afternoonShift1.setAdapter(adapterafternoonShift1);
                     afternoonShift2.setAdapter(adapterafternoonShift2);
-
+                    afternoonShift3.setAdapter(adapterafternoonShift3);
 
                     dayShift1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override

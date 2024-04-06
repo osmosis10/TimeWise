@@ -16,7 +16,7 @@ import java.util.Random;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "schedulingdb.db";
-    private static final int DATABASE_VERSION = 23;
+    private static final int DATABASE_VERSION = 28;
     private static final String TABLE_EMPLOYEE = "employees";
     // Employee Table
     private static final String COL_EMPLOYEE_ID = "id";
@@ -147,8 +147,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COL_DAILY_ASSIGNMENT_NIGHTSHIFT3_PREFERRED_NAME + " TEXT NULL," +
                 COL_DAILY_ASSIGNMENT_FULLDAY1_PREFERRED_NAME + " TEXT NULL," +
                 COL_DAILY_ASSIGNMENT_FULLDAY2_PREFERRED_NAME + " TEXT NULL," +
-                COL_DAILY_ASSIGNMENT_FULLDAY3_PREFERRED_NAME + "TEXT NULL" +
-                COL_DAILY_ASSIGNMENT_WEEKNUM + " INTEGER NOT NULL" +
+                COL_DAILY_ASSIGNMENT_FULLDAY3_PREFERRED_NAME + " TEXT NULL," +
+                COL_DAILY_ASSIGNMENT_WEEKNUM + " INTEGER NOT NULL," +
                 COL_BUSYDAY + "INTEGER NOT NULL" + ")";
     }
 
