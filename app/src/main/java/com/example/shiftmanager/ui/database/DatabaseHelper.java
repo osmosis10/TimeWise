@@ -16,7 +16,7 @@ import java.util.Random;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "schedulingdb.db";
-    private static final int DATABASE_VERSION = 29;
+    private static final int DATABASE_VERSION = 30;
 
     private static final String TABLE_EMPLOYEE = "employees";
     // Employee Table
@@ -152,7 +152,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COL_DAILY_ASSIGNMENT_FULLDAY2_PREFERRED_NAME + " TEXT NULL," +
                 COL_DAILY_ASSIGNMENT_FULLDAY3_PREFERRED_NAME + " TEXT NULL," +
                 COL_DAILY_ASSIGNMENT_WEEKNUM + " INTEGER NOT NULL," +
-                COL_BUSYDAY + "INTEGER NOT NULL" + ")";
+                COL_BUSYDAY + " INTEGER NOT NULL" + ")";
     }
 
     public long insertEmployee(String first_name, String last_name, String preferred_name,
@@ -1087,6 +1087,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             values.put(COL_DAILY_ASSIGNMENT_FULLDAY3_PREFERRED_NAME, fulldayshift3_employee);
         }
 
+
+
         values.put(COL_DAILY_ASSIGNMENT_WEEKNUM, week_num);
         values.put(COL_BUSYDAY, busy_day);
        if (cursor != null && cursor.moveToFirst()) {
@@ -1307,24 +1309,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    @SuppressLint("Range")
-    public boolean checkBusyDays(String date) {
-        SQLiteDatabase db = getReadableDatabase();
 
-        String[] columns = {COL_BUSYDAY};
-        String selection = "date = ?";
-        String[] selectionArgs = {date};
-
-        Cursor cursor = db.query(TABLE_DAILY_ASSIGNMENTS, columns, selection, selectionArgs, null, null, null);
-
-        int busyStatus = -1;
-
-        if (cursor != null && cursor.moveToFirst()) {
-            busyStatus = cursor.getInt(cursor.getColumnIndex(COL_BUSYDAY));
-            cursor.close();
-        }
-
-        return busyStatus == 1;
-    }
 
 }
