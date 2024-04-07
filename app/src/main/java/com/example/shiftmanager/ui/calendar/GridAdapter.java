@@ -103,6 +103,7 @@ public class GridAdapter extends ArrayAdapter {
             String dateString = month[1] + "-" + String.format("%02d", monthnum) + "-" +dayNoString;
             boolean checkDay = databaseHelper.checkBusyDays(dateString);
             setIcon(dateString, cellDay);
+            Log.d("BOOLEAN", "" + dateString + " " + );
             view.setBackgroundColor(getContext().getResources().getColor(R.color.black));
             Drawable backgroundDrawableBusy = getContext().getResources().getDrawable(R.drawable.round_corner_gold);
             Drawable backgroundDrawableNormal = getContext().getResources().getDrawable(R.drawable.round_corner);
