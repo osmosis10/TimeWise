@@ -462,12 +462,20 @@ public class CalendarFragment extends Fragment {
                         dayShift2.setText(savedDayShift2);
                     }
 
+                    if (savedDayShift3 != null && !savedDayShift3.isEmpty()) {
+                        dayShift3.setText(savedDayShift3);
+                    }
+
                     if (savedNightShift1 != null && !savedNightShift1.isEmpty()) {
                         afternoonShift1.setText(savedNightShift1);
                     }
 
                     if (savedNightShift2 != null && !savedNightShift2.isEmpty()) {
                         afternoonShift2.setText(savedNightShift2);
+                    }
+
+                    if (savedNightShift3 != null && !savedNightShift3.isEmpty()) {
+                        afternoonShift3.setText(savedNightShift3);
                     }
 
 
