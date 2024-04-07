@@ -3,7 +3,6 @@ package com.example.shiftmanager.ui.calendar;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +16,6 @@ import androidx.annotation.Nullable;
 
 import com.example.shiftmanager.R;
 import com.example.shiftmanager.ui.database.DatabaseHelper;
-
-import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -101,14 +98,13 @@ public class GridAdapter extends ArrayAdapter {
 
             String dayNoString = String.format("%02d", dayNo);
             String dateString = month[1] + "-" + String.format("%02d", monthnum) + "-" +dayNoString;
-            boolean checkDay = databaseHelper.checkBusyDays(dateString);
+            int checkDay = databaseHelper.isBusyDay(dateString);
             setIcon(dateString, cellDay);
-            Log.d("BOOLEAN", "" + dateString + " " + );
             view.setBackgroundColor(getContext().getResources().getColor(R.color.black));
-            Drawable backgroundDrawableBusy = getContext().getResources().getDrawable(R.drawable.round_corner_gold);
+            Drawable backgroundDrawableBusy = getContext().getResources().getDrawable(R.drawable.round_corner_pink);
             Drawable backgroundDrawableNormal = getContext().getResources().getDrawable(R.drawable.round_corner);
 
-            if (checkDay) {
+            if (checkDay == 1) {
 
                 view.setBackground(backgroundDrawableBusy);
             }

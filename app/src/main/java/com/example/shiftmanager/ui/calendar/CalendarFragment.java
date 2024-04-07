@@ -55,10 +55,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-import androidx.core.app.ActivityCompat;
-
-import org.w3c.dom.Text;
-
 @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class CalendarFragment extends Fragment {
 
@@ -269,20 +265,25 @@ public class CalendarFragment extends Fragment {
                     }
                 });
 
+                // Check the checkbox if its a busyday
+                int isBusy = databaseHelper.isBusyDay(dateString);
+                Log.d("THIS IS THE VALUE!!!!", String.valueOf(isBusy));
+                if (isBusy == 1) {
+                    busyCheckbox.setChecked(true);
+                } else {
+                    busyCheckbox.setChecked(false);
+                }
+
                 int addViewId = addView.getId();
                 busyCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     if (dow.equals("sunday") || dow.equals("saturday")) {
                         if (isChecked) {
                             checkStatus = true;
-                            Drawable backgroundDrawable = getContext().getResources().getDrawable(R.drawable.round_corner_gold);
-                            view.setBackground(backgroundDrawable);
-                            fulldayShift1.setEnabled(isChecked || fulldayShift1.isEnabled());
-                            fulldayShift2.setEnabled(isChecked || fulldayShift2.isEnabled());
-                            fulldayShift3.setEnabled(isChecked || fulldayShift3.isEnabled()); // Enable or disable based on checkbox
+                            fulldayShift1.setEnabled(checkStatus || fulldayShift1.isEnabled());
+                            fulldayShift2.setEnabled(checkStatus || fulldayShift2.isEnabled());
+                            fulldayShift3.setEnabled(checkStatus || fulldayShift3.isEnabled()); // Enable or disable based on checkbox
                         } else if (!isChecked) {
                             checkStatus = false;
-                            Drawable backgroundDrawable = getContext().getResources().getDrawable(R.drawable.round_corner);
-                            view.setBackground(backgroundDrawable);
                             fulldayShift1.setEnabled(true);
                             fulldayShift2.setEnabled(true);
                             fulldayShift3.setEnabled(false);
@@ -290,8 +291,6 @@ public class CalendarFragment extends Fragment {
                     } else {
                         if (isChecked) {
                             checkStatus = true;
-                            Drawable backgroundDrawable = getContext().getResources().getDrawable(R.drawable.round_corner_gold);
-                            view.setBackground(backgroundDrawable);
                             dayShift1.setEnabled(isChecked || dayShift1.isEnabled());
                             dayShift2.setEnabled(isChecked || dayShift2.isEnabled());
                             dayShift3.setEnabled(isChecked || dayShift3.isEnabled());
@@ -300,8 +299,6 @@ public class CalendarFragment extends Fragment {
                             afternoonShift3.setEnabled(isChecked || afternoonShift3.isEnabled());
                         } else if (!isChecked) {
                             checkStatus = false;
-                            Drawable backgroundDrawable = getContext().getResources().getDrawable(R.drawable.round_corner);
-                            view.setBackground(backgroundDrawable);
                             dayShift1.setEnabled(true);
                             dayShift2.setEnabled(true);
                             dayShift3.setEnabled(false);
@@ -446,11 +443,6 @@ public class CalendarFragment extends Fragment {
 
                     // DROP DOWN PERSISTENCE
                     // Retrieve the saved values from SharedPreferences after selection has occured
-                    //SharedPreferences preferences = requireContext().getSharedPreferences("Preferences", Context.MODE_PRIVATE);
-//                String savedDayShift1 = preferences.getString("dayShift1_" + Date, "");
-//                String savedDayShift2 = preferences.getString("dayShift2_" + Date, "");
-//                String savedNightShift1 = preferences.getString("nightShift1_" + Date, "");
-//                String savedNightShift2 = preferences.getString("nightShift2_" + Date, "");
                     String savedDayShift1 = databaseHelper.getShiftValues("dayshift1_employee", dateString);
                     String savedDayShift2 = databaseHelper.getShiftValues("dayshift2_employee", dateString);
                     String savedDayShift3 = databaseHelper.getShiftValues("dayshift3_employee", dateString);
@@ -582,6 +574,7 @@ public class CalendarFragment extends Fragment {
                         ImageView dayImage = view.findViewById(R.id.shiftStatus);
                         dayImage.setImageDrawable(null);
 
+
                         if (addView.getId() == R.id.assign_shifts_weekends) {
                             fulldaySelection1 = fulldayShift1.getText().toString();
                             fulldaySelection2 = fulldayShift2.getText().toString();
@@ -596,9 +589,17 @@ public class CalendarFragment extends Fragment {
                                 dayImage.setImageResource(R.mipmap.exclamation);
                             }
 
-                            databaseHelper.insertOrUpdateDailyAssignments(dateString, null, null, null,
-                                    null, null, null, fulldaySelection1, fulldaySelection2, null, weekNumber, 0);
-                        } else if (addView.getId() == R.id.assign_shifts_weekdays){
+                            // updates database with weekend busy day name
+                            if (busyCheckbox.isChecked()) {
+                                fulldaySelection3 = fulldayShift3.getText().toString();
+                                databaseHelper.insertOrUpdateDailyAssignments(dateString, null, null, null,
+                                        null, null, null, fulldaySelection1, fulldaySelection2, fulldaySelection3, weekNumber, 1);
+                            } else {
+                                databaseHelper.insertOrUpdateDailyAssignments(dateString, null, null, null,
+                                        null, null, null, fulldaySelection1, fulldaySelection2, null, weekNumber, 0);
+                            }
+
+                            } else if (addView.getId() == R.id.assign_shifts_weekdays){
                             daySelection1 = dayShift1.getText().toString();
                             daySelection2 = dayShift2.getText().toString();
                             nightSelection1 = afternoonShift1.getText().toString();
@@ -619,55 +620,30 @@ public class CalendarFragment extends Fragment {
                                 dayImage.setImageResource(R.mipmap.exclamation);
                             }
 
-                            databaseHelper.insertOrUpdateDailyAssignments(dateString, daySelection1, daySelection2, null,
-                                    nightSelection1, nightSelection2, null, null, null, null, weekNumber, 0);
+                            // Updates the database with the newly entered weekday busy day entries
+                            if (busyCheckbox.isChecked()) {
+                                daySelection3 = dayShift3.getText().toString();
+                                nightSelection3 = afternoonShift3.getText().toString();
+                                databaseHelper.insertOrUpdateDailyAssignments(dateString, daySelection1, daySelection2, daySelection3,
+                                        nightSelection1, nightSelection2, nightSelection3, null, null, null, weekNumber, 1);
+                            } else {
+                                databaseHelper.insertOrUpdateDailyAssignments(dateString, daySelection1, daySelection2, null,
+                                        nightSelection1, nightSelection2, null, null, null, null, weekNumber, 0);
+                            }
+
+                        }
+
+                        if (busyCheckbox.isChecked()) {
+                            Drawable backgroundDrawable = getContext().getResources().getDrawable(R.drawable.round_corner_pink);
+                            view.setBackground(backgroundDrawable);
+                        }
+
+                        else {
+                            Drawable backgroundDrawable = getContext().getResources().getDrawable(R.drawable.round_corner);
+                            view.setBackground(backgroundDrawable);
                         }
 
 
-//                        SharedPreferences preferences = requireContext().getSharedPreferences("Preferences", Context.MODE_PRIVATE);
-//                        SharedPreferences.Editor editor = preferences.edit();
-//                        // stores the selection according to the specified day in 'Date'
-//                        editor.putString("dayShift1_" + Date, appendNames(preferences.getString("dayShift1_" + Date, ""), daySelection1));
-//                        editor.putString("dayShift2_" + Date, appendNames(preferences.getString("dayShift2_" + Date, ""), daySelection2));
-//                        editor.putString("nightShift1_" + Date, appendNames(preferences.getString("nightShift1_" + Date, ""), nightSelection1));
-//                        editor.putString("nightShift2_" + Date, appendNames(preferences.getString("nightShift2_" + Date, ""), nightSelection2));
-//
-//                        editor.apply(); // stores the preferences
-
-//                        if (!daySelection1.isEmpty()) {
-//                            selected++;
-//                        }
-//                        if (!daySelection2.isEmpty()) {
-//                            selected++;
-//                        }
-//                        if (!nightSelection1.isEmpty()) {
-//                            selected++;
-//                        }
-//
-//                        if (!nightSelection2.isEmpty()) {
-//                            selected++;
-//                        }
-//
-//                        if (!fulldaySelection1.isEmpty()) {
-//                            selectedweekends++;
-//                        }
-//                        if (!fulldaySelection2.isEmpty()) {
-//                            selectedweekends++;
-//                        }
-//                        ImageView dayImage = view.findViewById(R.id.shiftStatus);
-//                        dayImage.setImageDrawable(null);
-//                        if (selected == 4 || selectedweekends == 2) {
-//                            // Variables for setting calendar icons
-//                            dayImage.setImageResource(R.mipmap.accept);
-//                        }
-//
-//                        else if (selected > 0 || selectedweekends > 0) {
-//                            dayImage.setImageResource(R.mipmap.warning);
-//                        }
-//
-//                        else {
-//                            dayImage.setImageResource(R.mipmap.exclamation);
-//                        }
 
                         alertDialog.dismiss(); // Closes assign shifts page
                     }

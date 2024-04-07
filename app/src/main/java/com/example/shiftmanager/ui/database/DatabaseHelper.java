@@ -1309,24 +1309,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+
     @SuppressLint("Range")
-    public boolean checkBusyDays(String date) {
+    public int isBusyDay(String date) {
         SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(
+                TABLE_DAILY_ASSIGNMENTS,
+                new String[]{COL_BUSYDAY},  // Only need to query the busy_day column
+                COL_DAILY_ASSIGNMENT_DATE + " =?",  // Where clause to match the date
+                new String[]{date},  // The actual date value to match against
+                null,
+                null,
+                null);
 
-        String[] columns = {COL_BUSYDAY};
-        String selection = "date = ?";
-        String[] selectionArgs = {date};
-
-        Cursor cursor = db.query(TABLE_DAILY_ASSIGNMENTS, columns, selection, selectionArgs, null, null, null);
-
-        int busyStatus = -1;
+        int isBusy = 0;  // Default to 0 (not busy) if no record is found
 
         if (cursor != null && cursor.moveToFirst()) {
-            busyStatus = cursor.getInt(cursor.getColumnIndex(COL_BUSYDAY));
+            isBusy = cursor.getInt(cursor.getColumnIndexOrThrow(COL_BUSYDAY));
             cursor.close();
         }
 
-        return busyStatus == 1;
+        return isBusy;
     }
+
 
 }
