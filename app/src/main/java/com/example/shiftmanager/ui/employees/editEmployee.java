@@ -158,12 +158,13 @@ public class editEmployee extends AppCompatActivity {
                 boolean sundayFullday = ((CheckBox) findViewById(R.id.EditEmployeeSundayFulldayCheckbox)).isChecked();
                 boolean trained_opening = ((CheckBox) findViewById(R.id.EditEmployeeTrainedOpeningCheckBox)).isChecked();
                 boolean trained_closing = ((CheckBox) findViewById(R.id.EditEmployeeTrainedClosingCheckBox)).isChecked();
+                boolean is_archived = false;
 
                 // Modify the database to reflect updated employee information
                 dbHelper.updateEmployeeInformation(preferredName, first_name, last_name, preferred_name, phone, email,
                         mondayMorning, mondayAfternoon, tuesdayMorning, tuesdayAfternoon, wednesdayMorning,
                         wednesdayAfternoon, thursdayMorning, thursdayAfternoon, fridayMorning, fridayAfternoon,
-                        saturdayFullday, sundayFullday, trained_opening, trained_closing);
+                        saturdayFullday, sundayFullday, trained_opening, trained_closing, is_archived);
 
                 setResult(Activity.RESULT_OK);
                 // Close the current activity and return to the previous screen

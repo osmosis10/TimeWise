@@ -125,6 +125,7 @@ public class addEmployee extends AppCompatActivity {
                 boolean sundayFullday = ((CheckBox) findViewById(R.id.AddEmployeeSundayFulldayCheckbox)).isChecked();
                 boolean trained_opening = ((CheckBox) findViewById(R.id.TrainedOpeningCheckbox)).isChecked();
                 boolean trained_closing = ((CheckBox) findViewById(R.id.TrainedClosingCheckbox)).isChecked();
+                boolean is_archived = false;
 
                 // Create the Employee object
                 Employee newEmployee = new Employee(first_name, last_name, preferred_name,
@@ -135,7 +136,8 @@ public class addEmployee extends AppCompatActivity {
                         thursdayMorning, thursdayAfternoon,
                         fridayMorning, fridayAfternoon,
                         saturdayFullday, sundayFullday,
-                        trained_opening, trained_closing);
+                        trained_opening, trained_closing,
+                        is_archived);
 
                 Intent data = new Intent();
                 data.putExtra("employeeFirstName", first_name);
@@ -160,6 +162,7 @@ public class addEmployee extends AppCompatActivity {
                 data.putExtra("sundayFullday", sundayFullday);
                 data.putExtra("trainedOpening", trained_opening);
                 data.putExtra("trainedClosing", trained_closing);
+                data.putExtra("is_archived", is_archived);
 
 
                 setResult(Activity.RESULT_OK, data);

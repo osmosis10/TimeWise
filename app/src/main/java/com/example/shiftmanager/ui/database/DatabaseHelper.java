@@ -16,7 +16,8 @@ import java.util.Random;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "schedulingdb.db";
-    private static final int DATABASE_VERSION = 28;
+    private static final int DATABASE_VERSION = 29;
+
     private static final String TABLE_EMPLOYEE = "employees";
     // Employee Table
     private static final String COL_EMPLOYEE_ID = "id";
@@ -50,6 +51,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String COL_EMPLOYEE_TRAINED_OPENING = "trained_opening";
     private static final String COL_EMPLOYEE_TRAINED_CLOSING = "trained_closing";
+    private static final String COL_EMPLOYEE_ARCHIVED = "is_archived";
 
 
 
@@ -123,7 +125,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COL_EMPLOYEE_SATURDAY + " INTEGER," +
                 COL_EMPLOYEE_SUNDAY + " INTEGER," +
                 COL_EMPLOYEE_TRAINED_OPENING + " INTEGER," +
-                COL_EMPLOYEE_TRAINED_CLOSING + " INTEGER" +
+                COL_EMPLOYEE_TRAINED_CLOSING + " INTEGER," +
+                COL_EMPLOYEE_ARCHIVED + " INTEGER" +
                 ")";
     }
     public String createShiftTable() {
@@ -158,7 +161,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                boolean tuesdayMorning, boolean tuesdayAfternoon, boolean wednesdayMorning,
                                boolean wednesdayAfternoon, boolean thursdayMorning, boolean thursdayAfternoon,
                                boolean fridayMorning, boolean fridayAfternoon, boolean saturdayFullday,
-                               boolean sundayFullday, boolean trained_opening, boolean trained_closing) {
+                               boolean sundayFullday, boolean trained_opening, boolean trained_closing,
+                               boolean is_archived) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues data = new ContentValues();
         data.put(COL_EMPLOYEE_FIRST_NAME, first_name);
@@ -181,6 +185,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         data.put(COL_EMPLOYEE_SUNDAY, sundayFullday);
         data.put(COL_EMPLOYEE_TRAINED_OPENING, trained_opening);
         data.put(COL_EMPLOYEE_TRAINED_CLOSING, trained_closing);
+        data.put(COL_EMPLOYEE_ARCHIVED, is_archived);
         long rowID = db.insert(TABLE_EMPLOYEE, null, data);
         db.close();
         return rowID;
@@ -295,7 +300,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "780-292-2020", "example@email.com", "10-02-2024",
                     randBool, randBool, randBool, randBool,
                     randBool, randBool,randBool,randBool,randBool,
-                    randBool,randBool, randBool, randBool, randBool);
+                    randBool,randBool, randBool, randBool, randBool, randBool);
         }
 
     }
@@ -303,46 +308,46 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void makeEmployees() {
         // Mornings
         insertEmployee("John", "Doe", "Johnny", "780-292-2020", "john@example.com", "10-02-2024",
-                true, false, true, false, true, false, true, false, true, false, true, false, true, true);
+                true, false, true, false, true, false, true, false, true, false, true, false, true, true, false);
 
         insertEmployee("Jane", "Smith", "Janie", "780-292-2020", "jane@example.com", "10-02-2024",
-                false, true, false, true, false, true, false, true, false, true, false, true, false, true);
+                false, true, false, true, false, true, false, true, false, true, false, true, false, true, false);
 
         insertEmployee("Alice", "Johnson", "Ally", "780-292-2020", "alice@example.com", "10-02-2024",
-                true, true, false, false, true, true, false, false, true, true, false, false, true, false);
+                true, true, false, false, true, true, false, false, true, true, false, false, true, false, false);
 
         insertEmployee("Bob", "Williams", "Bobby", "780-292-2020", "bob@example.com", "10-02-2024",
-                false, true, true, false, false, true, true, false, false, true, true, false, false, true);
+                false, true, true, false, false, true, true, false, false, true, true, false, false, true, false);
 
         insertEmployee("Emily", "Brown", "Em", "780-292-2020", "emily@example.com", "10-02-2024",
-                true, false, true, true, false, false, true, true, false, false, true, true, false, true);
+                true, false, true, true, false, false, true, true, false, false, true, true, false, true, false);
 
        // Afternoons
         insertEmployee("David", "Taylor", "Dave", "780-292-2020", "david@example.com", "10-02-2024",
-                false, true, false, true, false, true, false, true, false, true, false, true, false, true);
+                false, true, false, true, false, true, false, true, false, true, false, true, false, true, false);
 
         insertEmployee("Sarah", "Anderson", "Sar", "780-292-2020", "sarah@example.com", "10-02-2024",
-                true, false, true, false, true, false, true, false, true, false, true, false, true, false);
+                true, false, true, false, true, false, true, false, true, false, true, false, true, false, false);
 
         insertEmployee("Matthew", "Thomas", "Matt", "780-292-2020", "matthew@example.com", "10-02-2024",
-                false, true, false, true, false, true, false, true, false, true, false, true, false, true);
+                false, true, false, true, false, true, false, true, false, true, false, true, false, true, false);
 
         insertEmployee("Olivia", "Wilson", "Liv", "780-292-2020", "olivia@example.com", "10-02-2024",
-                true, false, true, false, true, false, true, false, true, false, true, false, true, true);
+                true, false, true, false, true, false, true, false, true, false, true, false, true, true, false);
 
         insertEmployee("Sophia", "Martinez", "Soph", "780-292-2020", "sophia@example.com", "10-02-2024",
-                false, true, false, true, false, true, false, true, false, true, false, true, false, true);
+                false, true, false, true, false, true, false, true, false, true, false, true, false, true, false);
 
         // Fulldays
 
         insertEmployee("Michael", "Garcia", "Mike", "780-292-2020", "michael@example.com", "10-02-2024",
-                false, true, false, true, true, false, true, true, false, true, true, true, true, false);
+                false, true, false, true, true, false, true, true, false, true, true, true, true,  false, false);
 
         insertEmployee("Emily", "Rodriguez", "Emma", "780-292-2020", "emily@example.com", "10-02-2024",
-                false, false, true, true, true, false, true, true, false, true, true, true, true, true);
+                false, false, true, true, true, false, true, true, false, true, true, true, true, true, false);
 
         insertEmployee("David", "Hernandez", "Davey", "780-292-2020", "david@example.com", "10-02-2024",
-                false, true, false, true, false, true, true, true, true, true, true, true, true, false);
+                false, true, false, true, false, true, true, true, true, true, true, true, true, false, false);
 
     }
     /*
@@ -410,6 +415,66 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return employeeNames;
     }
 
+    public List<String> getAllActiveEmployeePreferredNames(String[] columns, String selection, String[] selectionArgs,
+                                                     String groupBy, String having, String orderBy) {
+        List<String> employeeNames = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.query(
+                TABLE_EMPLOYEE,
+                columns,
+                selection,
+                selectionArgs,
+                groupBy,
+                having,
+                orderBy
+        );
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                int preferredNameIndex = cursor.getColumnIndex(COL_EMPLOYEE_PREFERRED_NAME);
+                if (preferredNameIndex != -1) {
+                    String preferred_name = cursor.getString(preferredNameIndex);
+
+
+                    Log.d("EmployeeNames", "Adding employee name: " + preferred_name);
+                    employeeNames.add(preferred_name);
+                }
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        return employeeNames;
+    }
+    public List<String> getAllInactiveEmployeePreferredNames(String[] columns, String selection, String[] selectionArgs,
+                                                     String groupBy, String having, String orderBy) {
+        List<String> employeeNames = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.query(
+                TABLE_EMPLOYEE,
+                columns,
+                selection,
+                selectionArgs,
+                groupBy,
+                having,
+                orderBy
+        );
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                int preferredNameIndex = cursor.getColumnIndex(COL_EMPLOYEE_PREFERRED_NAME);
+                if (preferredNameIndex != -1) {
+                    String preferred_name = cursor.getString(preferredNameIndex);
+
+
+                    Log.d("EmployeeNames", "Adding employee name: " + preferred_name);
+                    employeeNames.add(preferred_name);
+                }
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        return employeeNames;
+    }
     /*
     This returns the preferredName + highestSuffix
     So if a preffered name John3 exists, this would return John4 if the input was John
@@ -666,7 +731,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COL_EMPLOYEE_SATURDAY,
                 COL_EMPLOYEE_SUNDAY,
                 COL_EMPLOYEE_TRAINED_OPENING,
-                COL_EMPLOYEE_TRAINED_CLOSING
+                COL_EMPLOYEE_TRAINED_CLOSING,
+                COL_EMPLOYEE_ARCHIVED
         };
 
         // Specify the criteria for selection
@@ -708,6 +774,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_SUNDAY)));
                 employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_TRAINED_OPENING)));
                 employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_TRAINED_CLOSING)));
+                employeeInformation.add(cursor.getString(cursor.getColumnIndexOrThrow(COL_EMPLOYEE_ARCHIVED)));
             } while (cursor.moveToNext());
             cursor.close();
         }
@@ -1144,7 +1211,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                          boolean thursdayMorning, boolean thursdayAfternoon,
                                          boolean fridayMorning, boolean fridayAfternoon,
                                          boolean saturday, boolean sunday,
-                                         boolean trained_opening, boolean trained_closing) {
+                                         boolean trained_opening, boolean trained_closing,
+                                         boolean is_archived) {
         SQLiteDatabase db = getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -1167,6 +1235,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COL_EMPLOYEE_SUNDAY, sunday);
         values.put(COL_EMPLOYEE_TRAINED_OPENING, trained_opening);
         values.put(COL_EMPLOYEE_TRAINED_CLOSING, trained_closing);
+        values.put(COL_EMPLOYEE_ARCHIVED, is_archived);
 
         // Define the criteria for selecting the correct record to update
         String selection = COL_EMPLOYEE_PREFERRED_NAME + " = ?";
@@ -1181,6 +1250,61 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.close(); // Close the database connection
         return count; // Return the count of updated rows
+    }
+
+    public int setEmployeeArchiveStatus(String preferredName, boolean archiveStatus) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COL_EMPLOYEE_ARCHIVED, archiveStatus);
+
+
+        // Define the criteria for selecting the correct record to update
+        String selection = COL_EMPLOYEE_PREFERRED_NAME + " = ?";
+        String[] selectionArgs = { preferredName };
+
+        // Perform the update on the database
+        int count = db.update(
+                TABLE_EMPLOYEE,
+                values,
+                selection,
+                selectionArgs);
+
+        db.close(); // Close the database connection
+        return count; // Return the count of updated rows
+    }
+    public boolean getEmployeeArchiveStatus(String preferredName) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String[] columns = {COL_EMPLOYEE_ARCHIVED};
+
+
+        // Define the criteria for selecting the correct record to update
+        String selection = COL_EMPLOYEE_PREFERRED_NAME + " = ?";
+        String[] selectionArgs = { preferredName };
+
+        // Perform the update on the database
+        Cursor cursor = db.query(
+                TABLE_EMPLOYEE,
+                columns,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+        boolean archiveStatus = false;
+        if (cursor != null && cursor.moveToFirst()) {
+            int archiveStatusIndex = cursor.getColumnIndex(COL_EMPLOYEE_ARCHIVED);
+            if (archiveStatusIndex != -1) {
+                archiveStatus = cursor.getInt(archiveStatusIndex) == 1;
+            }
+            cursor.close();
+        }
+
+        db.close();
+        return archiveStatus;
+
     }
 
 }

@@ -2,4 +2,6 @@
 <resources>
     <item name="assign_shifts_weekends" type="id" />
     <item name="assign_shifts_weekdays" type="id" />
+    <item name="cancelarchive" type="id"/>
+    <item name="confirmarchive" type="id"/>
 </resources>
