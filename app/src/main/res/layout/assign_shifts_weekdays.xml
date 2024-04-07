@@ -114,9 +114,10 @@
                     android:layout_height="15pt"
                     android:layout_marginBottom="10dp"
                     android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="8sp"
                     android:hint="Day Shift"
                     android:inputType="none"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_horizontal"
                     android:textAppearance="?android:attr/textAppearanceListItemSmall"
                     android:textSize="12sp" />
 

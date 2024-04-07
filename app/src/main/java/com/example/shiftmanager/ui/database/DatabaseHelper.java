@@ -1307,4 +1307,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    @SuppressLint("Range")
+    public boolean checkBusyDays(String date) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String[] columns = {COL_BUSYDAY};
+        String selection = "date = ?";
+        String[] selectionArgs = {date};
+
+        Cursor cursor = db.query(TABLE_DAILY_ASSIGNMENTS, columns, selection, selectionArgs, null, null, null);
+
+        int busyStatus = -1;
+
+        if (cursor != null && cursor.moveToFirst()) {
+            busyStatus = cursor.getInt(cursor.getColumnIndex(COL_BUSYDAY));
+            cursor.close();
+        }
+
+        return busyStatus == 1;
+    }
+
 }

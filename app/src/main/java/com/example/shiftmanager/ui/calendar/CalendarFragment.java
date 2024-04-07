@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.graphics.pdf.PdfDocument;
 import android.os.Build;
 import android.os.Bundle;
@@ -114,8 +115,9 @@ public class CalendarFragment extends Fragment {
     ImageButton assignBackButton;
 
     Button confirmButton;
-
     ImageButton employeeList;
+
+    Boolean checkStatus = false;
 
     final static int REQUEST_CODE = 1232;
 
@@ -197,7 +199,6 @@ public class CalendarFragment extends Fragment {
                     addView = LayoutInflater.from(parent.getContext()).inflate(R.layout.assign_shifts_weekends, null);
                     addView.setId(R.id.assign_shifts_weekends);
                     busyCheckbox = addView.findViewById(R.id.busycheckboxweekend);
-
                     fulldayShift1 = addView.findViewById(R.id.fulldayShift1);
                     fulldayShift2 = addView.findViewById(R.id.fulldayShift2);
                     fulldayShift3 = addView.findViewById(R.id.fulldayShift3);
@@ -272,16 +273,25 @@ public class CalendarFragment extends Fragment {
                 busyCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     if (dow.equals("sunday") || dow.equals("saturday")) {
                         if (isChecked) {
+                            checkStatus = true;
+                            Drawable backgroundDrawable = getContext().getResources().getDrawable(R.drawable.round_corner_gold);
+                            view.setBackground(backgroundDrawable);
                             fulldayShift1.setEnabled(isChecked || fulldayShift1.isEnabled());
                             fulldayShift2.setEnabled(isChecked || fulldayShift2.isEnabled());
                             fulldayShift3.setEnabled(isChecked || fulldayShift3.isEnabled()); // Enable or disable based on checkbox
                         } else if (!isChecked) {
+                            checkStatus = false;
+                            Drawable backgroundDrawable = getContext().getResources().getDrawable(R.drawable.round_corner);
+                            view.setBackground(backgroundDrawable);
                             fulldayShift1.setEnabled(true);
                             fulldayShift2.setEnabled(true);
                             fulldayShift3.setEnabled(false);
                         }
                     } else {
                         if (isChecked) {
+                            checkStatus = true;
+                            Drawable backgroundDrawable = getContext().getResources().getDrawable(R.drawable.round_corner_gold);
+                            view.setBackground(backgroundDrawable);
                             dayShift1.setEnabled(isChecked || dayShift1.isEnabled());
                             dayShift2.setEnabled(isChecked || dayShift2.isEnabled());
                             dayShift3.setEnabled(isChecked || dayShift3.isEnabled());
@@ -289,6 +299,9 @@ public class CalendarFragment extends Fragment {
                             afternoonShift2.setEnabled(isChecked || afternoonShift2.isEnabled());
                             afternoonShift3.setEnabled(isChecked || afternoonShift3.isEnabled());
                         } else if (!isChecked) {
+                            checkStatus = false;
+                            Drawable backgroundDrawable = getContext().getResources().getDrawable(R.drawable.round_corner);
+                            view.setBackground(backgroundDrawable);
                             dayShift1.setEnabled(true);
                             dayShift2.setEnabled(true);
                             dayShift3.setEnabled(false);
@@ -999,7 +1012,7 @@ public class CalendarFragment extends Fragment {
 
         }
         // sets the gridview to according to GridAdapter constructor
-        gridAdapter = new GridAdapter(context, dates, calendar, eventsList, curDate);
+        gridAdapter = new GridAdapter(context, dates, calendar, eventsList, curDate, checkStatus);
         gridView.setAdapter(gridAdapter);
 
     }

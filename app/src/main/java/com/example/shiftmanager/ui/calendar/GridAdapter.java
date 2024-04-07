@@ -35,6 +35,8 @@ public class GridAdapter extends ArrayAdapter {
     ImageView cellDay;
     List<Events> events;
 
+    Boolean checkStatus;
+
     String month_year;
     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
     TextView cellNum;
@@ -42,13 +44,14 @@ public class GridAdapter extends ArrayAdapter {
     private DatabaseHelper databaseHelper;
     LayoutInflater inflater;
 
-    public GridAdapter(@NonNull Context context, List<Date> dates, Calendar currentDate, List<Events> events, String month_year) {
+    public GridAdapter(@NonNull Context context, List<Date> dates, Calendar currentDate, List<Events> events, String month_year, Boolean checkStatus) {
         super(context, R.layout.single_cell_layout); // passes context and layout for single cell
 
         this.dates = dates; // List of dates for grid
         this.currentDate = currentDate; // Current date
         this.events = events; // List of events to be associated with dates
         this.month_year = month_year;
+        this.checkStatus = checkStatus;
         databaseHelper = new DatabaseHelper(getContext());
         inflater = LayoutInflater.from(context); // creates the views from the xml layout
     }
@@ -95,15 +98,28 @@ public class GridAdapter extends ArrayAdapter {
         // sets color of current month days BLACK
         if (displayMonth == currentMonth && displayYear == currentYear) {
             // WRITE FUNCTION HERE
+
             String dayNoString = String.format("%02d", dayNo);
             String dateString = month[1] + "-" + String.format("%02d", monthnum) + "-" +dayNoString;
+            boolean checkDay = databaseHelper.checkBusyDays(dateString);
             setIcon(dateString, cellDay);
             view.setBackgroundColor(getContext().getResources().getColor(R.color.black));
-            Drawable backgroundDrawable = getContext().getResources().getDrawable(R.drawable.round_corner);
-            view.setBackground(backgroundDrawable);
+            Drawable backgroundDrawableBusy = getContext().getResources().getDrawable(R.drawable.round_corner_gold);
+            Drawable backgroundDrawableNormal = getContext().getResources().getDrawable(R.drawable.round_corner);
+
+            if (checkDay) {
+
+                view.setBackground(backgroundDrawableBusy);
+            }
+
+            else {
+                view.setBackground(backgroundDrawableNormal);
+            }
+
             view.setClickable(false); // Clickable even thought it seems like it should be
 
         }
+
         //sets color of previous and next month days to GREY
         else {
             cellDay.setImageDrawable(null); // removes the icons from previous or next months
