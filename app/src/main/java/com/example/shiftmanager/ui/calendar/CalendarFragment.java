@@ -268,6 +268,15 @@ public class CalendarFragment extends Fragment {
                     }
                 });
 
+                // Check the checkbox if its a busyday
+                int isBusy = databaseHelper.isBusyDay(dateString);
+                Log.d("THIS IS THE VALUE!!!!", String.valueOf(isBusy));
+                if (isBusy == 1) {
+                    busyCheckbox.setChecked(true);
+                } else {
+                    busyCheckbox.setChecked(false);
+                }
+
                 int addViewId = addView.getId();
                 busyCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     if (dow.equals("sunday") || dow.equals("saturday")) {
@@ -574,10 +583,15 @@ public class CalendarFragment extends Fragment {
                             if (fulldaySelection1.isEmpty() && fulldaySelection2.isEmpty()) {
                                 dayImage.setImageResource(R.mipmap.exclamation);
                             }
+                            if (busyCheckbox.isChecked()) {
+                                databaseHelper.insertOrUpdateDailyAssignments(dateString, null, null, null,
+                                        null, null, null, fulldaySelection1, fulldaySelection2, null, weekNumber, 1);
+                            } else {
+                                databaseHelper.insertOrUpdateDailyAssignments(dateString, null, null, null,
+                                        null, null, null, fulldaySelection1, fulldaySelection2, null, weekNumber, 0);
+                            }
 
-                            databaseHelper.insertOrUpdateDailyAssignments(dateString, null, null, null,
-                                    null, null, null, fulldaySelection1, fulldaySelection2, null, weekNumber, 0);
-                        } else if (addView.getId() == R.id.assign_shifts_weekdays){
+                            } else if (addView.getId() == R.id.assign_shifts_weekdays){
                             daySelection1 = dayShift1.getText().toString();
                             daySelection2 = dayShift2.getText().toString();
                             nightSelection1 = afternoonShift1.getText().toString();
@@ -597,9 +611,13 @@ public class CalendarFragment extends Fragment {
                                     nightSelection1.isEmpty() && nightSelection2.isEmpty()) {
                                 dayImage.setImageResource(R.mipmap.exclamation);
                             }
-
-                            databaseHelper.insertOrUpdateDailyAssignments(dateString, daySelection1, daySelection2, null,
-                                    nightSelection1, nightSelection2, null, null, null, null, weekNumber, 0);
+                            if (busyCheckbox.isChecked()) {
+                                databaseHelper.insertOrUpdateDailyAssignments(dateString, daySelection1, daySelection2, null,
+                                        nightSelection1, nightSelection2, null, null, null, null, weekNumber, 1);
+                            } else {
+                                databaseHelper.insertOrUpdateDailyAssignments(dateString, daySelection1, daySelection2, null,
+                                        nightSelection1, nightSelection2, null, null, null, null, weekNumber, 0);
+                            }
                         }
 
 
