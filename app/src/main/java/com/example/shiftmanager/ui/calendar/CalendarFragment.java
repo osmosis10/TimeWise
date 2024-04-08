@@ -753,9 +753,9 @@ public class CalendarFragment extends Fragment {
     }
 
     private ArrayAdapter<String> setupAdapters(String date, String dow, String tod) {
-        String[] employeeColumn = {"dayshift1_employee", "dayshift2_employee",
-                "nightshift1_employee", "nightshift2_employee",
-                "fullday1_employee", "fullday2_employee"};
+        String[] employeeColumn = {"dayshift1_employee", "dayshift2_employee", "dayshift3_employee",
+                "nightshift1_employee", "nightshift2_employee", "nightshift3_employee",
+                "fullday1_employee", "fullday2_employee", "fullday3_employee"};
         List<String> employees = databaseHelper.getDailyAssignmentsEmployee(employeeColumn, "date = ?", new String[]{date});
         List<String> shiftNames = new ArrayList<>();
 
@@ -848,6 +848,7 @@ public class CalendarFragment extends Fragment {
 
         List<String> shiftNames1 = new ArrayList<>();
         List<String> shiftNames2 = new ArrayList<>();
+        List<String> shiftNames3 = new ArrayList<>();
         String[] columns = {"preferred_name"};
         String selection1 = dow + "_" + tod + " = ?";
         String selection2 = dow + "_" + tod + " = ?";
@@ -865,6 +866,7 @@ public class CalendarFragment extends Fragment {
 
         shiftNames1.add("");
         shiftNames2.add("");
+        shiftNames3.add("");
 
         if (tod.equals("morning")) {
             if (!name1.isEmpty()) {
@@ -1104,6 +1106,27 @@ public class CalendarFragment extends Fragment {
 
         shiftNames2.addAll(validEmployees2);
 
+        List<String> allEmployess3 = databaseHelper.getAllEmployeePreferredNames(columns, selection3, selectionArgs3,null,null,null);
+        List<String> validEmployees3 = new ArrayList<>();
+        for (String emp: allEmployess3 ) {
+            if (!databaseHelper.getEmployeeArchiveStatus(emp)) {
+                boolean trainedOpening = databaseHelper.isEmployeeTrainedOpening(emp);
+                boolean trainedClosing = databaseHelper.isEmployeeTrainedClosing(emp);
+                if (trainedClosing && trainedOpening) {
+                    emp = emp + " (Trained for Opening & Closing)";
+                } else if (trainedClosing && !trainedOpening) {
+                    emp = emp + " (Trained for Closing)";
+                } else if (trainedOpening && !trainedClosing) {
+                    emp = emp + " (Trained for Opening)";
+                } else {
+                    emp = emp + " (Not Trained)";
+                }
+                validEmployees3.add(emp);
+            }
+        }
+
+        shiftNames3.addAll(validEmployees3);
+
 //        shiftNames1.addAll(databaseHelper.getAllEmployeePreferredNames(columns,
 //                selection1,
 //                selectionArgs1,
@@ -1121,6 +1144,8 @@ public class CalendarFragment extends Fragment {
             shiftName1.setAdapter(shiftAdapter1);
             shiftAdapter2 = new ArrayAdapter<>(requireContext(), R.layout.list_names, shiftNames2);
             shiftName2.setAdapter(shiftAdapter2);
+            shiftAdapter3 = new ArrayAdapter<>(requireContext(), R.layout.list_names, shiftNames3);
+            shiftName3.setAdapter(shiftAdapter3);
         } else {
             shiftAdapter1.clear();
             shiftAdapter1.addAll(shiftNames1);
@@ -1131,6 +1156,11 @@ public class CalendarFragment extends Fragment {
             shiftAdapter2.addAll(shiftNames2);
             shiftAdapter2.notifyDataSetChanged();
             shiftName2.setAdapter(shiftAdapter2);
+
+            shiftAdapter3.clear();
+            shiftAdapter3.addAll(shiftNames3);
+            shiftAdapter3.notifyDataSetChanged();
+            shiftName3.setAdapter(shiftAdapter3);
         }
     }
 
