@@ -727,7 +727,6 @@ public class CalendarFragment extends Fragment {
         List<String> employees = databaseHelper.getDailyAssignmentsEmployee(employeeColumn, "date = ?", new String[]{date});
         List<String> shiftNames = new ArrayList<>();
 
-        
         shiftNames.add("");
 
         String[] columns = {"preferred_name"};
@@ -736,17 +735,58 @@ public class CalendarFragment extends Fragment {
             List<String> selectionArgsList = new ArrayList<>(Arrays.asList("1"));
             for (String employee : employees) {
                 if (employee != null) {
-                    selection += " AND preferred_name != ?";
-                    selectionArgsList.add(employee);
+                    boolean isArchived = databaseHelper.getEmployeeArchiveStatus(employee);
+                    Log.d("BOOLEAN STATUS", String.valueOf(isArchived));
+                    Log.d("EMPLOYEE NAME TEST>>>", employee);
+                    if (!isArchived) {
+                        selection += " AND preferred_name != ?";
+                        selectionArgsList.add(employee);
+                    }
                 }
             }
             String[] selectionArgs = selectionArgsList.toArray(new String[0]);
-            shiftNames.addAll(databaseHelper.getAllEmployeePreferredNames(columns, selection, selectionArgs,null,null,null));
-            // Create the adapterNames only once
+            List<String> allEmployess = databaseHelper.getAllEmployeePreferredNames(columns, selection, selectionArgs,null,null,null);
+            List<String> validEmployees = new ArrayList<>();
+            for (String emp: allEmployess ) {
+                if (!databaseHelper.getEmployeeArchiveStatus(emp)) {
+//                    boolean trainedOpening = databaseHelper.isEmployeeTrainedOpening(emp);
+//                    boolean trainedClosing = databaseHelper.isEmployeeTrainedClosing(emp);
+//                    if (trainedClosing && trainedOpening) {
+//                        emp = emp + " (Trained for Opening & Closing)";
+//                    } else if (trainedClosing && !trainedOpening) {
+//                        emp = emp + " (Trained for Closing)";
+//                    } else if (trainedOpening && !trainedClosing) {
+//                        emp = emp + " (Trained for Opening)";
+//                    } else {
+//                        emp = emp + " (Not Trained)";
+//                    }
+                    validEmployees.add(emp);
+                }
+            }
+            shiftNames.addAll(validEmployees);
             return new ArrayAdapter<>(requireContext(), R.layout.list_names, shiftNames);
         } else {
+
             String[] selectionArgs = new String[]{"1"};
-            shiftNames.addAll(databaseHelper.getAllEmployeePreferredNames(columns, selection, selectionArgs, null, null, null));
+            List<String> allEmployess = databaseHelper.getAllEmployeePreferredNames(columns, selection, selectionArgs,null,null,null);
+            List<String> validEmployees = new ArrayList<>();
+            for (String emp: allEmployess ) {
+                if (!databaseHelper.getEmployeeArchiveStatus(emp)) {
+//                    boolean trainedOpening = databaseHelper.isEmployeeTrainedOpening(emp);
+//                    boolean trainedClosing = databaseHelper.isEmployeeTrainedClosing(emp);
+//                    if (trainedClosing && trainedOpening) {
+//                        emp = emp + " (Trained for Opening & Closing)";
+//                    } else if (trainedClosing && !trainedOpening) {
+//                        emp = emp + " (Trained for Closing)";
+//                    } else if (trainedOpening && !trainedClosing) {
+//                        emp = emp + " (Trained for Opening)";
+//                    } else {
+//                        emp = emp + " (Not Trained)";
+//                    }
+                    validEmployees.add(emp);
+                }
+            }
+            shiftNames.addAll(validEmployees);
             for (String emp : shiftNames) {
                 Log.d("Employees", emp);
             }
@@ -934,6 +974,48 @@ public class CalendarFragment extends Fragment {
 
         String[] selectionArgs1 = selectionArgsList1.toArray(new String[0]);
         String[] selectionArgs2 = selectionArgsList2.toArray(new String[0]);
+
+
+//        List<String> allEmployess1 = databaseHelper.getAllEmployeePreferredNames(columns, selection1, selectionArgs1,null,null,null);
+//        List<String> validEmployees1 = new ArrayList<>();
+//        for (String emp: allEmployess1 ) {
+//            if (!databaseHelper.getEmployeeArchiveStatus(emp)) {
+//                boolean trainedOpening = databaseHelper.isEmployeeTrainedOpening(emp);
+//                boolean trainedClosing = databaseHelper.isEmployeeTrainedClosing(emp);
+//                if (trainedClosing && trainedOpening) {
+//                    emp = emp + " (Trained for Opening & Closing)";
+//                } else if (trainedClosing && !trainedOpening) {
+//                    emp = emp + " (Trained for Closing)";
+//                } else if (trainedOpening && !trainedClosing) {
+//                    emp = emp + " (Trained for Opening)";
+//                } else {
+//                    emp = emp + " (Not Trained)";
+//                }
+//                validEmployees1.add(emp);
+//            }
+//        }
+//        shiftNames1.addAll(validEmployees1);
+//
+//        List<String> allEmployess2 = databaseHelper.getAllEmployeePreferredNames(columns, selection2, selectionArgs2,null,null,null);
+//        List<String> validEmployees2 = new ArrayList<>();
+//        for (String emp: allEmployess2 ) {
+//            if (!databaseHelper.getEmployeeArchiveStatus(emp)) {
+//                boolean trainedOpening = databaseHelper.isEmployeeTrainedOpening(emp);
+//                boolean trainedClosing = databaseHelper.isEmployeeTrainedClosing(emp);
+//                if (trainedClosing && trainedOpening) {
+//                    emp = emp + " (Trained for Opening & Closing)";
+//                } else if (trainedClosing && !trainedOpening) {
+//                    emp = emp + " (Trained for Closing)";
+//                } else if (trainedOpening && !trainedClosing) {
+//                    emp = emp + " (Trained for Opening)";
+//                } else {
+//                    emp = emp + " (Not Trained)";
+//                }
+//                validEmployees2.add(emp);
+//            }
+//        }
+//
+//        shiftNames2.addAll(validEmployees2);
 
         shiftNames1.addAll(databaseHelper.getAllEmployeePreferredNames(columns,
                 selection1,
