@@ -422,7 +422,7 @@ public class EmployeesFragment extends Fragment {
         LinearLayout.LayoutParams mainContainerParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        mainContainerParams.height = 220; // Make the container default height for 3 lines
+        mainContainerParams.height = 370; // Make the container default height for 4 lines
         mainContainer.setLayoutParams(mainContainerParams);
 
         // Container for the employee name and edit button
@@ -490,6 +490,28 @@ public class EmployeesFragment extends Fragment {
         nameContainer.addView(editButton);
         nameContainer.addView(archiveButton);
 
+        // Trained textView
+        String trained;
+        // Add training information to employee Name
+        boolean trainedOpening = dbHelper.isEmployeeTrainedOpening(employeeName);
+        boolean trainedClosing = dbHelper.isEmployeeTrainedClosing(employeeName);
+        if (trainedClosing && trainedOpening) {
+            trained = "Trained for Opening & Closing";
+        } else if (trainedClosing && !trainedOpening) {
+            trained = "Trained for Closing";
+        } else if (trainedOpening && !trainedClosing) {
+            trained = "Trained for Opening";
+        } else {
+            trained =  "Not Trained";
+        }
+
+        TextView trainedView = new TextView(getContext());
+        trainedView.setText(trained); // Format for email and phone
+        trainedView.setTextSize(20); // Adjusted text size for differentiation
+        trainedView.setTextColor(Color.WHITE);
+        trainedView.setPadding(paddingPx, 0, 0, 0); // Apply padding
+        trainedView.setWidth(650); // Set width
+
         // Edit button Touch listener
         editButton.setOnTouchListener(new View.OnTouchListener(){
             @Override
@@ -545,7 +567,7 @@ public class EmployeesFragment extends Fragment {
 
         // Add nameContainer to mainContainer
         mainContainer.addView(nameContainer); // Add the container with the name and edit button
-
+        mainContainer.addView(trainedView);
         // Get employeeEmail and employeePhone
         String employeeEmail = dbHelper.getEmployeeInformation(employeeName).get(4).toString();
         String employeePhone = dbHelper.getEmployeeInformation(employeeName).get(3).toString();
@@ -559,7 +581,7 @@ public class EmployeesFragment extends Fragment {
             employeeContactView.setTextColor(Color.WHITE);
             employeeContactView.setPadding(paddingPx, 0, 0, 0); // Apply padding
             employeeContactView.setWidth(650); // Set width
-            mainContainerParams.height = 170;
+            mainContainerParams.height = 250;
             // Adding employeeContactView to the main container
             mainContainer.addView(employeeContactView);
 
@@ -572,7 +594,7 @@ public class EmployeesFragment extends Fragment {
             employeeEmailView.setTextColor(Color.WHITE);
             employeeEmailView.setPadding(paddingPx, 0, 0, 0); // Apply padding
             employeeEmailView.setWidth(650); // Set width
-            mainContainerParams.height = 270; // Adjust mainContainer height to add another line
+            mainContainerParams.height = 350; // Adjust mainContainer height to add another line
             // TextView for employee phone
             TextView employeePhoneView = new TextView(getContext());
             employeePhoneView.setText(employeePhone); // Phone Number text
@@ -601,7 +623,7 @@ public class EmployeesFragment extends Fragment {
             employeePhoneView.setTextColor(Color.WHITE);
             employeePhoneView.setPadding(paddingPx, 0, 0, 0); // Apply padding
             employeePhoneView.setWidth(650); // Set width
-
+            mainContainerParams.height = 300;
             // Adding phone and email containers to the main container
             mainContainer.addView(employeeEmailView); // Add the email view on a new line
             mainContainer.addView(employeePhoneView); // Add the phone view on another new line
