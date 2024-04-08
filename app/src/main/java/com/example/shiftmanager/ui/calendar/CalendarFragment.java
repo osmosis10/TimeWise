@@ -837,8 +837,11 @@ public class CalendarFragment extends Fragment {
         String[] columns = {"preferred_name"};
         String selection1 = dow + "_" + tod + " = ?";
         String selection2 = dow + "_" + tod + " = ?";
+        String selection3 = dow + "_" + tod + " = ?";
+
         List<String> selectionArgsList1 = new ArrayList<>(Arrays.asList("1"));
         List<String> selectionArgsList2 = new ArrayList<>(Arrays.asList("1"));
+        List<String> selectionArgsList3 = new ArrayList<>(Arrays.asList("1"));
 
         boolean name1_trained_opening = databaseHelper.isEmployeeTrainedOpening(name1);
         boolean name2_trained_opening = databaseHelper.isEmployeeTrainedOpening(name2);
@@ -853,14 +856,26 @@ public class CalendarFragment extends Fragment {
             if (!name1.isEmpty()) {
                 selection1 += " AND preferred_name != ?";
                 selection2 += " AND preferred_name != ?";
+                selection3 += " AND preferred_name != ?";
                 selectionArgsList1.add(name1);
                 selectionArgsList2.add(name1);
+                selectionArgsList3.add(name1);
             }
             if (!name2.isEmpty()) {
                 selection1 += " AND preferred_name != ?";
                 selection2 += " AND preferred_name != ?";
+                selection3 += " AND preferred_name != ?";
                 selectionArgsList1.add(name2);
                 selectionArgsList2.add(name2);
+                selectionArgsList3.add(name2);
+            }
+            if (!name3.isEmpty()) {
+                selection1 += " AND preferred_name != ?";
+                selection2 += " AND preferred_name != ?";
+                selection3 += " AND preferred_name != ?";
+                selectionArgsList1.add(name3);
+                selectionArgsList2.add(name3);
+                selectionArgsList3.add(name3);
             }
 
             if (!name1.isEmpty() && name2.isEmpty()) {
@@ -886,14 +901,26 @@ public class CalendarFragment extends Fragment {
             if (!name1.isEmpty()) {
                 selection1 += " AND preferred_name != ?";
                 selection2 += " AND preferred_name != ?";
+                selection3 += " AND preferred_name != ?";
                 selectionArgsList1.add(name1);
                 selectionArgsList2.add(name1);
+                selectionArgsList3.add(name1);
             }
             if (!name2.isEmpty()) {
                 selection1 += " AND preferred_name != ?";
                 selection2 += " AND preferred_name != ?";
+                selection3 += " AND preferred_name != ?";
                 selectionArgsList1.add(name2);
                 selectionArgsList2.add(name2);
+                selectionArgsList3.add(name2);
+            }
+            if (!name3.isEmpty()) {
+                selection1 += " AND preferred_name != ?";
+                selection2 += " AND preferred_name != ?";
+                selection3 += " AND preferred_name != ?";
+                selectionArgsList1.add(name3);
+                selectionArgsList2.add(name3);
+                selectionArgsList3.add(name3);
             }
 
             if (!name1.isEmpty() && name2.isEmpty()) {
@@ -920,14 +947,26 @@ public class CalendarFragment extends Fragment {
             if (!name1.isEmpty()) {
                 selection1 += " AND preferred_name != ?";
                 selection2 += " AND preferred_name != ?";
+                selection3 += " AND preferred_name != ?";
                 selectionArgsList1.add(name1);
                 selectionArgsList2.add(name1);
+                selectionArgsList3.add(name1);
             }
             if (!name2.isEmpty()) {
                 selection1 += " AND preferred_name != ?";
                 selection2 += " AND preferred_name != ?";
+                selection3 += " AND preferred_name != ?";
                 selectionArgsList1.add(name2);
                 selectionArgsList2.add(name2);
+                selectionArgsList3.add(name2);
+            }
+            if (!name3.isEmpty()) {
+                selection1 += " AND preferred_name != ?";
+                selection2 += " AND preferred_name != ?";
+                selection3 += " AND preferred_name != ?";
+                selectionArgsList1.add(name3);
+                selectionArgsList2.add(name3);
+                selectionArgsList3.add(name3);
             }
             if (!name1.isEmpty() && name2.isEmpty()) {
                 if (name1_trained_opening && name1_trained_closing) {
@@ -1007,6 +1046,7 @@ public class CalendarFragment extends Fragment {
 
         String[] selectionArgs1 = selectionArgsList1.toArray(new String[0]);
         String[] selectionArgs2 = selectionArgsList2.toArray(new String[0]);
+        String[] selectionArgs3 = selectionArgsList3.toArray(new String[0]);
 
 
 //        List<String> allEmployess1 = databaseHelper.getAllEmployeePreferredNames(columns, selection1, selectionArgs1,null,null,null);
