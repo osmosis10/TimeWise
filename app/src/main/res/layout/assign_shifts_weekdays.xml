@@ -114,10 +114,13 @@
                     android:layout_height="15pt"
                     android:layout_marginBottom="10dp"
                     android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="8sp"
+                    android:autoSizeMaxTextSize="8sp"
                     android:hint="Day Shift"
                     android:inputType="none"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_horizontal"
                     android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                    android:paddingBottom="4dp"
                     android:textSize="12sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -138,7 +141,8 @@
                     android:inputType="none"
                     android:layout_gravity="center"
                     android:textAppearance="?android:attr/textAppearanceListItemSmall"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:paddingBottom="4dp"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -156,7 +160,8 @@
                     android:inputType="none"
                     android:layout_gravity="center"
                     android:textAppearance="?android:attr/textAppearanceListItemSmall"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:paddingBottom="4dp"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -203,7 +208,8 @@
                     android:inputType="none"
                     android:layout_gravity="center"
                     android:textAppearance="?android:attr/textAppearanceListItemSmall"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:paddingBottom="4dp"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -223,7 +229,8 @@
                     android:inputType="none"
                     android:layout_gravity="center"
                     android:textAppearance="?android:attr/textAppearanceListItemSmall"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:paddingBottom="4dp"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -243,7 +250,8 @@
                     android:inputType="none"
                     android:layout_gravity="center"
                     android:textAppearance="?android:attr/textAppearanceListItemSmall"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:paddingBottom="4dp"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 

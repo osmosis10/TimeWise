@@ -1087,6 +1087,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             values.put(COL_DAILY_ASSIGNMENT_FULLDAY3_PREFERRED_NAME, fulldayshift3_employee);
         }
 
+
+
         values.put(COL_DAILY_ASSIGNMENT_WEEKNUM, week_num);
         values.put(COL_BUSYDAY, busy_day);
        if (cursor != null && cursor.moveToFirst()) {
@@ -1307,6 +1309,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+
     @SuppressLint("Range")
     public int isBusyDay(String date) {
         SQLiteDatabase db = getReadableDatabase();
@@ -1330,5 +1333,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1663ca682636ce62684d9abe5884c3395f350de1
 }
