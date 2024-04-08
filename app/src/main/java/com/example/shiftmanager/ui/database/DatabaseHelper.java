@@ -1331,10 +1331,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return isBusy;
     }
-
-
-<<<<<<< HEAD
-
-=======
->>>>>>> 1663ca682636ce62684d9abe5884c3395f350de1
 }
