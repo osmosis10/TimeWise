@@ -275,6 +275,8 @@ public class CalendarFragment extends Fragment {
                 }
 
                 int addViewId = addView.getId();
+
+
                 busyCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     if (dow.equals("sunday") || dow.equals("saturday")) {
                         if (isChecked) {
@@ -569,7 +571,7 @@ public class CalendarFragment extends Fragment {
                         String nightSelection3;
                         String fulldaySelection1;
                         String fulldaySelection2;
-                        String fulldaySelection3;
+                        String fulldaySelection3 = "";
 
                         ImageView dayImage = view.findViewById(R.id.shiftStatus);
                         dayImage.setImageDrawable(null);
@@ -579,15 +581,6 @@ public class CalendarFragment extends Fragment {
                             fulldaySelection1 = fulldayShift1.getText().toString();
                             fulldaySelection2 = fulldayShift2.getText().toString();
 
-                            if (!fulldaySelection1.isEmpty() || !fulldaySelection2.isEmpty()) {
-                                dayImage.setImageResource(R.mipmap.warning);
-                            }
-                            if (!fulldaySelection1.isEmpty() && !fulldaySelection2.isEmpty()) {
-                                dayImage.setImageResource(R.mipmap.check);
-                            }
-                            if (fulldaySelection1.isEmpty() && fulldaySelection2.isEmpty()) {
-                                dayImage.setImageResource(R.mipmap.exclamation);
-                            }
 
                             // updates database with weekend busy day name
                             if (busyCheckbox.isChecked()) {
@@ -599,26 +592,49 @@ public class CalendarFragment extends Fragment {
                                         null, null, null, fulldaySelection1, fulldaySelection2, null, weekNumber, 0);
                             }
 
-                            } else if (addView.getId() == R.id.assign_shifts_weekdays){
-                            daySelection1 = dayShift1.getText().toString();
-                            daySelection2 = dayShift2.getText().toString();
-                            nightSelection1 = afternoonShift1.getText().toString();
-                            nightSelection2 = afternoonShift2.getText().toString();
-
-                            if (!daySelection1.isEmpty() || !daySelection2.isEmpty() ||
-                                    !nightSelection1.isEmpty() || !nightSelection2.isEmpty()) {
+                            // if busy day is checked and schedueling is in partial progress
+                            if (!fulldaySelection1.isEmpty()
+                                    || !fulldaySelection2.isEmpty()
+                                    || !fulldaySelection3.isEmpty()
+                                    && checkStatus) {
+                                dayImage.setImageResource(R.mipmap.warning);
+                            }
+                            // if busy day is unchecked and schedueling is in partial progress
+                            if (!fulldaySelection1.isEmpty()
+                                    || !fulldaySelection2.isEmpty()
+                                    && fulldaySelection3.isEmpty()
+                                    || !checkStatus) {
                                 dayImage.setImageResource(R.mipmap.warning);
                             }
 
-                            if (!daySelection1.isEmpty() && !daySelection2.isEmpty() &&
-                                    !nightSelection1.isEmpty() && !nightSelection2.isEmpty()) {
+                            // if busy day is checked and schedueling is complete
+                            if (!fulldaySelection1.isEmpty()
+                                    && !fulldaySelection2.isEmpty()
+                                    && !fulldaySelection3.isEmpty()
+                                    && checkStatus) {
                                 dayImage.setImageResource(R.mipmap.check);
                             }
-
-                            else if (daySelection1.isEmpty() && daySelection2.isEmpty() &&
-                                    nightSelection1.isEmpty() && nightSelection2.isEmpty()) {
+                            // if busy day is unchecked and schedueling is complete
+                            if (!fulldaySelection1.isEmpty()
+                                    && !fulldaySelection2.isEmpty()
+                                    && !checkStatus) {
+                                dayImage.setImageResource(R.mipmap.check);
+                            }
+                            // day needs to be schedueled
+                            if (fulldaySelection1.isEmpty()
+                                    && fulldaySelection2.isEmpty()
+                                    && fulldaySelection3.isEmpty()) {
                                 dayImage.setImageResource(R.mipmap.exclamation);
                             }
+
+                            } else if (addView.getId() == R.id.assign_shifts_weekdays){
+                            daySelection1 = dayShift1.getText().toString();
+                            daySelection2 = dayShift2.getText().toString();
+                            daySelection3 = "";
+                            nightSelection1 = afternoonShift1.getText().toString();
+                            nightSelection2 = afternoonShift2.getText().toString();
+                            nightSelection3 = "";
+
 
                             // Updates the database with the newly entered weekday busy day entries
                             if (busyCheckbox.isChecked()) {
@@ -629,6 +645,53 @@ public class CalendarFragment extends Fragment {
                             } else {
                                 databaseHelper.insertOrUpdateDailyAssignments(dateString, daySelection1, daySelection2, null,
                                         nightSelection1, nightSelection2, null, null, null, null, weekNumber, 0);
+                            }
+
+                            // if busy day is checked and schedueling is in partial progress
+                            if (!daySelection1.isEmpty() || !daySelection2.isEmpty() ||
+                                    !daySelection3.isEmpty()   ||
+                                    !nightSelection1.isEmpty() ||
+                                    !nightSelection2.isEmpty() ||
+                                    !nightSelection3.isEmpty() &&
+                                    checkStatus) {
+                                dayImage.setImageResource(R.mipmap.warning);
+                            }
+                            // if busy day is unchecked and schedueling is in partial progress
+                            if (!daySelection1.isEmpty() ||
+                                    !daySelection2.isEmpty() ||
+                                    daySelection3.isEmpty()   ||
+                                    !nightSelection1.isEmpty() ||
+                                    !nightSelection2.isEmpty() &&
+                                    nightSelection3.isEmpty() ||
+                                    !checkStatus) {
+                                dayImage.setImageResource(R.mipmap.warning);
+                            }
+                            // if busy day is checked and schedueling is complete
+                            if (!daySelection1.isEmpty() &&
+                                    !daySelection2.isEmpty() &&
+                                    !daySelection3.isEmpty() &&
+                                    !nightSelection1.isEmpty() &&
+                                    !nightSelection2.isEmpty() &&
+                                    !nightSelection3.isEmpty() &&
+                                    checkStatus) {
+                                dayImage.setImageResource(R.mipmap.check);
+                            }
+                            // if busy day is unchecked and schedueling is complete
+                            if (!daySelection1.isEmpty() &&
+                                    !daySelection2.isEmpty() &&
+                                    !nightSelection1.isEmpty() &&
+                                    !nightSelection2.isEmpty() &&
+                                    !checkStatus) {
+                                dayImage.setImageResource(R.mipmap.check);
+                            }
+                            // day needs to be schedueled
+                            else if (daySelection1.isEmpty() &&
+                                    daySelection2.isEmpty() &&
+                                    daySelection3.isEmpty() &&
+                                    nightSelection1.isEmpty() &&
+                                    nightSelection2.isEmpty() &&
+                                    nightSelection3.isEmpty()) {
+                                dayImage.setImageResource(R.mipmap.exclamation);
                             }
 
                         }

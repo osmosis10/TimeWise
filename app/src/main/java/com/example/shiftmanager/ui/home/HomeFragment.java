@@ -131,12 +131,12 @@ public class HomeFragment extends Fragment {
                 "fullday1_employee", "fullday2_employee"};
 
         List<String> employees = databaseHelper.getDailyAssignmentsEmployee(employeeColumn, "date = ?", new String[]{dateString});
-
+        Log.d("SIZE",""+ employees.size());
         int counter = 5;
-        // adds each employee on the i'th day of the month to the employeeNames string
+        // adds each employee on the i'th day of the month to the employeeNames string (BUG)
         for(int j =0; j<employees.size(); j++){
             if (employees.get(j) != null) {
-                Log.d("LOOP", "NOT NULL");
+                Log.d("NAMECHECK", employees.get(j));
                 if (counter == 5) {
                     topLeft.setText(employees.get(j));
 
