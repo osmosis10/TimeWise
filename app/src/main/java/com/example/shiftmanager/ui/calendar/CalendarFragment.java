@@ -1418,11 +1418,14 @@ public class CalendarFragment extends Fragment {
             // adds each employee on the i'th day of the month to the employeeNames string
             for(int j =0; j<employees.size(); j++){
                 if (employees.get(j) != null) {
-                    employeeInfo = databaseHelper.getEmployeeInformation(employees.get(j));
+                    String[] nameParts = employees.get(j).split("\\("); // Split at '('
+                    String name = nameParts[0].trim(); // Take the first part and trim any leading or trailing whitespace
+                    employeeInfo = databaseHelper.getEmployeeInformation(name);
 
                     // Conditions, training status is stored as 1 or 0,
                     // converts to 'yes' or no for both opening/closing
                     // training status
+                    Log.d("EMPLOYEE", name);
                     if (Objects.equals(employeeInfo.get(18), "1")) {
                         openStatus = "Yes";
                     }
@@ -1439,7 +1442,7 @@ public class CalendarFragment extends Fragment {
                         closeStatus = "No";
                     }
                     //ex. | Name | Open Training: Yes | Closed Training: Yes|\n
-                    employeeNames = employeeNames + employees.get(j) + " | Open Training: " + openStatus + " | " + "Closing Training: " + closeStatus + " |";
+                    employeeNames = employeeNames + name + " | Open Training: " + openStatus + " | " + "Closing Training: " + closeStatus + " |";
                     employeeNames = employeeNames + "\n";
                 }
 
