@@ -634,45 +634,64 @@ public class EmployeesFragment extends Fragment {
 
     private void CreatePopUpWindow(String employeeName) {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View popUpview = inflater.inflate(R.layout.archive_confirmation, null);
-        Button confirmButton = popUpview.findViewById(R.id.confirmarchive);
-        Button cancelButton = popUpview.findViewById(R.id.cancelarchive);
-        int width = ViewGroup.LayoutParams.MATCH_PARENT;
-        int height = ViewGroup.LayoutParams.MATCH_PARENT;
-        boolean focusable = true;
-        PopupWindow popupWindow = new PopupWindow(popUpview, width, height, focusable);
-        popupWindow.showAtLocation(popUpview, Gravity.CENTER, 0, 0);
+        boolean archiveStatus = dbHelper.getEmployeeArchiveStatus(employeeName);
+        if (!archiveStatus) {
+            View popUpViewArchive = inflater.inflate(R.layout.archive_confirmation, null);
+            Button confirmButton = popUpViewArchive.findViewById(R.id.confirmarchive);
+            Button cancelButton = popUpViewArchive.findViewById(R.id.cancelarchive);
+            int width = ViewGroup.LayoutParams.MATCH_PARENT;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+            boolean focusable = true;
+            PopupWindow popupWindowArchive = new PopupWindow(popUpViewArchive, width, height, focusable);
+            popupWindowArchive.showAtLocation(popUpViewArchive, Gravity.CENTER, 0, 0);
+            confirmButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                        String[] columns = {"preferred_name"};
+                        String selection = null;
+                        List<String> selectionArgsList = new ArrayList<>();
+                        dbHelper.setEmployeeArchiveStatus(employeeName, true);
+                        String[] selectionArgs = selectionArgsList.toArray(new String[0]);
+                        updateEmployeeNamesUI(columns, selection, selectionArgs, null, null, "preferred_name ASC");
+                        popupWindowArchive.dismiss();
 
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                boolean archiveStatus = dbHelper.getEmployeeArchiveStatus(employeeName);
-                if (archiveStatus) {
+                }
+            });
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    popupWindowArchive.dismiss();
+                }
+            });
+        } else {
+            View popUpViewUnarchive = inflater.inflate(R.layout.unarchive_confirm, null);
+            Button confirmButton = popUpViewUnarchive.findViewById(R.id.confirmarchive);
+            Button cancelButton = popUpViewUnarchive.findViewById(R.id.cancelarchive);
+            int width = ViewGroup.LayoutParams.MATCH_PARENT;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+            boolean focusable = true;
+            PopupWindow popupWindowUnarchive = new PopupWindow(popUpViewUnarchive, width, height, focusable);
+            popupWindowUnarchive.showAtLocation(popUpViewUnarchive, Gravity.CENTER, 0, 0);
+            confirmButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
                     String[] columns = {"preferred_name"};
                     String selection = null;
                     List<String> selectionArgsList = new ArrayList<>();
                     dbHelper.setEmployeeArchiveStatus(employeeName, false);
                     String[] selectionArgs = selectionArgsList.toArray(new String[0]);
                     updateEmployeeNamesUI(columns, selection, selectionArgs, null, null, "preferred_name ASC");
-                    popupWindow.dismiss();
-                } else {
-                    String[] columns = {"preferred_name"};
-                    String selection = null;
-                    List<String> selectionArgsList = new ArrayList<>();
-                    dbHelper.setEmployeeArchiveStatus(employeeName, true);
-                    String[] selectionArgs = selectionArgsList.toArray(new String[0]);
-                    updateEmployeeNamesUI(columns, selection, selectionArgs, null, null, "preferred_name ASC");
-                    popupWindow.dismiss();
-                }
+                    popupWindowUnarchive.dismiss();
 
-            }
-        });
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                popupWindow.dismiss();
-            }
-        });
+                }
+            });
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    popupWindowUnarchive.dismiss();
+                }
+            });
+        }
 
     }
     private void animateButton(View view, float scale) {
