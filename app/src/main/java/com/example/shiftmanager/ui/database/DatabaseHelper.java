@@ -16,7 +16,7 @@ import java.util.Random;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "schedulingdb.db";
-    private static final int DATABASE_VERSION = 30;
+    private static final int DATABASE_VERSION = 31;
 
     private static final String TABLE_EMPLOYEE = "employees";
     // Employee Table
@@ -1309,6 +1309,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+
+    @SuppressLint("Range")
+    public int isBusyDay(String date) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(
+                TABLE_DAILY_ASSIGNMENTS,
+                new String[]{COL_BUSYDAY},  // Only need to query the busy_day column
+                COL_DAILY_ASSIGNMENT_DATE + " =?",  // Where clause to match the date
+                new String[]{date},  // The actual date value to match against
+                null,
+                null,
+                null);
+
+        int isBusy = 0;  // Default to 0 (not busy) if no record is found
+
+        if (cursor != null && cursor.moveToFirst()) {
+            isBusy = cursor.getInt(cursor.getColumnIndexOrThrow(COL_BUSYDAY));
+            cursor.close();
+        }
+
+        return isBusy;
+    }
 
 
 }
