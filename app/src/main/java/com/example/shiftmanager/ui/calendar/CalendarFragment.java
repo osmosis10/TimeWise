@@ -351,14 +351,15 @@ public class CalendarFragment extends Fragment {
                     fulldayShift3.getText().clear();
 
                     if (savedFulldayShift1 != null && !savedFulldayShift1.isEmpty()) {
-                        fulldayShift1.setText(savedFulldayShift1);
+                        fulldayShift1.setText(appendTraining(savedFulldayShift1));
                     }
                     if (savedFulldayShift2 != null && !savedFulldayShift2.isEmpty()) {
-                        fulldayShift2.setText(savedFulldayShift2);
+                        fulldayShift2.setText(appendTraining(savedFulldayShift2));
                     }
                     if (savedFulldayShift3 != null && !savedFulldayShift3.isEmpty()) {
-                        fulldayShift3.setText(savedFulldayShift3);
+                        fulldayShift3.setText(appendTraining(savedFulldayShift3));
                     }
+
                     fulldayShift1.setAdapter(adapterfulldayShift1);
                     fulldayShift2.setAdapter(adapterfulldayShift2);
                     fulldayShift3.setAdapter(adapterfulldayShift3);
@@ -464,28 +465,28 @@ public class CalendarFragment extends Fragment {
                     afternoonShift3.getText().clear();
 
                     if (savedDayShift1 != null && !savedDayShift1.isEmpty()) {
-                        dayShift1.setText(savedDayShift1);
+                        dayShift1.setText(appendTraining(savedDayShift1));
 
                     }
 
                     if (savedDayShift2 != null && !savedDayShift2.isEmpty()) {
-                        dayShift2.setText(savedDayShift2);
+                        dayShift2.setText(appendTraining(savedDayShift2));
                     }
 
                     if (savedDayShift3 != null && !savedDayShift3.isEmpty()) {
-                        dayShift3.setText(savedDayShift3);
+                        dayShift3.setText(appendTraining(savedDayShift3));
                     }
 
                     if (savedNightShift1 != null && !savedNightShift1.isEmpty()) {
-                        afternoonShift1.setText(savedNightShift1);
+                        afternoonShift1.setText(appendTraining(savedNightShift1));
                     }
 
                     if (savedNightShift2 != null && !savedNightShift2.isEmpty()) {
-                        afternoonShift2.setText(savedNightShift2);
+                        afternoonShift2.setText(appendTraining(savedNightShift2));
                     }
 
                     if (savedNightShift3 != null && !savedNightShift3.isEmpty()) {
-                        afternoonShift3.setText(savedNightShift3);
+                        afternoonShift3.setText(appendTraining(savedNightShift3));
                     }
 
 
@@ -617,9 +618,30 @@ public class CalendarFragment extends Fragment {
                             // updates database with weekend busy day name
                             if (busyCheckbox.isChecked()) {
                                 fulldaySelection3 = fulldayShift3.getText().toString();
+
+                                if (fulldaySelection1.length() > 0 && !fulldaySelection1.isEmpty()) {
+                                    int spaceIndex1 = fulldaySelection1.indexOf(' ');
+                                    fulldaySelection1 = fulldaySelection1.substring(0, spaceIndex1);
+                                }
+                                if (fulldaySelection2.length() > 0 && !fulldaySelection2.isEmpty()) {
+                                    int spaceIndex2 = fulldaySelection2.indexOf(' ');
+                                    fulldaySelection2 = fulldaySelection2.substring(0, spaceIndex2);
+                                }
+                                if (fulldaySelection3.length() > 0 && !fulldaySelection3.isEmpty()) {
+                                    int spaceIndex3 = fulldaySelection3.indexOf(' ');
+                                    fulldaySelection3 = fulldaySelection3.substring(0, spaceIndex3);
+                                }
                                 databaseHelper.insertOrUpdateDailyAssignments(dateString, null, null, null,
                                         null, null, null, fulldaySelection1, fulldaySelection2, fulldaySelection3, weekNumber, 1);
                             } else {
+                                if (fulldaySelection1.length() > 0 && !fulldaySelection1.isEmpty()) {
+                                    int spaceIndex1 = fulldaySelection1.indexOf(' ');
+                                    fulldaySelection1 = fulldaySelection1.substring(0, spaceIndex1);
+                                }
+                                if (fulldaySelection2.length() > 0 && !fulldaySelection2.isEmpty()) {
+                                    int spaceIndex2 = fulldaySelection2.indexOf(' ');
+                                    fulldaySelection2 = fulldaySelection2.substring(0, spaceIndex2);
+                                }
                                 databaseHelper.insertOrUpdateDailyAssignments(dateString, null, null, null,
                                         null, null, null, fulldaySelection1, fulldaySelection2, null, weekNumber, 0);
                             }
@@ -672,9 +694,51 @@ public class CalendarFragment extends Fragment {
                             if (busyCheckbox.isChecked()) {
                                 daySelection3 = dayShift3.getText().toString();
                                 nightSelection3 = afternoonShift3.getText().toString();
+
+                                Log.d("THIS", daySelection1);
+                                if (daySelection1.length() > 0 && !daySelection1.isEmpty()) {
+                                    int spaceIndex1 = daySelection1.indexOf(' ');
+                                    daySelection1 = daySelection1.substring(0, spaceIndex1);
+                                }
+                                if (daySelection2.length() > 0 && !daySelection2.isEmpty()) {
+                                    int spaceIndex2 = daySelection2.indexOf(' ');
+                                    daySelection2 = daySelection2.substring(0, spaceIndex2);
+                                }
+                                if (daySelection3.length() > 0 && !daySelection3.isEmpty()) {
+                                    int spaceIndex3 = daySelection3.indexOf(' ');
+                                    daySelection3 = daySelection3.substring(0, spaceIndex3);
+                                }
+                                if (nightSelection1.length() > 0 && !nightSelection1.isEmpty()) {
+                                    int spaceIndex1 = nightSelection1.indexOf(' ');
+                                    nightSelection1 = nightSelection1.substring(0, spaceIndex1);
+                                }
+                                if (nightSelection2.length() > 0 && !nightSelection2.isEmpty()) {
+                                    int spaceIndex2 = nightSelection2.indexOf(' ');
+                                    nightSelection2 = nightSelection2.substring(0, spaceIndex2);
+                                }
+                                if (nightSelection3.length() > 0 && !nightSelection3.isEmpty()) {
+                                    int spaceIndex3 = nightSelection3.indexOf(' ');
+                                    nightSelection3 = nightSelection3.substring(0, spaceIndex3);
+                                }
                                 databaseHelper.insertOrUpdateDailyAssignments(dateString, daySelection1, daySelection2, daySelection3,
                                         nightSelection1, nightSelection2, nightSelection3, null, null, null, weekNumber, 1);
                             } else {
+                                if (daySelection1.length() > 0 && !daySelection1.isEmpty()) {
+                                    int spaceIndex1 = daySelection1.indexOf(' ');
+                                    daySelection1 = daySelection1.substring(0, spaceIndex1);
+                                }
+                                if (daySelection2.length() > 0  && !daySelection2.isEmpty()) {
+                                    int spaceIndex2 = daySelection2.indexOf(' ');
+                                    daySelection2 = daySelection2.substring(0, spaceIndex2);
+                                }
+                                if (nightSelection1.length() > 0 && !nightSelection1.isEmpty()) {
+                                    int spaceIndex1 = nightSelection1.indexOf(' ');
+                                    nightSelection1 = nightSelection1.substring(0, spaceIndex1);
+                                }
+                                if (nightSelection2.length() > 0 && !nightSelection2.isEmpty()) {
+                                    int spaceIndex2 = nightSelection2.indexOf(' ');
+                                    nightSelection2 = nightSelection2.substring(0, spaceIndex2);
+                                }
                                 databaseHelper.insertOrUpdateDailyAssignments(dateString, daySelection1, daySelection2, null,
                                         nightSelection1, nightSelection2, null, null, null, null, weekNumber, 0);
                             }
@@ -841,6 +905,10 @@ public class CalendarFragment extends Fragment {
         if (name2.length() > 0) {
             int spaceIndex2 = name2.indexOf(' ');
             name2 = name2.substring(0, spaceIndex2);
+        }
+        if (name3.length() > 0) {
+            int spaceIndex3 = name3.indexOf(' ');
+            name3 = name3.substring(0, spaceIndex3);
         }
 
         Log.d("THIS IS THE NAME SUBSTRING1", name1);
@@ -1442,6 +1510,20 @@ public class CalendarFragment extends Fragment {
         }
 
 
+    }
+
+    public String appendTraining(String emp) {
+        boolean trainedOpening = databaseHelper.isEmployeeTrainedOpening(emp);
+        boolean trainedClosing = databaseHelper.isEmployeeTrainedClosing(emp);
+        if (trainedClosing && trainedOpening) {
+            return emp + "(Trained for Opening & Closing)";
+        } else if (trainedClosing && !trainedOpening) {
+            return emp + " (Trained for Closing)";
+        } else if (trainedOpening && !trainedClosing) {
+            return emp + " (Trained for Opening)";
+        } else {
+            return emp + " (Not Trained)";
+        }
     }
 
 }
