@@ -79,14 +79,14 @@ public class HomeFragment extends Fragment {
         SharedPreferences prefs = requireContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         //Change this to true to wipe data base and add a fresh set of employees
         // then back to false to save the preference
-//        boolean hasAddedEmployees = prefs.getBoolean(KEY_HAS_ADDED_EMPLOYEES, false);
-//
-//        if (hasAddedEmployees) {
-//            databaseHelper.removeAllEmployees();
-//            databaseHelper.makeEmployees();
-//
-//            prefs.edit().putBoolean(KEY_HAS_ADDED_EMPLOYEES, true).apply();
-//        }
+        boolean hasAddedEmployees = prefs.getBoolean(KEY_HAS_ADDED_EMPLOYEES, false);
+
+        if (!hasAddedEmployees) {
+            databaseHelper.removeAllEmployees();
+            databaseHelper.makeEmployees();
+
+            prefs.edit().putBoolean(KEY_HAS_ADDED_EMPLOYEES, true).apply();
+        }
         return root;
     }
 

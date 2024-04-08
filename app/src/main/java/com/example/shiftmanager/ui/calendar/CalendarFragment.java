@@ -370,8 +370,9 @@ public class CalendarFragment extends Fragment {
                             String name3 = fulldayShift3.getText().toString();
 
                             Log.d("DayofWeek", dow);
-                            fillArrayAdapters(adapterfulldayShift1, adapterfulldayShift2, fulldayShift1, fulldayShift2,
-                                    dow, "fullday", name1, name2, databaseHelper);
+                            fillArrayAdapters(adapterfulldayShift1, adapterfulldayShift2, adapterfulldayShift3,
+                                    fulldayShift1, fulldayShift2, fulldayShift3,
+                                    dow, "fullday", name1, name2, name3, databaseHelper);
                         }
                     });
                     fulldayShift2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -382,8 +383,9 @@ public class CalendarFragment extends Fragment {
                             String name3 = fulldayShift2.getText().toString();
 
                             Log.d("DayofWeek", dow);
-                            fillArrayAdapters(adapterfulldayShift2, adapterfulldayShift1, fulldayShift2, fulldayShift1,
-                                    dow, "fullday", name2, name1, databaseHelper);
+                            fillArrayAdapters(adapterfulldayShift2, adapterfulldayShift1, adapterfulldayShift3,
+                                    fulldayShift2, fulldayShift1, fulldayShift3,
+                                    dow, "fullday", name2, name1, name3, databaseHelper);
                         }
                     });
                     fulldayShift3.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -394,8 +396,9 @@ public class CalendarFragment extends Fragment {
                             String name3 = fulldayShift2.getText().toString();
 
                             Log.d("DayofWeek", dow);
-                            fillArrayAdapters(adapterfulldayShift2, adapterfulldayShift1, fulldayShift2, fulldayShift1,
-                                    dow, "fullday", name2, name1, databaseHelper);
+                            fillArrayAdapters(adapterfulldayShift2, adapterfulldayShift1, adapterfulldayShift3,
+                                    fulldayShift2, fulldayShift1, fulldayShift3,
+                                    dow, "fullday", name2, name1, name3, databaseHelper);
                         }
                     });
 
@@ -506,8 +509,9 @@ public class CalendarFragment extends Fragment {
                             }
 
                             Log.d("DayofWeek", dow);
-                            fillArrayAdapters(adapterDayShift1, adapterDayShift2, dayShift1, dayShift2,
-                                    dow, "morning", name1, name2, databaseHelper);
+                            fillArrayAdapters(adapterDayShift1, adapterDayShift2, adapterDayShift3,
+                                    dayShift1, dayShift2, dayShift3,
+                                    dow, "morning", name1, name2, name3, databaseHelper);
                         }
                     });
 
@@ -519,8 +523,22 @@ public class CalendarFragment extends Fragment {
                             String name2 = dayShift2.getText().toString();
                             String name3 = dayShift3.getText().toString();
                             Log.d("DayofWeek", dow);
-                            fillArrayAdapters(adapterDayShift2, adapterDayShift1, dayShift2, dayShift1,
-                                    dow, "morning", name2, name1, databaseHelper);
+                            fillArrayAdapters(adapterDayShift2, adapterDayShift1, adapterDayShift3,
+                                    dayShift2, dayShift1, dayShift3,
+                                    dow, "morning", name2, name1, name3, databaseHelper);
+                        }
+                    });
+
+                    dayShift3.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                            String name1 = dayShift1.getText().toString();
+                            String name2 = dayShift2.getText().toString();
+                            String name3 = dayShift3.getText().toString();
+                            Log.d("DayofWeek", dow);
+                            fillArrayAdapters(adapterDayShift2, adapterDayShift1, adapterDayShift3,
+                                    dayShift2, dayShift1, dayShift3,
+                                    dow, "morning", name2, name1, name3, databaseHelper);
                         }
                     });
 
@@ -532,8 +550,9 @@ public class CalendarFragment extends Fragment {
                             String name2 = afternoonShift2.getText().toString();
                             String name3 = afternoonShift3.getText().toString();
                             Log.d("DayofWeek", dow);
-                            fillArrayAdapters(adapterafternoonShift1, adapterafternoonShift2, afternoonShift1, afternoonShift2,
-                                    dow, "afternoon", name1, name2, databaseHelper);
+                            fillArrayAdapters(adapterafternoonShift1, adapterafternoonShift2, adapterafternoonShift3,
+                                    afternoonShift1, afternoonShift2, afternoonShift3,
+                                    dow, "afternoon", name1, name2, name3, databaseHelper);
                         }
                     });
 
@@ -546,8 +565,21 @@ public class CalendarFragment extends Fragment {
                             String name2 = afternoonShift2.getText().toString();
                             String name3 = afternoonShift3.getText().toString();
                             Log.d("DayofWeek", dow);
-                            fillArrayAdapters(adapterafternoonShift2, adapterafternoonShift1, afternoonShift2, afternoonShift1,
-                                    dow, "afternoon", name2, name1, databaseHelper);
+                            fillArrayAdapters(adapterafternoonShift2, adapterafternoonShift1, adapterafternoonShift3,
+                                    afternoonShift2, afternoonShift1, afternoonShift3,
+                                    dow, "afternoon", name2, name1, name3, databaseHelper);
+                        }
+                    });
+                    afternoonShift3.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                            String name1 = afternoonShift1.getText().toString();
+                            String name2 = afternoonShift2.getText().toString();
+                            String name3 = afternoonShift3.getText().toString();
+                            Log.d("DayofWeek", dow);
+                            fillArrayAdapters(adapterafternoonShift2, adapterafternoonShift1, adapterafternoonShift3,
+                                    afternoonShift2, afternoonShift1, afternoonShift3,
+                                    dow, "afternoon", name2, name1, name3, databaseHelper);
                         }
                     });
 
@@ -721,9 +753,9 @@ public class CalendarFragment extends Fragment {
     }
 
     private ArrayAdapter<String> setupAdapters(String date, String dow, String tod) {
-        String[] employeeColumn = {"dayshift1_employee", "dayshift2_employee",
-                "nightshift1_employee", "nightshift2_employee",
-                "fullday1_employee", "fullday2_employee"};
+        String[] employeeColumn = {"dayshift1_employee", "dayshift2_employee", "dayshift3_employee",
+                "nightshift1_employee", "nightshift2_employee", "nightshift3_employee",
+                "fullday1_employee", "fullday2_employee", "fullday3_employee"};
         List<String> employees = databaseHelper.getDailyAssignmentsEmployee(employeeColumn, "date = ?", new String[]{date});
         List<String> shiftNames = new ArrayList<>();
 
@@ -796,8 +828,9 @@ public class CalendarFragment extends Fragment {
     }
 
     private void fillArrayAdapters(ArrayAdapter<String> shiftAdapter1, ArrayAdapter<String> shiftAdapter2,
-                                   AutoCompleteTextView shiftName1, AutoCompleteTextView shiftName2,
-                                   String dow, String tod, String name1, String name2,
+                                   ArrayAdapter<String> shiftAdapter3, AutoCompleteTextView shiftName1,
+                                   AutoCompleteTextView shiftName2, AutoCompleteTextView shiftName3,
+                                   String dow, String tod, String name1, String name2, String name3,
                                    DatabaseHelper databaseHelper) {
         Log.d("THIS IS THE NAME BEFORE SUBSTRING1", name1);
         Log.d("THIS IS THE NAME BEFORE SUBSTRING2", name2);
@@ -815,11 +848,15 @@ public class CalendarFragment extends Fragment {
 
         List<String> shiftNames1 = new ArrayList<>();
         List<String> shiftNames2 = new ArrayList<>();
+        List<String> shiftNames3 = new ArrayList<>();
         String[] columns = {"preferred_name"};
         String selection1 = dow + "_" + tod + " = ?";
         String selection2 = dow + "_" + tod + " = ?";
+        String selection3 = dow + "_" + tod + " = ?";
+
         List<String> selectionArgsList1 = new ArrayList<>(Arrays.asList("1"));
         List<String> selectionArgsList2 = new ArrayList<>(Arrays.asList("1"));
+        List<String> selectionArgsList3 = new ArrayList<>(Arrays.asList("1"));
 
         boolean name1_trained_opening = databaseHelper.isEmployeeTrainedOpening(name1);
         boolean name2_trained_opening = databaseHelper.isEmployeeTrainedOpening(name2);
@@ -829,19 +866,32 @@ public class CalendarFragment extends Fragment {
 
         shiftNames1.add("");
         shiftNames2.add("");
+        shiftNames3.add("");
 
         if (tod.equals("morning")) {
             if (!name1.isEmpty()) {
                 selection1 += " AND preferred_name != ?";
                 selection2 += " AND preferred_name != ?";
+                selection3 += " AND preferred_name != ?";
                 selectionArgsList1.add(name1);
                 selectionArgsList2.add(name1);
+                selectionArgsList3.add(name1);
             }
             if (!name2.isEmpty()) {
                 selection1 += " AND preferred_name != ?";
                 selection2 += " AND preferred_name != ?";
+                selection3 += " AND preferred_name != ?";
                 selectionArgsList1.add(name2);
                 selectionArgsList2.add(name2);
+                selectionArgsList3.add(name2);
+            }
+            if (!name3.isEmpty()) {
+                selection1 += " AND preferred_name != ?";
+                selection2 += " AND preferred_name != ?";
+                selection3 += " AND preferred_name != ?";
+                selectionArgsList1.add(name3);
+                selectionArgsList2.add(name3);
+                selectionArgsList3.add(name3);
             }
 
             if (!name1.isEmpty() && name2.isEmpty()) {
@@ -867,14 +917,26 @@ public class CalendarFragment extends Fragment {
             if (!name1.isEmpty()) {
                 selection1 += " AND preferred_name != ?";
                 selection2 += " AND preferred_name != ?";
+                selection3 += " AND preferred_name != ?";
                 selectionArgsList1.add(name1);
                 selectionArgsList2.add(name1);
+                selectionArgsList3.add(name1);
             }
             if (!name2.isEmpty()) {
                 selection1 += " AND preferred_name != ?";
                 selection2 += " AND preferred_name != ?";
+                selection3 += " AND preferred_name != ?";
                 selectionArgsList1.add(name2);
                 selectionArgsList2.add(name2);
+                selectionArgsList3.add(name2);
+            }
+            if (!name3.isEmpty()) {
+                selection1 += " AND preferred_name != ?";
+                selection2 += " AND preferred_name != ?";
+                selection3 += " AND preferred_name != ?";
+                selectionArgsList1.add(name3);
+                selectionArgsList2.add(name3);
+                selectionArgsList3.add(name3);
             }
 
             if (!name1.isEmpty() && name2.isEmpty()) {
@@ -901,14 +963,26 @@ public class CalendarFragment extends Fragment {
             if (!name1.isEmpty()) {
                 selection1 += " AND preferred_name != ?";
                 selection2 += " AND preferred_name != ?";
+                selection3 += " AND preferred_name != ?";
                 selectionArgsList1.add(name1);
                 selectionArgsList2.add(name1);
+                selectionArgsList3.add(name1);
             }
             if (!name2.isEmpty()) {
                 selection1 += " AND preferred_name != ?";
                 selection2 += " AND preferred_name != ?";
+                selection3 += " AND preferred_name != ?";
                 selectionArgsList1.add(name2);
                 selectionArgsList2.add(name2);
+                selectionArgsList3.add(name2);
+            }
+            if (!name3.isEmpty()) {
+                selection1 += " AND preferred_name != ?";
+                selection2 += " AND preferred_name != ?";
+                selection3 += " AND preferred_name != ?";
+                selectionArgsList1.add(name3);
+                selectionArgsList2.add(name3);
+                selectionArgsList3.add(name3);
             }
             if (!name1.isEmpty() && name2.isEmpty()) {
                 if (name1_trained_opening && name1_trained_closing) {
@@ -988,6 +1062,7 @@ public class CalendarFragment extends Fragment {
 
         String[] selectionArgs1 = selectionArgsList1.toArray(new String[0]);
         String[] selectionArgs2 = selectionArgsList2.toArray(new String[0]);
+        String[] selectionArgs3 = selectionArgsList3.toArray(new String[0]);
 
 
         List<String> allEmployess1 = databaseHelper.getAllEmployeePreferredNames(columns, selection1, selectionArgs1,null,null,null);
@@ -1031,6 +1106,27 @@ public class CalendarFragment extends Fragment {
 
         shiftNames2.addAll(validEmployees2);
 
+        List<String> allEmployess3 = databaseHelper.getAllEmployeePreferredNames(columns, selection3, selectionArgs3,null,null,null);
+        List<String> validEmployees3 = new ArrayList<>();
+        for (String emp: allEmployess3 ) {
+            if (!databaseHelper.getEmployeeArchiveStatus(emp)) {
+                boolean trainedOpening = databaseHelper.isEmployeeTrainedOpening(emp);
+                boolean trainedClosing = databaseHelper.isEmployeeTrainedClosing(emp);
+                if (trainedClosing && trainedOpening) {
+                    emp = emp + " (Trained for Opening & Closing)";
+                } else if (trainedClosing && !trainedOpening) {
+                    emp = emp + " (Trained for Closing)";
+                } else if (trainedOpening && !trainedClosing) {
+                    emp = emp + " (Trained for Opening)";
+                } else {
+                    emp = emp + " (Not Trained)";
+                }
+                validEmployees3.add(emp);
+            }
+        }
+
+        shiftNames3.addAll(validEmployees3);
+
 //        shiftNames1.addAll(databaseHelper.getAllEmployeePreferredNames(columns,
 //                selection1,
 //                selectionArgs1,
@@ -1048,6 +1144,8 @@ public class CalendarFragment extends Fragment {
             shiftName1.setAdapter(shiftAdapter1);
             shiftAdapter2 = new ArrayAdapter<>(requireContext(), R.layout.list_names, shiftNames2);
             shiftName2.setAdapter(shiftAdapter2);
+            shiftAdapter3 = new ArrayAdapter<>(requireContext(), R.layout.list_names, shiftNames3);
+            shiftName3.setAdapter(shiftAdapter3);
         } else {
             shiftAdapter1.clear();
             shiftAdapter1.addAll(shiftNames1);
@@ -1058,6 +1156,11 @@ public class CalendarFragment extends Fragment {
             shiftAdapter2.addAll(shiftNames2);
             shiftAdapter2.notifyDataSetChanged();
             shiftName2.setAdapter(shiftAdapter2);
+
+            shiftAdapter3.clear();
+            shiftAdapter3.addAll(shiftNames3);
+            shiftAdapter3.notifyDataSetChanged();
+            shiftName3.setAdapter(shiftAdapter3);
         }
     }
 
