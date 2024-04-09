@@ -71,7 +71,7 @@
             android:translationY="-5dp">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="350dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:translationY="15dp"
@@ -79,17 +79,20 @@
 
                 <CheckBox
                     android:id="@+id/busycheckboxweekend"
-                    android:layout_width="match_parent"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
+                    android:translationX="20dp"
                     android:text="Busy Day"
-                    android:textStyle="bold"
-                    android:paddingRight="180dp"/>
+                    android:textStyle="bold">
+
+                </CheckBox>
 
                 <ImageButton
                     android:id="@+id/unassignedList"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:paddingTop="20dp"
+                    android:translationX="200dp"
                     android:layout_gravity="center_vertical"
                     android:background="@mipmap/question">
                 </ImageButton>
