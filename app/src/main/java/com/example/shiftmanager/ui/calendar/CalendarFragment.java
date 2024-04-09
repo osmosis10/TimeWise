@@ -657,7 +657,7 @@ public class CalendarFragment extends Fragment {
                             if (!fulldaySelection1.isEmpty()
                                     || !fulldaySelection2.isEmpty()
                                     && fulldaySelection3.isEmpty()
-                                    || !checkStatus) {
+                                    && !checkStatus) {
                                 dayImage.setImageResource(R.mipmap.warning);
                             }
 
@@ -758,7 +758,7 @@ public class CalendarFragment extends Fragment {
                                     daySelection3.isEmpty()   ||
                                     !nightSelection1.isEmpty() ||
                                     !nightSelection2.isEmpty() &&
-                                    nightSelection3.isEmpty() ||
+                                    nightSelection3.isEmpty() &&
                                     !checkStatus) {
                                 dayImage.setImageResource(R.mipmap.warning);
                             }
